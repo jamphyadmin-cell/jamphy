@@ -144,9 +144,6 @@ export default function IITJamPhysicsHub() {
   const [isCorrect, setIsCorrect] =
     useState(null);
 
-  const [failedImages, setFailedImages] =
-    useState({});
-
   const [natAnswer, setNatAnswer] =
     useState("");
 
@@ -202,9 +199,7 @@ export default function IITJamPhysicsHub() {
       index < 0 ||
       index >= filteredQuestions.length
     ) {
-
       return;
-
     }
 
     setActiveQuestion(
@@ -219,13 +214,6 @@ export default function IITJamPhysicsHub() {
     });
 
   };
-
-  const isMultipleChoice =
-    activeQuestion &&
-    Array.isArray(activeQuestion.correctAnswer);
-
-  const isNAT =
-    activeQuestion?.type === "NAT";
 
   const resetQuestionState = () => {
 
@@ -242,9 +230,7 @@ export default function IITJamPhysicsHub() {
     if (
       question.type === "NAT"
     ) {
-
       return [String(question.correctAnswer)];
-
     }
 
     if (Array.isArray(question.correctAnswer)) {
@@ -261,22 +247,6 @@ export default function IITJamPhysicsHub() {
 
   };
 
-  const arraysMatch = (first, second) => {
-
-    if (first.length !== second.length) {
-
-      return false;
-
-    }
-
-    const firstSet = new Set(first);
-
-    return second.every((value) =>
-      firstSet.has(value)
-    );
-
-  };
-
   const handleSingleAnswer = (option) => {
 
     setSelectedAnswer(option);
@@ -288,112 +258,33 @@ export default function IITJamPhysicsHub() {
 
   };
 
-  const handleMultipleAnswer = (option) => {
-
-    if (isCorrect !== null) {
-
-      return;
-
-    }
-
-    setSelectedAnswer((current) => {
-
-      const currentAnswers = Array.isArray(current)
-        ? current
-        : [];
-
-      if (currentAnswers.includes(option)) {
-
-        return currentAnswers.filter(
-          (answer) => answer !== option
-        );
-
-      }
-
-      return [...currentAnswers, option];
-
-    });
-
-  };
-
-  const submitMultipleAnswer = () => {
-
-    const answers = Array.isArray(selectedAnswer)
-      ? selectedAnswer
-      : [];
-
-    if (answers.length === 0) {
-
-      return;
-
-    }
-
-    setIsCorrect(
-      arraysMatch(
-        answers,
-        getCorrectOptions(activeQuestion)
-      )
-    );
-
-  };
-
-  const submitNATAnswer = () => {
-
-    const correctAnswer =
-      String(activeQuestion.correctAnswer).trim();
-
-    const enteredAnswer =
-      String(natAnswer).trim();
-
-    if (!enteredAnswer) {
-
-      return;
-
-    }
-
-    setIsCorrect(
-      Number(enteredAnswer) ===
-      Number(correctAnswer)
-    );
-
-  };
-
   return (
 
-  <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white">
 
-    {/* HEADER */}
+      {/* HEADER */}
 
-    <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
+      <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
 
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-center">
-
-        <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-center">
 
           <Image
             src="/logo.png"
             alt="Logo"
-            width={200}
-            height={200}
-            className="rounded-2xl"
+            width={180}
+            height={180}
+            className="object-contain"
           />
-
-          <div>
-
-          </div>
 
         </div>
 
-      </div>
-
-    </nav>
+      </nav>
 
       {!selectedSubject && (
 
-        <section className="max-w-7xl mx-auto px-6 py-16">
+        <section className="max-w-[1800px] mx-auto px-4 py-6">
 
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
 
             {syllabus.map((subject) => (
 
@@ -408,14 +299,14 @@ export default function IITJamPhysicsHub() {
                   setSelectedSubtopic("All");
 
                 }}
-                className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-left hover:bg-zinc-900 transition"
+                className="rounded-3xl border border-zinc-800 bg-zinc-950 p-5 text-left hover:bg-zinc-900 transition min-h-[190px]"
               >
 
-                <div className="w-16 h-16 rounded-2xl bg-zinc-800 flex items-center justify-center text-3xl mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-zinc-800 flex items-center justify-center text-2xl mb-5">
                   {icons[subject.id]}
                 </div>
 
-                <h3 className="text-3xl font-bold tracking-tight">
+                <h3 className="text-2xl font-bold tracking-tight leading-tight">
                   {subject.name}
                 </h3>
 
@@ -443,89 +334,6 @@ export default function IITJamPhysicsHub() {
           <h2 className="text-6xl font-black tracking-tight mb-10">
             {selectedSubject.name}
           </h2>
-
-          <div className="flex flex-wrap gap-4 mb-10">
-
-            <select
-              value={selectedYear}
-              onChange={(e) =>
-                setSelectedYear(e.target.value)
-              }
-              className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
-            >
-
-              <option value="All">
-                All Years
-              </option>
-
-              {[...new Set(
-                questions.map((q) => q.year)
-              )]
-                .sort((a, b) => b - a)
-                .map((year) => (
-
-                  <option
-                    key={year}
-                    value={year}
-                  >
-                    {year}
-                  </option>
-
-                ))}
-
-            </select>
-
-            <select
-              value={selectedSubtopic}
-              onChange={(e) =>
-                setSelectedSubtopic(e.target.value)
-              }
-              className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
-            >
-
-              <option value="All">
-                All Subtopics
-              </option>
-
-              {selectedSubject.subtopics.map(
-                (topic) => (
-
-                  <option
-                    key={topic}
-                    value={topic}
-                  >
-                    {topic}
-                  </option>
-
-                )
-              )}
-
-            </select>
-
-            <button
-              onClick={() => {
-
-                setSelectedYear("All");
-
-                setSelectedSubtopic("All");
-
-              }}
-              className="rounded-2xl border border-zinc-700 px-5 py-4 text-white hover:bg-zinc-900"
-            >
-              Reset Filters
-            </button>
-
-          </div>
-
-          <div className="mb-8 text-zinc-400 text-lg">
-
-            Showing{" "}
-            <span className="text-white font-bold">
-              {filteredQuestions.length}
-            </span>{" "}
-            questions
-
-          </div>
 
           <div className="grid gap-6">
 
@@ -626,138 +434,12 @@ export default function IITJamPhysicsHub() {
 
             )}
 
-            <div className="grid md:grid-cols-2 gap-4 mt-8">
-
-              {activeQuestion.options.map(
-                (option, index) => {
-
-                  const correct =
-                    getCorrectOptions(
-                      activeQuestion
-                    ).includes(option);
-
-                  const isSelected =
-                    selectedAnswer === option;
-
-                  let style =
-                    "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
-
-                  if (isCorrect !== null) {
-
-                    if (correct) {
-
-                      style =
-                        "border-green-500 bg-green-500/20";
-
-                    }
-
-                    if (
-                      isSelected &&
-                      !correct
-                    ) {
-
-                      style =
-                        "border-red-500 bg-red-500/20";
-
-                    }
-                  }
-
-                  return (
-
-                    <button
-                      key={index}
-                      disabled={
-                        isCorrect !== null
-                      }
-                      onClick={() =>
-                        handleSingleAnswer(option)
-                      }
-                      className={`rounded-3xl border min-h-[100px] p-5 text-left transition ${style}`}
-                    >
-
-                      <div className="flex gap-4 items-start">
-
-                        <div className="w-12 h-12 rounded-full bg-zinc-700 flex items-center justify-center text-xl shrink-0">
-                          {String.fromCharCode(65 + index)}
-                        </div>
-
-                        <div className="flex-1">
-
-                          {activeQuestion.optionImages?.[index] && (
-
-                            <Image
-                              src={activeQuestion.optionImages[index]}
-                              alt={`Option ${index + 1}`}
-                              width={500}
-                              height={300}
-                              className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
-                            />
-
-                          )}
-
-                          <MathText className="option-copy text-[18px] leading-relaxed text-white pt-1 overflow-x-auto">
-                            {option}
-                          </MathText>
-
-                        </div>
-
-                      </div>
-
-                    </button>
-
-                  );
-                }
-              )}
-
-            </div>
-
-            <div className="mt-8 flex items-center justify-between gap-4 flex-wrap">
-
-              <button
-                onClick={() =>
-                  goToQuestion(currentQuestionIndex - 1)
-                }
-                disabled={!hasPreviousQuestion}
-                className="rounded-2xl border border-zinc-700 px-6 py-4 text-lg font-bold text-white hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                ← Previous Question
-              </button>
-
-              <button
-                onClick={() =>
-                  goToQuestion(currentQuestionIndex + 1)
-                }
-                disabled={!hasNextQuestion}
-                className="rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                Next Question →
-              </button>
-
-            </div>
-
-            {isCorrect !== null && (
-
-              <div
-                className={`mt-6 rounded-2xl border p-5 text-lg font-bold ${
-                  isCorrect
-                    ? "border-green-500 bg-green-500/20 text-green-200"
-                    : "border-red-500 bg-red-500/20 text-red-200"
-                }`}
-              >
-
-                {isCorrect
-                  ? "Correct answer"
-                  : "Not quite. The correct option is highlighted."}
-
-              </div>
-
-            )}
-
           </div>
 
         </section>
 
-        )}
+      )}
+
     </div>
-);
+  );
 }
