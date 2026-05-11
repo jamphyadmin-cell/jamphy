@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export default function IITJamPrepPlatform() {
 
@@ -14,15 +15,27 @@ export default function IITJamPrepPlatform() {
 
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
-          <div>
+          <div className="flex items-center gap-4">
 
-            <h1 className="text-2xl font-bold tracking-tight">
-              JAM Physics Hub
-            </h1>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={56}
+              height={56}
+              className="rounded-2xl"
+            />
 
-            <p className="text-zinc-400 text-sm">
-              IIT JAM Physics Preparation Platform
-            </p>
+            <div>
+
+              <h1 className="text-2xl font-bold tracking-tight">
+                JAM Physics Hub
+              </h1>
+
+              <p className="text-zinc-400 text-sm">
+                IIT JAM Physics Preparation Platform
+              </p>
+
+            </div>
 
           </div>
 
@@ -90,6 +103,7 @@ export default function IITJamPrepPlatform() {
         </div>
 
       </section>
-  </div>
+
+    </div>
   );
 }
