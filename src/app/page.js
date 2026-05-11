@@ -5,6 +5,7 @@ import Link from "next/link";
 export default function IITJamPrepPlatform() {
 
   return (
+  <div className="scale-[0.75] origin-top-left w-[133.33%]">
 
     <div className="min-h-screen bg-zinc-950 text-white">
 
@@ -92,6 +93,6 @@ export default function IITJamPrepPlatform() {
       </section>
 
     </div>
-
+  </div>
   );
 }
