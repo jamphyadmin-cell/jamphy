@@ -1,65 +1,869 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useMemo, useState } from "react";
+import Image from "next/image";
+import { questions } from "../data/questions";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+
+import "katex/dist/katex.min.css";
+
+const icons = {
+  math: "∫",
+  mechanics: "⚛",
+  waves: "〰",
+  em: "⚡",
+  thermo: "🔥",
+  modern: "☄",
+  solid: "⌁",
+};
+
+const markdownComponents = {
+  p: ({ children }) => <p>{children}</p>,
+};
+
+const normalizeMathDelimiters = (value) =>
+  String(value)
+    .replace(/\\\[/g, "$$")
+    .replace(/\\\]/g, "$$")
+    .replace(/\\\(/g, "$")
+    .replace(/\\\)/g, "$");
+
+function MathText({ children, className = "" }) {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className={`math-copy ${className}`}>
+      <ReactMarkdown
+        components={markdownComponents}
+        remarkPlugins={[remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+      >
+        {normalizeMathDelimiters(children)}
+      </ReactMarkdown>
+    </div>
+  );
+}
+
+export default function IITJamPhysicsHub() {
+
+  const syllabus = [
+    {
+      id: "math",
+      name: "Mathematical Methods",
+      subtopics: [
+        "Differential Equations",
+        "Matrices",
+        "Vector Calculus",
+        "Fourier Series",
+        "Mathematical Physics",
+        "Complex Numbers",
+      ],
+    },
+
+    {
+      id: "mechanics",
+      name: "Mechanics & General Properties",
+      subtopics: [
+        "Classical Mechanics",
+        "Rotational Dynamics",
+        "Circular Motion",
+        "Work Power Energy",
+      ],
+    },
+
+    {
+      id: "waves",
+      name: "Oscillations, Waves & Optics",
+      subtopics: [
+        "Polarization",
+        "Wave Optics",
+        "Optics",
+        "Waves",
+        "Simple Harmonic Motion",
+        "Oscillations",
+      ],
+    },
+
+    {
+      id: "em",
+      name: "Electricity & Magnetism",
+      subtopics: [
+        "Electrostatics",
+        "Electromagnetic Theory",
+        "Electromagnetic Induction",
+        "Electromagnetism",
+        "LCR Circuits",
+      ],
+    },
+
+    {
+      id: "thermo",
+      name: "Thermodynamics & KTG",
+      subtopics: [
+        "Thermodynamics",
+        "Phase Transitions",
+      ],
+    },
+
+    {
+      id: "modern",
+      name: "Modern Physics",
+      subtopics: [
+        "Quantum Mechanics",
+        "Special Relativity",
+      ],
+    },
+
+    {
+      id: "solid",
+      name: "Solid State & Electronics",
+      subtopics: [
+        "Semiconductor Physics",
+        "Electronics",
+        "Solid State Physics",
+        "Boolean Algebra",
+      ],
+    },
+  ];
+
+  const [selectedSubject, setSelectedSubject] =
+    useState(null);
+
+  const [selectedYear, setSelectedYear] =
+    useState("All");
+
+  const [selectedSubtopic, setSelectedSubtopic] =
+    useState("All");
+
+  const [activeQuestion, setActiveQuestion] =
+    useState(null);
+
+  const [selectedAnswer, setSelectedAnswer] =
+    useState(null);
+
+  const [isCorrect, setIsCorrect] =
+    useState(null);
+
+  const [failedImages, setFailedImages] =
+    useState({});
+
+  const [natAnswer, setNatAnswer] =
+    useState("");
+
+  const filteredQuestions = useMemo(() => {
+
+    return questions.filter((q) => {
+
+      const subjectMatch = selectedSubject
+        ? selectedSubject.subtopics.includes(q.subject)
+        : true;
+
+      const yearMatch =
+        selectedYear === "All"
+          ? true
+          : q.year === Number(selectedYear);
+
+      const subtopicMatch =
+        selectedSubtopic === "All"
+          ? true
+          : q.subject === selectedSubtopic;
+
+      return (
+        subjectMatch &&
+        yearMatch &&
+        subtopicMatch
+      );
+
+    });
+
+  }, [
+    selectedSubject,
+    selectedYear,
+    selectedSubtopic,
+  ]);
+
+  const currentQuestionIndex =
+    activeQuestion
+      ? filteredQuestions.findIndex(
+          (q) => q.id === activeQuestion.id
+        )
+      : -1;
+
+  const hasPreviousQuestion =
+    currentQuestionIndex > 0;
+
+  const hasNextQuestion =
+    currentQuestionIndex <
+    filteredQuestions.length - 1;
+
+  const goToQuestion = (index) => {
+
+    if (
+      index < 0 ||
+      index >= filteredQuestions.length
+    ) {
+
+      return;
+
+    }
+
+    setActiveQuestion(
+      filteredQuestions[index]
+    );
+
+    resetQuestionState();
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+
+  };
+
+  const isMultipleChoice =
+    activeQuestion &&
+    Array.isArray(activeQuestion.correctAnswer);
+
+  const isNAT =
+    activeQuestion?.type === "NAT";
+
+  const resetQuestionState = () => {
+
+    setSelectedAnswer(null);
+
+    setIsCorrect(null);
+
+    setNatAnswer("");
+
+  };
+
+  const getCorrectOptions = (question) => {
+
+    if (
+      question.type === "NAT"
+    ) {
+
+      return [String(question.correctAnswer)];
+
+    }
+
+    if (Array.isArray(question.correctAnswer)) {
+
+      return question.correctAnswer.map(
+        (answerIndex) => question.options[answerIndex]
+      );
+
+    }
+
+    return [
+      question.options[question.correctAnswer],
+    ];
+
+  };
+
+  const arraysMatch = (first, second) => {
+
+    if (first.length !== second.length) {
+
+      return false;
+
+    }
+
+    const firstSet = new Set(first);
+
+    return second.every((value) =>
+      firstSet.has(value)
+    );
+
+  };
+
+  const handleSingleAnswer = (option) => {
+
+    setSelectedAnswer(option);
+
+    const [correctOption] =
+      getCorrectOptions(activeQuestion);
+
+    setIsCorrect(option === correctOption);
+
+  };
+
+  const handleMultipleAnswer = (option) => {
+
+    if (isCorrect !== null) {
+
+      return;
+
+    }
+
+    setSelectedAnswer((current) => {
+
+      const currentAnswers = Array.isArray(current)
+        ? current
+        : [];
+
+      if (currentAnswers.includes(option)) {
+
+        return currentAnswers.filter(
+          (answer) => answer !== option
+        );
+
+      }
+
+      return [...currentAnswers, option];
+
+    });
+
+  };
+
+  const submitMultipleAnswer = () => {
+
+    const answers = Array.isArray(selectedAnswer)
+      ? selectedAnswer
+      : [];
+
+    if (answers.length === 0) {
+
+      return;
+
+    }
+
+    setIsCorrect(
+      arraysMatch(
+        answers,
+        getCorrectOptions(activeQuestion)
+      )
+    );
+
+  };
+
+  const submitNATAnswer = () => {
+
+    const correctAnswer =
+      String(activeQuestion.correctAnswer).trim();
+
+    const enteredAnswer =
+      String(natAnswer).trim();
+
+    if (!enteredAnswer) {
+
+      return;
+
+    }
+
+    setIsCorrect(
+      Number(enteredAnswer) ===
+      Number(correctAnswer)
+    );
+
+  };
+
+  return (
+
+    <div className="min-h-screen bg-black text-white">
+
+      {!selectedSubject && (
+
+        <section className="max-w-7xl mx-auto px-6 py-16">
+
+          <h2 className="text-5xl font-black mb-12">
+            IIT JAM Physics Subjects
+          </h2>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            {syllabus.map((subject) => (
+
+              <button
+                key={subject.id}
+                onClick={() => {
+
+                  setSelectedSubject(subject);
+
+                  setSelectedYear("All");
+
+                  setSelectedSubtopic("All");
+
+                }}
+                className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-left hover:bg-zinc-900 transition"
+              >
+
+                <div className="w-16 h-16 rounded-2xl bg-zinc-800 flex items-center justify-center text-3xl mb-6">
+                  {icons[subject.id]}
+                </div>
+
+                <h3 className="text-3xl font-bold tracking-tight">
+                  {subject.name}
+                </h3>
+
+              </button>
+
+            ))}
+
+          </div>
+
+        </section>
+
+      )}
+
+      {selectedSubject && !activeQuestion && (
+
+        <section className="max-w-7xl mx-auto px-6 py-16">
+
+          <button
+            onClick={() => setSelectedSubject(null)}
+            className="text-zinc-500 hover:text-white mb-8"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            ← Back to Subjects
+          </button>
+
+          <h2 className="text-6xl font-black tracking-tight mb-10">
+            {selectedSubject.name}
+          </h2>
+
+          {/* FILTERS */}
+
+          <div className="flex flex-wrap gap-4 mb-10">
+
+            <select
+              value={selectedYear}
+              onChange={(e) =>
+                setSelectedYear(e.target.value)
+              }
+              className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
+            >
+
+              <option value="All">
+                All Years
+              </option>
+
+              {[...new Set(
+                questions.map((q) => q.year)
+              )]
+                .sort((a, b) => b - a)
+                .map((year) => (
+
+                  <option
+                    key={year}
+                    value={year}
+                  >
+                    {year}
+                  </option>
+
+                ))}
+
+            </select>
+
+            <select
+              value={selectedSubtopic}
+              onChange={(e) =>
+                setSelectedSubtopic(e.target.value)
+              }
+              className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
+            >
+
+              <option value="All">
+                All Subtopics
+              </option>
+
+              {selectedSubject.subtopics.map(
+                (topic) => (
+
+                  <option
+                    key={topic}
+                    value={topic}
+                  >
+                    {topic}
+                  </option>
+
+                )
+              )}
+
+            </select>
+
+            <button
+              onClick={() => {
+
+                setSelectedYear("All");
+
+                setSelectedSubtopic("All");
+
+              }}
+              className="rounded-2xl border border-zinc-700 px-5 py-4 text-white hover:bg-zinc-900"
+            >
+              Reset Filters
+            </button>
+
+          </div>
+
+          <div className="mb-8 text-zinc-400 text-lg">
+
+            Showing{" "}
+            <span className="text-white font-bold">
+              {filteredQuestions.length}
+            </span>{" "}
+            questions
+
+          </div>
+
+          <div className="grid gap-6">
+
+            {filteredQuestions.map((question) => (
+
+              <button
+                key={question.id}
+                onClick={() => {
+
+                  setActiveQuestion(question);
+
+                  resetQuestionState();
+
+                }}
+                className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-left hover:bg-zinc-900 transition"
+              >
+
+                <div className="flex gap-3 mb-5 flex-wrap">
+
+                  <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                    {question.year}
+                  </span>
+
+                  <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                    {question.subject}
+                  </span>
+
+                  <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                    {question.type}
+                  </span>
+
+                </div>
+
+                <MathText className="question-preview text-lg leading-relaxed text-zinc-200 line-clamp-3 overflow-hidden">
+                  {question.question}
+                </MathText>
+
+              </button>
+
+            ))}
+
+          </div>
+
+        </section>
+
+      )}
+
+      {activeQuestion && (
+
+        <section className="max-w-7xl mx-auto px-6 py-12">
+
+          <button
+            onClick={() => setActiveQuestion(null)}
+            className="text-zinc-500 hover:text-white mb-8"
           >
-            Documentation
-          </a>
-        </div>
-      </main>
+            ← Back to Questions
+          </button>
+
+          <div className="rounded-[32px] border border-zinc-800 bg-zinc-950 p-10">
+
+            <div className="flex gap-3 flex-wrap mb-8">
+
+              <span className="px-4 py-1 rounded-full bg-blue-600 text-sm font-bold">
+                Question {currentQuestionIndex + 1} / {filteredQuestions.length}
+              </span>
+
+              <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                {activeQuestion.year}
+              </span>
+
+              <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                {activeQuestion.subject}
+              </span>
+
+              <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                {activeQuestion.type}
+              </span>
+
+            </div>
+
+            <MathText className="question-copy text-[22px] leading-[2.15] text-zinc-100 font-normal overflow-x-auto">
+              {activeQuestion.question}
+            </MathText>
+
+            {activeQuestion.image && (
+
+              <div className="flex justify-center mt-10">
+
+                {failedImages[
+                  activeQuestion.image
+                ] ? (
+
+                  <div className="rounded-2xl border border-yellow-600 bg-yellow-500/10 p-5 text-yellow-100">
+                    Missing image file:{" "}
+                    {activeQuestion.image}
+                  </div>
+
+                ) : (
+
+                  <Image
+                    src={activeQuestion.image}
+                    alt="Question diagram"
+                    width={500}
+                    height={350}
+                    onError={() =>
+                      setFailedImages(
+                        (current) => ({
+                          ...current,
+                          [activeQuestion.image]:
+                            true,
+                        })
+                      )
+                    }
+                    className="h-auto max-w-full rounded-2xl border border-zinc-800"
+                  />
+
+                )}
+
+              </div>
+
+            )}
+
+            {isNAT ? (
+
+              <div className="mt-14">
+
+                <input
+                  type="number"
+                  step="any"
+                  value={natAnswer}
+                  onChange={(e) =>
+                    setNatAnswer(e.target.value)
+                  }
+                  placeholder="Enter numerical answer"
+                  disabled={isCorrect !== null}
+                  className="w-full rounded-3xl border border-zinc-700 bg-zinc-900 p-6 text-2xl text-white outline-none focus:border-blue-500"
+                />
+
+                <div className="mt-8 flex gap-4 flex-wrap">
+
+                  <button
+                    onClick={submitNATAnswer}
+                    disabled={
+                      isCorrect !== null ||
+                      natAnswer.trim() === ""
+                    }
+                    className="rounded-2xl bg-white px-6 py-3 font-bold text-black disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+                  >
+                    Submit Answer
+                  </button>
+
+                  <button
+                    onClick={resetQuestionState}
+                    className="rounded-2xl border border-zinc-700 px-6 py-3 font-bold text-white hover:bg-zinc-900"
+                  >
+                    Clear
+                  </button>
+
+                </div>
+
+              </div>
+
+            ) : (
+
+              <>
+                <div className="grid md:grid-cols-2 gap-6 mt-14">
+
+                  {activeQuestion.options.map(
+                    (option, index) => {
+
+                      const isSelected =
+                        isMultipleChoice
+                          ? Array.isArray(selectedAnswer) &&
+                            selectedAnswer.includes(option)
+                          : selectedAnswer === option;
+
+                      const correct =
+                        getCorrectOptions(
+                          activeQuestion
+                        ).includes(option);
+
+                      let style =
+                        "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
+
+                      if (
+                        isMultipleChoice &&
+                        isSelected &&
+                        isCorrect === null
+                      ) {
+
+                        style =
+                          "border-blue-400 bg-blue-500/20";
+
+                      }
+
+                      if (isCorrect !== null) {
+
+                        if (correct) {
+
+                          style =
+                            "border-green-500 bg-green-500/20";
+
+                        }
+
+                        if (
+                          isSelected &&
+                          !correct
+                        ) {
+
+                          style =
+                            "border-red-500 bg-red-500/20";
+
+                        }
+                      }
+
+                      return (
+
+                        <button
+                          key={index}
+                          disabled={
+                            isCorrect !== null
+                          }
+                          onClick={() => {
+
+                            if (isMultipleChoice) {
+
+                              handleMultipleAnswer(option);
+
+                              return;
+
+                            }
+
+                            handleSingleAnswer(option);
+
+                          }}
+                          className={`rounded-3xl border min-h-[140px] p-8 text-left transition ${style}`}
+                        >
+
+                          <div className="flex gap-5 items-start">
+
+                            <div className="w-14 h-14 rounded-full bg-zinc-700 flex items-center justify-center text-2xl shrink-0">
+                              {String.fromCharCode(65 + index)}
+                            </div>
+
+                            <div className="flex-1">
+
+                              {activeQuestion.optionImages?.[index] && (
+
+                                <Image
+                                  src={activeQuestion.optionImages[index]}
+                                  alt={`Option ${index + 1}`}
+                                  width={500}
+                                  height={300}
+                                  className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
+                                />
+
+                              )}
+
+                              {option && (
+
+                                <MathText className="option-copy text-[22px] leading-relaxed text-white pt-2 overflow-x-auto">
+                                  {option}
+                                </MathText>
+
+                              )}
+
+                            </div>
+
+                          </div>
+
+                        </button>
+
+                      );
+                    }
+                  )}
+
+                </div>
+
+                {isMultipleChoice && (
+
+                  <div className="mt-10 flex flex-wrap items-center gap-4">
+
+                    <button
+                      onClick={submitMultipleAnswer}
+                      disabled={
+                        isCorrect !== null ||
+                        !Array.isArray(selectedAnswer) ||
+                        selectedAnswer.length === 0
+                      }
+                      className="rounded-2xl bg-white px-6 py-3 font-bold text-black disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+                    >
+                      Submit Answer
+                    </button>
+
+                    <button
+                      onClick={resetQuestionState}
+                      className="rounded-2xl border border-zinc-700 px-6 py-3 font-bold text-white hover:bg-zinc-900"
+                    >
+                      Clear
+                    </button>
+
+                  </div>
+
+                )}
+
+              </>
+
+            )}
+
+            <div className="mt-12 flex items-center justify-between gap-4 flex-wrap">
+
+              <button
+                onClick={() =>
+                  goToQuestion(currentQuestionIndex - 1)
+                }
+                disabled={!hasPreviousQuestion}
+                className="rounded-2xl border border-zinc-700 px-6 py-4 text-lg font-bold text-white hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                ← Previous Question
+              </button>
+
+              <button
+                onClick={() =>
+                  goToQuestion(currentQuestionIndex + 1)
+                }
+                disabled={!hasNextQuestion}
+                className="rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Next Question →
+              </button>
+
+            </div>
+
+            {isCorrect !== null && (
+
+              <div
+                className={`mt-8 rounded-2xl border p-5 text-lg font-bold ${
+                  isCorrect
+                    ? "border-green-500 bg-green-500/20 text-green-200"
+                    : "border-red-500 bg-red-500/20 text-red-200"
+                }`}
+              >
+
+                {isCorrect
+                  ? "Correct answer"
+                  : isNAT
+                  ? `Wrong answer. Correct answer is ${activeQuestion.correctAnswer}`
+                  : "Not quite. The correct option is highlighted."}
+
+              </div>
+
+            )}
+
+          </div>
+
+        </section>
+
+      )}
+
     </div>
   );
 }
