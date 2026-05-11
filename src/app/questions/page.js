@@ -360,7 +360,41 @@ export default function IITJamPhysicsHub() {
 
   return (
 
-    <div className="min-h-screen bg-black text-white">
+  <div className="min-h-screen bg-black text-white">
+
+    {/* HEADER */}
+
+    <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
+
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-center">
+
+        <div className="flex items-center gap-4">
+
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={56}
+            height={56}
+            className="rounded-2xl"
+          />
+
+          <div>
+
+            <h1 className="text-2xl font-bold tracking-tight">
+              JAM Physics Hub
+            </h1>
+
+            <p className="text-zinc-400 text-sm">
+              IIT JAM Physics Preparation Platform
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </nav>
 
       {!selectedSubject && (
 
