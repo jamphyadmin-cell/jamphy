@@ -27,14 +27,6 @@ export default function IITJamPrepPlatform() {
 
             <div>
 
-              <h1 className="text-2xl font-bold tracking-tight">
-                JAM Physics Hub
-              </h1>
-
-              <p className="text-zinc-400 text-sm">
-                IIT JAM Physics Preparation Platform
-              </p>
-
             </div>
 
           </div>
