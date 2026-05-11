@@ -373,20 +373,12 @@ export default function IITJamPhysicsHub() {
           <Image
             src="/logo.png"
             alt="Logo"
-            width={56}
-            height={56}
+            width={200}
+            height={200}
             className="rounded-2xl"
           />
 
           <div>
-
-            <h1 className="text-2xl font-bold tracking-tight">
-              JAM Physics Hub
-            </h1>
-
-            <p className="text-zinc-400 text-sm">
-              IIT JAM Physics Preparation Platform
-            </p>
 
           </div>
 
