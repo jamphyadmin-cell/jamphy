@@ -4,15 +4,6 @@ import Link from "next/link";
 
 export default function IITJamPrepPlatform() {
 
-  const features = [
-    "Chapter-wise PYQs",
-    "Real CBT Exam Interface",
-    "Bookmarks & Revision",
-    "Detailed Solutions",
-    "Performance Analytics",
-    "Custom Mock Tests",
-  ];
-
   return (
 
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -61,9 +52,9 @@ export default function IITJamPrepPlatform() {
 
       {/* HERO SECTION */}
 
-      <section className="max-w-7xl mx-auto px-6 py-28">
+      <section className="min-h-[85vh] flex items-center justify-center px-6">
 
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
 
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 text-sm text-zinc-300 mb-8">
             Built for IIT JAM Physics Aspirants
@@ -95,92 +86,6 @@ export default function IITJamPrepPlatform() {
             </Link>
 
           </div>
-
-          <div className="grid grid-cols-3 gap-8 mt-20">
-
-            <div>
-
-              <h3 className="text-4xl font-black">
-                8.5k+
-              </h3>
-
-              <p className="text-zinc-400 mt-2">
-                Physics PYQs
-              </p>
-
-            </div>
-
-            <div>
-
-              <h3 className="text-4xl font-black">
-                20+
-              </h3>
-
-              <p className="text-zinc-400 mt-2">
-                Years Covered
-              </p>
-
-            </div>
-
-            <div>
-
-              <h3 className="text-4xl font-black">
-                24/7
-              </h3>
-
-              <p className="text-zinc-400 mt-2">
-                Practice Access
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      {/* FEATURES */}
-
-      <section className="max-w-7xl mx-auto px-6 pb-24">
-
-        <div className="text-center mb-14">
-
-          <h2 className="text-4xl font-black">
-            Everything for IIT JAM Physics
-          </h2>
-
-          <p className="text-zinc-400 mt-4 text-lg">
-            Focused entirely on IIT JAM Physics preparation.
-          </p>
-
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-          {features.map((feature, idx) => (
-
-            <div
-              key={idx}
-              className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 hover:bg-zinc-800/70 transition"
-            >
-
-              <div className="w-12 h-12 rounded-2xl bg-white text-black flex items-center justify-center font-black text-xl mb-5">
-                {idx + 1}
-              </div>
-
-              <h3 className="text-xl font-bold">
-                {feature}
-              </h3>
-
-              <p className="text-zinc-400 mt-3 leading-relaxed">
-                Prepare smarter with structured practice,
-                analytics, and realistic CBT-style exams.
-              </p>
-
-            </div>
-
-          ))}
 
         </div>
 
