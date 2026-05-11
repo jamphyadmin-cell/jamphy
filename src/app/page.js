@@ -158,13 +158,6 @@ export default function IITJamPrepPlatform() {
                 Explore Questions
               </Link>
 
-              <button
-                onClick={() => setShowMockTest(true)}
-                className="px-6 py-3 rounded-2xl border border-zinc-700 hover:bg-zinc-900 transition"
-              >
-                Try Demo Test
-              </button>
-
             </div>
 
             <div className="grid grid-cols-3 gap-6 mt-12">
