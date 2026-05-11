@@ -421,8 +421,6 @@ export default function IITJamPhysicsHub() {
             {selectedSubject.name}
           </h2>
 
-          {/* FILTERS */}
-
           <div className="flex flex-wrap gap-4 mb-10">
 
             <select
@@ -554,18 +552,18 @@ export default function IITJamPhysicsHub() {
 
       {activeQuestion && (
 
-        <section className="max-w-7xl mx-auto px-6 py-12">
+        <section className="max-w-7xl mx-auto px-4 md:px-6 py-6">
 
           <button
             onClick={() => setActiveQuestion(null)}
-            className="text-zinc-500 hover:text-white mb-8"
+            className="text-zinc-500 hover:text-white mb-6"
           >
             ← Back to Questions
           </button>
 
-          <div className="rounded-[32px] border border-zinc-800 bg-zinc-950 p-10">
+          <div className="rounded-[32px] border border-zinc-800 bg-zinc-950 p-5 md:p-7">
 
-            <div className="flex gap-3 flex-wrap mb-8">
+            <div className="flex gap-2 flex-wrap mb-5">
 
               <span className="px-4 py-1 rounded-full bg-blue-600 text-sm font-bold">
                 Question {currentQuestionIndex + 1} / {filteredQuestions.length}
@@ -585,236 +583,112 @@ export default function IITJamPhysicsHub() {
 
             </div>
 
-            <MathText className="question-copy text-[22px] leading-[2.15] text-zinc-100 font-normal overflow-x-auto">
+            <MathText className="question-copy text-[18px] md:text-[20px] leading-[1.8] text-zinc-100 font-normal overflow-x-auto">
               {activeQuestion.question}
             </MathText>
 
             {activeQuestion.image && (
 
-              <div className="flex justify-center mt-10">
+              <div className="flex justify-center mt-6">
 
-                {failedImages[
-                  activeQuestion.image
-                ] ? (
-
-                  <div className="rounded-2xl border border-yellow-600 bg-yellow-500/10 p-5 text-yellow-100">
-                    Missing image file:{" "}
-                    {activeQuestion.image}
-                  </div>
-
-                ) : (
-
-                  <Image
-                    src={activeQuestion.image}
-                    alt="Question diagram"
-                    width={500}
-                    height={350}
-                    onError={() =>
-                      setFailedImages(
-                        (current) => ({
-                          ...current,
-                          [activeQuestion.image]:
-                            true,
-                        })
-                      )
-                    }
-                    className="h-auto max-w-full rounded-2xl border border-zinc-800"
-                  />
-
-                )}
-
-              </div>
-
-            )}
-
-            {isNAT ? (
-
-              <div className="mt-14">
-
-                <input
-                  type="number"
-                  step="any"
-                  value={natAnswer}
-                  onChange={(e) =>
-                    setNatAnswer(e.target.value)
-                  }
-                  placeholder="Enter numerical answer"
-                  disabled={isCorrect !== null}
-                  className="w-full rounded-3xl border border-zinc-700 bg-zinc-900 p-6 text-2xl text-white outline-none focus:border-blue-500"
+                <Image
+                  src={activeQuestion.image}
+                  alt="Question diagram"
+                  width={500}
+                  height={350}
+                  className="h-auto max-w-full rounded-2xl border border-zinc-800"
                 />
 
-                <div className="mt-8 flex gap-4 flex-wrap">
-
-                  <button
-                    onClick={submitNATAnswer}
-                    disabled={
-                      isCorrect !== null ||
-                      natAnswer.trim() === ""
-                    }
-                    className="rounded-2xl bg-white px-6 py-3 font-bold text-black disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
-                  >
-                    Submit Answer
-                  </button>
-
-                  <button
-                    onClick={resetQuestionState}
-                    className="rounded-2xl border border-zinc-700 px-6 py-3 font-bold text-white hover:bg-zinc-900"
-                  >
-                    Clear
-                  </button>
-
-                </div>
-
               </div>
-
-            ) : (
-
-              <>
-                <div className="grid md:grid-cols-2 gap-6 mt-14">
-
-                  {activeQuestion.options.map(
-                    (option, index) => {
-
-                      const isSelected =
-                        isMultipleChoice
-                          ? Array.isArray(selectedAnswer) &&
-                            selectedAnswer.includes(option)
-                          : selectedAnswer === option;
-
-                      const correct =
-                        getCorrectOptions(
-                          activeQuestion
-                        ).includes(option);
-
-                      let style =
-                        "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
-
-                      if (
-                        isMultipleChoice &&
-                        isSelected &&
-                        isCorrect === null
-                      ) {
-
-                        style =
-                          "border-blue-400 bg-blue-500/20";
-
-                      }
-
-                      if (isCorrect !== null) {
-
-                        if (correct) {
-
-                          style =
-                            "border-green-500 bg-green-500/20";
-
-                        }
-
-                        if (
-                          isSelected &&
-                          !correct
-                        ) {
-
-                          style =
-                            "border-red-500 bg-red-500/20";
-
-                        }
-                      }
-
-                      return (
-
-                        <button
-                          key={index}
-                          disabled={
-                            isCorrect !== null
-                          }
-                          onClick={() => {
-
-                            if (isMultipleChoice) {
-
-                              handleMultipleAnswer(option);
-
-                              return;
-
-                            }
-
-                            handleSingleAnswer(option);
-
-                          }}
-                          className={`rounded-3xl border min-h-[140px] p-8 text-left transition ${style}`}
-                        >
-
-                          <div className="flex gap-5 items-start">
-
-                            <div className="w-14 h-14 rounded-full bg-zinc-700 flex items-center justify-center text-2xl shrink-0">
-                              {String.fromCharCode(65 + index)}
-                            </div>
-
-                            <div className="flex-1">
-
-                              {activeQuestion.optionImages?.[index] && (
-
-                                <Image
-                                  src={activeQuestion.optionImages[index]}
-                                  alt={`Option ${index + 1}`}
-                                  width={500}
-                                  height={300}
-                                  className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
-                                />
-
-                              )}
-
-                              {option && (
-
-                                <MathText className="option-copy text-[22px] leading-relaxed text-white pt-2 overflow-x-auto">
-                                  {option}
-                                </MathText>
-
-                              )}
-
-                            </div>
-
-                          </div>
-
-                        </button>
-
-                      );
-                    }
-                  )}
-
-                </div>
-
-                {isMultipleChoice && (
-
-                  <div className="mt-10 flex flex-wrap items-center gap-4">
-
-                    <button
-                      onClick={submitMultipleAnswer}
-                      disabled={
-                        isCorrect !== null ||
-                        !Array.isArray(selectedAnswer) ||
-                        selectedAnswer.length === 0
-                      }
-                      className="rounded-2xl bg-white px-6 py-3 font-bold text-black disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
-                    >
-                      Submit Answer
-                    </button>
-
-                    <button
-                      onClick={resetQuestionState}
-                      className="rounded-2xl border border-zinc-700 px-6 py-3 font-bold text-white hover:bg-zinc-900"
-                    >
-                      Clear
-                    </button>
-
-                  </div>
-
-                )}
-
-              </>
 
             )}
 
-            <div className="mt-12 flex items-center justify-between gap-4 flex-wrap">
+            <div className="grid md:grid-cols-2 gap-4 mt-8">
+
+              {activeQuestion.options.map(
+                (option, index) => {
+
+                  const correct =
+                    getCorrectOptions(
+                      activeQuestion
+                    ).includes(option);
+
+                  const isSelected =
+                    selectedAnswer === option;
+
+                  let style =
+                    "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
+
+                  if (isCorrect !== null) {
+
+                    if (correct) {
+
+                      style =
+                        "border-green-500 bg-green-500/20";
+
+                    }
+
+                    if (
+                      isSelected &&
+                      !correct
+                    ) {
+
+                      style =
+                        "border-red-500 bg-red-500/20";
+
+                    }
+                  }
+
+                  return (
+
+                    <button
+                      key={index}
+                      disabled={
+                        isCorrect !== null
+                      }
+                      onClick={() =>
+                        handleSingleAnswer(option)
+                      }
+                      className={`rounded-3xl border min-h-[100px] p-5 text-left transition ${style}`}
+                    >
+
+                      <div className="flex gap-4 items-start">
+
+                        <div className="w-12 h-12 rounded-full bg-zinc-700 flex items-center justify-center text-xl shrink-0">
+                          {String.fromCharCode(65 + index)}
+                        </div>
+
+                        <div className="flex-1">
+
+                          {activeQuestion.optionImages?.[index] && (
+
+                            <Image
+                              src={activeQuestion.optionImages[index]}
+                              alt={`Option ${index + 1}`}
+                              width={500}
+                              height={300}
+                              className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
+                            />
+
+                          )}
+
+                          <MathText className="option-copy text-[18px] leading-relaxed text-white pt-1 overflow-x-auto">
+                            {option}
+                          </MathText>
+
+                        </div>
+
+                      </div>
+
+                    </button>
+
+                  );
+                }
+              )}
+
+            </div>
+
+            <div className="mt-8 flex items-center justify-between gap-4 flex-wrap">
 
               <button
                 onClick={() =>
@@ -841,7 +715,7 @@ export default function IITJamPhysicsHub() {
             {isCorrect !== null && (
 
               <div
-                className={`mt-8 rounded-2xl border p-5 text-lg font-bold ${
+                className={`mt-6 rounded-2xl border p-5 text-lg font-bold ${
                   isCorrect
                     ? "border-green-500 bg-green-500/20 text-green-200"
                     : "border-red-500 bg-red-500/20 text-red-200"
@@ -850,8 +724,6 @@ export default function IITJamPhysicsHub() {
 
                 {isCorrect
                   ? "Correct answer"
-                  : isNAT
-                  ? `Wrong answer. Correct answer is ${activeQuestion.correctAnswer}`
                   : "Not quite. The correct option is highlighted."}
 
               </div>
