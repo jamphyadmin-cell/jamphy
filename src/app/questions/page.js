@@ -360,9 +360,6 @@ export default function IITJamPhysicsHub() {
 
   return (
 
-  <div className="overflow-x-hidden">
-    <div className="scale-[0.75] origin-top-left w-[133.33%] min-h-screen bg-black text-white">
-
     <div className="min-h-screen bg-black text-white">
 
       {!selectedSubject && (
@@ -738,8 +735,7 @@ export default function IITJamPhysicsHub() {
         </section>
 
       )}
-      </div>
-        </div>
+    </div>
   </div>
 );
 }
