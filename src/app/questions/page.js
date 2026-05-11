@@ -734,8 +734,7 @@ export default function IITJamPhysicsHub() {
 
         </section>
 
-      )}
+        )}
     </div>
-  </div>
 );
 }
