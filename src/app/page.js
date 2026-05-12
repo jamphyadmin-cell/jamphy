@@ -1,28 +1,47 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function IITJamPrepPlatform() {
 
-  const [cursorPosition, setCursorPosition] = useState({
-    x: 0,
-    y: 0,
-  });
+  const cursorRef = useRef(null);
 
   useEffect(() => {
 
+    let mouseX = 0;
+    let mouseY = 0;
+
+    let currentX = 0;
+    let currentY = 0;
+
     const moveCursor = (e) => {
 
-      setCursorPosition({
-        x: e.clientX,
-        y: e.clientY,
-      });
+      mouseX = e.clientX;
+      mouseY = e.clientY;
 
     };
 
     window.addEventListener("mousemove", moveCursor);
+
+    const animate = () => {
+
+      currentX += (mouseX - currentX) * 0.12;
+      currentY += (mouseY - currentY) * 0.12;
+
+      if (cursorRef.current) {
+
+        cursorRef.current.style.transform =
+          `translate(${currentX}px, ${currentY}px)`;
+
+      }
+
+      requestAnimationFrame(animate);
+
+    };
+
+    animate();
 
     return () => {
       window.removeEventListener("mousemove", moveCursor);
@@ -32,14 +51,15 @@ export default function IITJamPrepPlatform() {
 
   return (
 
-    <div className="min-h-screen bg-black text-white overflow-hidden">
+    <div className="min-h-screen bg-black text-white overflow-hidden cursor-none">
 
       {/* SMOOTH CURSOR */}
 
       <div
-        className="fixed top-0 left-0 w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference transition-transform duration-150"
+        ref={cursorRef}
+        className="fixed top-0 left-0 w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference"
         style={{
-          transform: `translate(${cursorPosition.x - 12}px, ${cursorPosition.y - 12}px)`,
+          transform: "translate(-50%, -50%)",
         }}
       />
 
@@ -99,12 +119,8 @@ export default function IITJamPrepPlatform() {
 
             Practice IIT JAM Physics
 
-            <span className="group relative inline-block cursor-default">
-
-              <span className="block bg-gradient-to-r from-blue-400 to-cyan-300 text-transparent bg-clip-text transition-all duration-500 group-hover:italic group-hover:tracking-widest group-hover:scale-110">
-                smarter.
-              </span>
-
+            <span className="block bg-gradient-to-r from-blue-400 to-cyan-300 text-transparent bg-clip-text">
+              smarter.
             </span>
 
           </h2>
