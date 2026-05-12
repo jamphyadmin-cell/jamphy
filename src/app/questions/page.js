@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { questions } from "../../data/questions";
 import ReactMarkdown from "react-markdown";
@@ -45,6 +45,49 @@ function MathText({ children, className = "" }) {
 }
 
 export default function IITJamPhysicsHub() {
+
+  const cursorRef = useRef(null);
+
+  useEffect(() => {
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    let currentX = 0;
+    let currentY = 0;
+
+    const moveCursor = (e) => {
+
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+    };
+
+    window.addEventListener("mousemove", moveCursor);
+
+    const animate = () => {
+
+      currentX += (mouseX - currentX) * 0.12;
+      currentY += (mouseY - currentY) * 0.12;
+
+      if (cursorRef.current) {
+
+        cursorRef.current.style.transform =
+          `translate(${currentX}px, ${currentY}px)`;
+
+      }
+
+      requestAnimationFrame(animate);
+
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener("mousemove", moveCursor);
+    };
+
+  }, []);
 
   const syllabus = [
     {
@@ -360,7 +403,17 @@ export default function IITJamPhysicsHub() {
 
   return (
 
-  <div className="min-h-screen bg-black text-white">
+  <div className="min-h-screen bg-black text-white overflow-hidden cursor-none">
+
+  {/* SMOOTH CURSOR */}
+
+  <div
+    ref={cursorRef}
+    className="fixed top-0 left-0 w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference"
+    style={{
+      transform: "translate(-50%, -50%)",
+    }}
+  />
 
     {/* HEADER */}
 
