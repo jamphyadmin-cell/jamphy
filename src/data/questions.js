@@ -1566,7 +1566,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "In Cartesian coordinates, consider the functions $u(x,y)=\\dfrac{1}{2}(x^2-y^2)$ and $v(x,y)=xy$. If $(r,\\theta)$ are the polar coordinates, the Jacobian determinant\n\n$$\\left|\\dfrac{\\partial(u,v)}{\\partial(r,\\theta)}\\right|$$\n\nis",
   options: [
     "$r$",
-    "$\\\\dfrac{1}{r}$",
+    "$\\dfrac{1}{r}$",
     "$r^2$",
     "$r^3$"
   ],
