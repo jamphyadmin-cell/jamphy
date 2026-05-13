@@ -1385,13 +1385,13 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   subject: "Electrostatics",
   type: "MCQ",
   question:
-    "A charge $q$ is placed at the centre of the base of a square pyramid. The net outward electric flux across each of the slanted faces is\n\n(Consider permittivity as $\\\\varepsilon_0$)",
+    "A charge $q$ is placed at the centre of the base of a square pyramid. The net outward electric flux across each of the slanted faces is\n\n(Consider permittivity as $\\varepsilon_0$)",
   image: "/images/5_25.png",
   options: [
-    "$\\\\dfrac{q}{\\\\varepsilon_0}$",
-    "$\\\\dfrac{q}{2\\\\varepsilon_0}$",
-    "$\\\\dfrac{q}{4\\\\varepsilon_0}$",
-    "$\\\\dfrac{q}{8\\\\varepsilon_0}$"
+    "$\\dfrac{q}{\\varepsilon_0}$",
+    "$\\dfrac{q}{2\\varepsilon_0}$",
+    "$\\dfrac{q}{4\\varepsilon_0}$",
+    "$\\dfrac{q}{8\\varepsilon_0}$"
   ],
   correctAnswer: 3,
 },
@@ -1445,10 +1445,10 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "Consider radioactive decays $A \\to B$ with half-life $(T_{1/2})_A$ and $B \\to C$ with half-life $(T_{1/2})_B$. At any time $t$, the number of nuclides of $B$ is given by\n\n$$(N_B)_t = \\frac{\\lambda_A}{\\lambda_B-\\lambda_A}(N_A)_0\\left(e^{-\\lambda_A t}-e^{-\\lambda_B t}\\right),$$\n\nwhere $(N_A)_0$ is the number of nuclides of $A$ at $t=0$. The decay constants of $A$ and $B$ are $\\lambda_A$ and $\\lambda_B$, respectively.\n\nIf $(T_{1/2})_B < (T_{1/2})_A$, then the ratio $\\dfrac{(N_B)_t}{(N_A)_t}$ at time $t \\gg (T_{1/2})_A$ is\n\n[$(N_A)_t$ is the number of nuclides of $A$ at time $t$]",
 
   options: [
-    "$\\\\dfrac{\\\\lambda_A}{\\\\lambda_B-\\\\lambda_A}$",
-    "$\\\\dfrac{\\\\lambda_B}{\\\\lambda_A}$",
-    "$\\\\dfrac{\\\\lambda_A}{\\\\lambda_B}$",
-    "$\\\\dfrac{\\\\lambda_B}{\\\\lambda_B-\\\\lambda_A}$"
+    "$\\dfrac{\\lambda_A}{\\lambda_B-\\lambda_A}$",
+    "$\\dfrac{\\lambda_B}{\\lambda_A}$",
+    "$\\dfrac{\\lambda_A}{\\lambda_B}$",
+    "$\\dfrac{\\lambda_B}{\\lambda_B-\\lambda_A}$"
   ],
   correctAnswer: 0,
 },
@@ -1462,9 +1462,9 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "For a non-relativistic free particle, the ratio of phase velocity to group velocity is",
   options: [
     "2",
-    "$\\\\dfrac{1}{2}$",
+    "$\\dfrac{1}{2}$",
     "1",
-    "$\\\\dfrac{1}{4}$"
+    "$\\dfrac{1}{4}$"
   ],
   correctAnswer: 1,
 },
@@ -1582,10 +1582,10 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "Three particles of equal mass $M$, interacting via gravity, lie on the vertices of an equilateral triangle of side $d$, as shown in the figure below. The whole system is rotating with an angular velocity $\\omega$ about an axis perpendicular to the plane of the system and passing through the center of mass. The value of $\\omega$, for which the distance between the masses remains $d$, is\n\n($G$ is the universal gravitational constant)",
   image: "/images/16_25.png",
   options: [
-    "$\\\\sqrt{\\\\dfrac{2GM}{d^3}}$",
-    "$\\\\sqrt{\\\\dfrac{3GM}{d^3}}$",
-    "$\\\\sqrt{\\\\dfrac{GM}{3d^3}}$",
-    "$\\\\sqrt{\\\\dfrac{GM}{d^3}}$"
+    "$\\sqrt{\\dfrac{2GM}{d^3}}$",
+    "$\\sqrt{\\dfrac{3GM}{d^3}}$",
+    "$\\sqrt{\\dfrac{GM}{3d^3}}$",
+    "$\\sqrt{\\dfrac{GM}{d^3}}$"
   ],
   correctAnswer: 3,
 },
@@ -1681,10 +1681,10 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "Consider a slowly charging parallel plate capacitor (distance between the plates is $d$) having circular plates each with an area $A$, as shown in the figure below. An electric field of magnitude $E = E_0\\sin(\\omega t)$ exists between the plates while charging. The associated magnitude of the magnetic field $B$ at the periphery (outer edge) of the capacitor is (Neglect fringe effects)",
   image: "/images/22_25.png",
   options: [
-    "$\\\\frac{1}{2c^2}\\\\sqrt{\\\\frac{A}{\\\\pi}}E_0\\\\omega\\\\cos(\\\\omega t)$",
-    "$\\\\frac{1}{2c^2}\\\\sqrt{\\\\frac{A}{\\\\pi}}E_0\\\\omega\\\\sin(\\\\omega t)$",
-    "$\\\\frac{1}{c^2}\\\\sqrt{\\\\frac{A}{\\\\pi}}E_0\\\\omega\\\\cos(\\\\omega t)$",
-    "$\\\\frac{1}{c^2}\\\\sqrt{\\\\frac{A}{\\\\pi}}E_0\\\\omega\\\\sin(\\\\omega t)$",
+    "$\\frac{1}{2c^2}\\sqrt{\\frac{A}{\\pi}}E_0\\omega\\cos(\\omega t)$",
+    "$\\frac{1}{2c^2}\\sqrt{\\frac{A}{\\pi}}E_0\\omega\\sin(\\omega t)$",
+    "$\\frac{1}{c^2}\\sqrt{\\frac{A}{\\pi}}E_0\\omega\\cos(\\omega t)$",
+    "$\\frac{1}{c^2}\\sqrt{\\frac{A}{\\pi}}E_0\\omega\\sin(\\omega t)$",
   ],
   correctAnswer: 0,
 },
@@ -1715,10 +1715,10 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "For an electromagnetic wave, consider an electric field $\\mathbf{E}=E_0 e^{-i[a(x+y)-\\omega t]}\\hat{k}$. The corresponding magnetic field $\\mathbf{B}$ is ($E_0$, $a$, $\\omega$ are constants of appropriate dimensions and $c$ is the speed of light)",
 
   options: [
-    "$\\\\frac{1}{c\\\\sqrt{2}}E_0 e^{-i[a(x+y)-\\\\omega t]}(\\\\hat{i}-\\\\hat{j})$",
-    "$\\\\frac{1}{c\\\\sqrt{2}}E_0 e^{-i[a(x+y)-\\\\omega t]}(\\\\hat{i}+\\\\hat{j})$",
-    "$\\\\frac{1}{c\\\\sqrt{2}}E_0 e^{-i[a(x+y)-\\\\omega t]}(-\\\\hat{i}-\\\\hat{j})$",
-    "$\\\\frac{1}{c\\\\sqrt{2}}E_0 e^{-i[a(x+y)-\\\\omega t]}(-\\\\hat{i}+\\\\hat{j})$",
+    "$\\frac{1}{c\\sqrt{2}}E_0 e^{-i[a(x+y)-\\omega t]}(\\hat{i}-\\hat{j})$",
+    "$\\frac{1}{c\\sqrt{2}}E_0 e^{-i[a(x+y)-\\omega t]}(\\hat{i}+\\hat{j})$",
+    "$\\frac{1}{c\\sqrt{2}}E_0 e^{-i[a(x+y)-\\omega t]}(-\\hat{i}-\\hat{j})$",
+    "$\\frac{1}{c\\sqrt{2}}E_0 e^{-i[a(x+y)-\\omega t]}(-\\hat{i}+\\hat{j})$",
   ],
   correctAnswer: 0,
 },
@@ -1749,10 +1749,10 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "Consider a relativistic particle of rest mass $2m$ moving with a speed $v$ along the $x$ direction. It collides with another relativistic particle of rest mass $m$ moving with the same speed but in the opposite direction. These two particles coalesce to form one particle whose rest mass $M$ is ($\\beta = \\frac{v}{c}$, where $c$ is the speed of light)",
 
   options: [
-    "$m\\\\sqrt{\\\\frac{9-\\\\beta^2}{1-\\\\beta^2}}$",
-    "$2m\\\\sqrt{\\\\frac{3-\\\\beta^2}{1-\\\\beta^2}}$",
-    "$\\\\frac{m}{2}\\\\sqrt{\\\\frac{9-\\\\beta^2}{2-\\\\beta^2}}$",
-    "$\\\\frac{m}{4}\\\\sqrt{\\\\frac{1-\\\\beta^2}{2-\\\\beta^2}}$",
+    "$m\\sqrt{\\frac{9-\\beta^2}{1-\\beta^2}}$",
+    "$2m\\sqrt{\\frac{3-\\beta^2}{1-\\beta^2}}$",
+    "$\\frac{m}{2}\\sqrt{\\frac{9-\\beta^2}{2-\\beta^2}}$",
+    "$\\frac{m}{4}\\sqrt{\\frac{1-\\beta^2}{2-\\beta^2}}$",
   ],
   correctAnswer: 1,
 },
@@ -1766,10 +1766,10 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "A particle of mass $m$ is subjected to a potential $V(x)$. If its wavefunction is given by $$\\psi(x,t)=\\alpha x^2 e^{-\\beta x} e^{i\\gamma t/\\hbar},\\ x>0$$ $$\\psi(x,t)=0,\\ x\\leq0,$$ then $V(x)$ is ($\\alpha$, $\\beta$ and $\\gamma$ are constants of appropriate dimensions)",
 
   options: [
-    "$-\\\\gamma+\\\\frac{\\\\hbar^2}{2m}\\\\left(\\\\frac{2}{x^2}-\\\\frac{4\\\\beta}{x}+\\\\beta^2\\\\right)$",
-    "$-\\\\gamma+\\\\frac{\\\\hbar^2}{2m}\\\\left(\\\\frac{2}{x^2}+\\\\frac{4\\\\beta}{x}+\\\\beta^2\\\\right)$",
-    "$-\\\\gamma+\\\\frac{\\\\hbar^2}{2m}\\\\left(\\\\frac{2}{x^2}-\\\\frac{4\\\\beta}{x}-\\\\beta^2\\\\right)$",
-    "$-\\\\gamma+\\\\frac{\\\\hbar^2}{2m}\\\\left(-\\\\frac{2}{x^2}-\\\\frac{4\\\\beta}{x}+\\\\beta^2\\\\right)$",
+    "$-\\gamma+\\frac{\\hbar^2}{2m}\\left(\\frac{2}{x^2}-\\frac{4\\beta}{x}+\\beta^2\\right)$",
+    "$-\\gamma+\\frac{\\hbar^2}{2m}\\left(\\frac{2}{x^2}+\\frac{4\\beta}{x}+\\beta^2\\right)$",
+    "$-\\gamma+\\frac{\\hbar^2}{2m}\\left(\\frac{2}{x^2}-\\frac{4\\beta}{x}-\\beta^2\\right)$",
+    "$-\\gamma+\\frac{\\hbar^2}{2m}\\left(-\\frac{2}{x^2}-\\frac{4\\beta}{x}+\\beta^2\\right)$",
   ],
   correctAnswer: 0,
 },
@@ -1834,9 +1834,9 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "Two particles of masses $m_1$ and $m_2$, interacting via gravity, rotate in circular orbits about their common center of mass with the same angular velocity $\\omega$. For masses $m_1$ and $m_2$, respectively, $r_1$ and $r_2$ are the constant distances from the center of mass, $L_1$ and $L_2$ are the magnitudes of the angular momenta about the center of mass, and $K_1$ and $K_2$ are the kinetic energies. Which of the following is(are) correct? ($G$ is the universal gravitational constant)",
   image: "/images/32_25.png",
   options: [
-    "$\\\\frac{L_1}{L_2}=\\\\frac{m_2}{m_1}$",
-    "$\\\\frac{K_1}{K_2}=\\\\frac{m_2}{m_1}$",
-    "$\\\\omega=\\\\sqrt{\\\\frac{G(m_1+m_2)}{(r_1+r_2)^3}}$",
+    "$\\frac{L_1}{L_2}=\\frac{m_2}{m_1}$",
+    "$\\frac{K_1}{K_2}=\\frac{m_2}{m_1}$",
+    "$\\omega=\\sqrt{\\frac{G(m_1+m_2)}{(r_1+r_2)^3}}$",
     "$m_2r_1=m_1r_2$",
   ],
   correctAnswer: [1, 2, 3],
