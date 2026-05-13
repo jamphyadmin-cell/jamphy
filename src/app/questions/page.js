@@ -111,6 +111,8 @@ export default function IITJamPhysicsHub() {
         "Rotational Dynamics",
         "Circular Motion",
         "Work Power Energy",
+        "Gravitation",
+        "Relativity",
       ],
     },
 
@@ -154,6 +156,7 @@ export default function IITJamPhysicsHub() {
       subtopics: [
         "Quantum Mechanics",
         "Special Relativity",
+        "Modern Physics",
       ],
     },
 
@@ -165,6 +168,7 @@ export default function IITJamPhysicsHub() {
         "Electronics",
         "Solid State Physics",
         "Boolean Algebra",
+        "AC Circuits",
       ],
     },
   ];
@@ -186,9 +190,6 @@ export default function IITJamPhysicsHub() {
 
   const [isCorrect, setIsCorrect] =
     useState(null);
-
-  const [failedImages, setFailedImages] =
-    useState({});
 
   const [natAnswer, setNatAnswer] =
     useState("");
@@ -228,7 +229,9 @@ export default function IITJamPhysicsHub() {
   const currentQuestionIndex =
     activeQuestion
       ? filteredQuestions.findIndex(
-          (q) => q.id === activeQuestion.id
+          (q) =>
+            q.id === activeQuestion.id &&
+            q.year === activeQuestion.year
         )
       : -1;
 
@@ -238,6 +241,16 @@ export default function IITJamPhysicsHub() {
   const hasNextQuestion =
     currentQuestionIndex <
     filteredQuestions.length - 1;
+
+  const resetQuestionState = () => {
+
+    setSelectedAnswer(null);
+
+    setIsCorrect(null);
+
+    setNatAnswer("");
+
+  };
 
   const goToQuestion = (index) => {
 
@@ -263,46 +276,43 @@ export default function IITJamPhysicsHub() {
 
   };
 
-  const isMultipleChoice =
-    activeQuestion &&
-    Array.isArray(activeQuestion.correctAnswer);
-
   const isNAT =
     activeQuestion?.type === "NAT";
 
-  const resetQuestionState = () => {
-
-    setSelectedAnswer(null);
-
-    setIsCorrect(null);
-
-    setNatAnswer("");
-
-  };
+  const isMSQ =
+    activeQuestion?.type === "MSQ";
 
   const getCorrectOptions = (question) => {
 
-    if (
-      question.type === "NAT"
-    ) {
+  if (question.type === "NAT") {
 
-      return [String(question.correctAnswer)];
+    return [String(question.correctAnswer)];
 
-    }
+  }
 
-    if (Array.isArray(question.correctAnswer)) {
+  // MSQ
+  if (Array.isArray(question.correctAnswers)) {
 
-      return question.correctAnswer.map(
-        (answerIndex) => question.options[answerIndex]
-      );
+    return question.correctAnswers.map(
+      (answerIndex) => question.options[answerIndex]
+    );
 
-    }
+  }
+
+  // MCQ
+  if (
+    typeof question.correctAnswer === "number"
+  ) {
 
     return [
-      question.options[question.correctAnswer],
+      question.options[question.correctAnswer]
     ];
 
-  };
+  }
+
+  return [];
+
+};
 
   const arraysMatch = (first, second) => {
 
@@ -403,25 +413,19 @@ export default function IITJamPhysicsHub() {
 
   return (
 
-  <div className="min-h-screen bg-black text-white overflow-hidden cursor-none">
+    <div className="min-h-screen bg-black text-white overflow-hidden cursor-none">
 
-  {/* SMOOTH CURSOR */}
+      <div
+        ref={cursorRef}
+        className="fixed top-0 left-0 w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference"
+        style={{
+          transform: "translate(-50%, -50%)",
+        }}
+      />
 
-  <div
-    ref={cursorRef}
-    className="fixed top-0 left-0 w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference"
-    style={{
-      transform: "translate(-50%, -50%)",
-    }}
-  />
+      <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
 
-    {/* HEADER */}
-
-    <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
-
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-center">
-
-        <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-center">
 
           <Image
             src="/logo.png"
@@ -431,15 +435,9 @@ export default function IITJamPhysicsHub() {
             className="rounded-2xl"
           />
 
-          <div>
-
-          </div>
-
         </div>
 
-      </div>
-
-    </nav>
+      </nav>
 
       {!selectedSubject && (
 
@@ -662,12 +660,12 @@ export default function IITJamPhysicsHub() {
               {activeQuestion.question}
             </MathText>
 
-            {activeQuestion.image && (
+            {activeQuestion.questionImage && (
 
               <div className="flex justify-center mt-6">
 
                 <Image
-                  src={activeQuestion.image}
+                  src={activeQuestion.questionImage}
                   alt="Question diagram"
                   width={500}
                   height={350}
@@ -678,128 +676,199 @@ export default function IITJamPhysicsHub() {
 
             )}
 
-            {/* NAT QUESTION */}
+            {isNAT ? (
 
-{isNAT ? (
+              <div className="mt-8">
 
-  <div className="mt-8">
+                <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
-    <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
+                  <input
+                    type="number"
+                    value={natAnswer}
+                    onChange={(e) =>
+                      setNatAnswer(e.target.value)
+                    }
+                    disabled={isCorrect !== null}
+                    placeholder="Enter answer"
+                    className="w-full rounded-2xl border border-zinc-700 bg-black px-5 py-4 text-xl text-white outline-none"
+                  />
 
-      <input
-        type="number"
-        value={natAnswer}
-        onChange={(e) =>
-          setNatAnswer(e.target.value)
+                  <button
+                    onClick={submitNATAnswer}
+                    disabled={
+                      isCorrect !== null ||
+                      natAnswer.trim() === ""
+                    }
+                    className="mt-5 rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40"
+                  >
+                    Submit Answer
+                  </button>
+
+                </div>
+
+              </div>
+
+            ) : (
+
+              <>
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-8">
+
+                  {activeQuestion.options.map(
+                    (option, index) => {
+
+                      const correct =
+                        getCorrectOptions(
+                          activeQuestion
+                        ).includes(option);
+
+                      const isSelected =
+                        Array.isArray(selectedAnswer)
+                          ? selectedAnswer.includes(option)
+                          : selectedAnswer === option;
+
+                      let style =
+                        "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
+
+                      if (isCorrect !== null) {
+
+                        if (correct) {
+
+                          style =
+                            "border-green-500 bg-green-500/20";
+
+                        }
+
+                        if (
+                          isSelected &&
+                          !correct
+                        ) {
+
+                          style =
+                            "border-red-500 bg-red-500/20";
+
+                        }
+                      }
+
+                      return (
+
+                        <button
+  key={index}
+  disabled={
+    !isMSQ &&
+    isCorrect !== null
+  }
+  onClick={() => {
+
+    if (isMSQ) {
+
+      handleMultipleAnswer(option);
+
+    } else {
+
+      handleSingleAnswer(option);
+
+    }
+
+  }}
+  className={`
+    w-full
+    rounded-3xl
+    border
+    p-4 md:p-6
+    text-left
+    transition
+    overflow-hidden
+    min-h-[120px]
+    ${style}
+  `}
+>
+
+  <div className="flex gap-4 items-start w-full min-w-0 overflow-hidden">
+
+    <div
+      className={`
+        w-12 h-12 shrink-0
+        rounded-full
+        flex items-center justify-center
+        text-xl
+        ${
+          isSelected
+            ? "bg-blue-600"
+            : "bg-zinc-700"
         }
-        disabled={isCorrect !== null}
-        placeholder="Enter answer"
-        className="w-full rounded-2xl border border-zinc-700 bg-black px-5 py-4 text-xl text-white outline-none"
-      />
+      `}
+    >
 
-      <button
-        onClick={submitNATAnswer}
-        disabled={
-          isCorrect !== null ||
-          natAnswer.trim() === ""
-        }
-        className="mt-5 rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40"
-      >
-        Submit Answer
-      </button>
+      {isMSQ ? (
+
+        <input
+          type="checkbox"
+          checked={isSelected}
+          readOnly
+          className="pointer-events-none w-5 h-5"
+        />
+
+      ) : (
+
+        String.fromCharCode(65 + index)
+
+      )}
+
+    </div>
+
+    <div className="flex-1 min-w-0 overflow-hidden">
+
+      {activeQuestion.optionImages?.[index] && (
+
+        <Image
+          src={activeQuestion.optionImages[index]}
+          alt={`Option ${index + 1}`}
+          width={500}
+          height={300}
+          className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
+        />
+
+      )}
+
+      <div className="overflow-x-auto overflow-y-hidden max-w-full">
+
+        <MathText className="option-copy w-full text-[14px] sm:text-[15px] md:text-[17px] leading-relaxed text-white break-words">
+          {option}
+        </MathText>
+
+      </div>
 
     </div>
 
   </div>
 
-) : (
+</button>
 
-  <div className="grid md:grid-cols-2 gap-4 mt-8">
+                      );
+                    }
+                  )}
 
-    {activeQuestion.options.map(
-      (option, index) => {
+                </div>
 
-        const correct =
-          getCorrectOptions(
-            activeQuestion
-          ).includes(option);
+                {isMSQ && (
 
-        const isSelected =
-          selectedAnswer === option;
-
-        let style =
-          "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
-
-        if (isCorrect !== null) {
-
-          if (correct) {
-
-            style =
-              "border-green-500 bg-green-500/20";
-
-          }
-
-          if (
-            isSelected &&
-            !correct
-          ) {
-
-            style =
-              "border-red-500 bg-red-500/20";
-
-          }
-        }
-
-        return (
-
-          <button
-            key={index}
-            disabled={
-              isCorrect !== null
-            }
-            onClick={() =>
-              handleSingleAnswer(option)
-            }
-            className={`rounded-3xl border min-h-[100px] p-5 text-left transition ${style}`}
-          >
-
-            <div className="flex gap-4 items-start">
-
-              <div className="w-12 h-12 rounded-full bg-zinc-700 flex items-center justify-center text-xl shrink-0">
-                {String.fromCharCode(65 + index)}
-              </div>
-
-              <div className="flex-1">
-
-                {activeQuestion.optionImages?.[index] && (
-
-                  <Image
-                    src={activeQuestion.optionImages[index]}
-                    alt={`Option ${index + 1}`}
-                    width={500}
-                    height={300}
-                    className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
-                  />
+                  <button
+                    onClick={submitMultipleAnswer}
+                    disabled={
+                      isCorrect !== null ||
+                      !Array.isArray(selectedAnswer) ||
+                      selectedAnswer.length === 0
+                    }
+                    className="mt-6 rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40"
+                  >
+                    Submit Answer
+                  </button>
 
                 )}
 
-                <MathText className="option-copy text-[18px] leading-relaxed text-white pt-1 overflow-x-auto">
-                  {option}
-                </MathText>
+              </>
 
-              </div>
-
-            </div>
-
-          </button>
-
-        );
-      }
-    )}
-
-  </div>
-
-)}
+            )}
 
             <div className="mt-8 flex items-center justify-between gap-4 flex-wrap">
 
@@ -827,55 +896,56 @@ export default function IITJamPhysicsHub() {
 
             {isCorrect !== null && (
 
-  <div
-    className={`mt-6 rounded-2xl border p-5 text-lg font-bold ${
-      isCorrect
-        ? "border-green-500 bg-green-500/20 text-green-200"
-        : "border-red-500 bg-red-500/20 text-red-200"
-    }`}
-  >
+              <div
+                className={`mt-6 rounded-2xl border p-5 text-lg font-bold ${
+                  isCorrect
+                    ? "border-green-500 bg-green-500/20 text-green-200"
+                    : "border-red-500 bg-red-500/20 text-red-200"
+                }`}
+              >
 
-    {isCorrect ? (
+                {isCorrect ? (
 
-      "Correct answer"
+                  "Correct answer"
 
-    ) : (
+                ) : (
 
-      <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
 
-  <span>
-    Correct answer is:
-  </span>
+                    <span>
+                      Correct answer is:
+                    </span>
 
-  <div className="text-white">
+                    <div className="text-white">
 
-    {isNAT ? (
+                      {isNAT ? (
 
-      activeQuestion.correctAnswer
+                        activeQuestion.correctAnswer
 
-    ) : (
+                      ) : (
 
-      <MathText className="inline-block">
-        {getCorrectOptions(activeQuestion).join(", ")}
-      </MathText>
+                        <MathText className="inline-block">
+                          {getCorrectOptions(activeQuestion).join(", ")}
+                        </MathText>
 
-    )}
+                      )}
 
-  </div>
+                    </div>
 
-</div>
+                  </div>
 
-    )}
+                )}
 
-  </div>
+              </div>
 
-)}
+            )}
 
           </div>
 
         </section>
 
-        )}
+      )}
+
     </div>
-);
+  );
 }

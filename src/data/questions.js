@@ -699,7 +699,7 @@ Consider a Carnot cycle as shown in the figure. The ideal gas expanded from volu
 Which of the following statements is correct?
 `,
 
-  questionImage: "/images/q29.png",
+  questionImage: "/images/29.png",
 
   options: [
     String.raw`
@@ -2505,6 +2505,1266 @@ The pressure (in Pascal) to which the chamber needs to be evacuated so that the 
 `,
 
   correctAnswer: "3.59",
+},
+
+{
+  id: 1,
+  year: 2024,
+  subject: "Solid State Physics",
+  type: "MCQ",
+
+  question: String.raw`
+The total number of Na and Cl ions per unit cell of the NaCl crystal is:
+`,
+
+  options: [
+    String.raw`2`,
+    String.raw`4`,
+    String.raw`8`,
+    String.raw`16`,
+  ],
+
+  correctAnswers: [2],
+},
+
+{
+  id: 2,
+  year: 2024,
+  subject: "Mathematical Physics",
+  type: "MCQ",
+
+  question: String.raw`
+The sum of three binary numbers, \(10110.10\), \(11010.01\), and \(10101.11\), in decimal system is:
+`,
+
+  options: [
+    String.raw`70.75`,
+    String.raw`70.25`,
+    String.raw`70.50`,
+    String.raw`69.50`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 3,
+  year: 2024,
+  subject: "Matrices",
+  type: "MCQ",
+
+  question: String.raw`
+Which of the following matrices is Hermitian as well as unitary?
+`,
+
+  options: [
+    String.raw`\[
+\begin{pmatrix}
+0 & -i \\
+i & 0
+\end{pmatrix}
+\]`,
+
+    String.raw`\[
+\begin{pmatrix}
+0 & i \\
+i & 0
+\end{pmatrix}
+\]`,
+
+    String.raw`\[
+\begin{pmatrix}
+1 & -i \\
+i & 1
+\end{pmatrix}
+\]`,
+
+    String.raw`\[
+\begin{pmatrix}
+0 & 1+i \\
+1-i & 0
+\end{pmatrix}
+\]`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 4,
+  year: 2024,
+  subject: "Vector Calculus",
+  type: "MCQ",
+
+  question: String.raw`
+The divergence of a 3-dimensional vector \(\dfrac{\hat r}{r^3}\) (\(\hat r\) is the unit radial vector) is:
+`,
+
+  options: [
+    String.raw`\[
+-\frac{1}{r^4}
+\]`,
+
+    String.raw`Zero`,
+
+    String.raw`\[
+\frac{1}{r^3}
+\]`,
+
+    String.raw`\[
+-\frac{3}{r^4}
+\]`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 5,
+  year: 2024,
+  subject: "Quantum Mechanics",
+  type: "MCQ",
+
+  question: String.raw`
+The magnitudes of spin magnetic moments of electron, proton and neutron are \(\mu_e\), \(\mu_p\) and \(\mu_n\), respectively. Then,
+`,
+
+  options: [
+    String.raw`\[
+\mu_e > \mu_p > \mu_n
+\]`,
+
+    String.raw`\[
+\mu_e = \mu_p > \mu_n
+\]`,
+
+    String.raw`\[
+\mu_e < \mu_p < \mu_n
+\]`,
+
+    String.raw`\[
+\mu_e < \mu_p = \mu_n
+\]`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 6,
+  year: 2024,
+  subject: "Quantum Mechanics",
+  type: "MCQ",
+
+  question: String.raw`
+A particle moving along the \(x\)-axis approaches \(x=0\) from \(x=-\infty\) with a total energy \(E\). It is subjected to a potential \(V(x)\). For time \(t\to\infty\), the probability density \(P(x)\) of the particle is schematically shown in the figure.
+`,
+
+  questionImage: "/images/6_24.png",
+
+  options: [
+    "",
+    "",
+    "",
+    "",
+  ],
+
+  optionImages: [
+    "/images/6a_24.png",
+    "/images/6b_24.png",
+    "/images/6c_24.png",
+    "/images/6d_24.png",
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 7,
+  year: 2024,
+  subject: "Polarization",
+  type: "MCQ",
+
+  question: String.raw`
+A plane electromagnetic wave is incident on an interface AB separating two media (refractive indices \(n_1=1.5\) and \(n_2=2.0\)) at Brewster angle \(\theta_B\), as schematically shown in the figure. The angle \(\alpha\) (in degrees) between the reflected wave and the refracted wave is:
+`,
+
+  questionImage: "/images/7_24.png",
+
+  options: [
+    String.raw`120`,
+    String.raw`116`,
+    String.raw`90`,
+    String.raw`74`,
+  ],
+
+  correctAnswers: [2],
+},
+
+{
+  id: 8,
+  year: 2024,
+  subject: "Electromagnetic Theory",
+  type: "MCQ",
+
+  question: String.raw`
+If the electric field of an electromagnetic wave is given by,
+
+\[
+\vec E = (4\hat x + 3\hat y)e^{i(\omega t + ax - 600y)},
+\]
+
+then the value of \(a\) is:
+
+(all values are in the SI units)
+`,
+
+  options: [
+    String.raw`450`,
+    String.raw`-450`,
+    String.raw`800`,
+    String.raw`-800`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 9,
+  year: 2024,
+  subject: "Electrostatics",
+  type: "MCQ",
+
+  question: String.raw`
+A vector field is expressed in the cylindrical coordinate system \((s,\phi,z)\) as,
+
+\[
+\vec F = \frac{A}{s}\hat s + \frac{B}{s}\hat z.
+\]
+
+If this field represents an electrostatic field, then the possible values of \(A\) and \(B\), respectively, are:
+`,
+
+  options: [
+    String.raw`1 and 0`,
+    String.raw`0 and 1`,
+    String.raw`-1 and 1`,
+    String.raw`1 and -1`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 10,
+  year: 2024,
+  subject: "Classical Mechanics",
+  type: "MCQ",
+
+  question: String.raw`
+Which of the following types of motion may be represented by the trajectory,
+
+\[
+y(x)=ax^2+bx+c?
+\]
+
+(Here \(a\), \(b\), and \(c\) are constants; \(x\), \(y\) are the position coordinates)
+`,
+
+  options: [
+    String.raw`Projectile motion in a uniform gravitational field`,
+    String.raw`Simple harmonic motion`,
+    String.raw`Uniform circular motion`,
+    String.raw`Motion on an inclined plane in a uniform gravitational field`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 11,
+  year: 2024,
+  subject: "Solid State Physics",
+  type: "MCQ",
+
+  question: String.raw`
+A crystal plane of a lattice intercepts the principal axes \(\vec a_1\), \(\vec a_2\), and \(\vec a_3\) at \(3a_1\), \(4a_2\), and \(2a_3\), respectively. The Miller indices of the plane are:
+`,
+
+  options: [
+    String.raw`(436)`,
+    String.raw`(342)`,
+    String.raw`(634)`,
+    String.raw`(243)`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 12,
+  year: 2024,
+  subject: "Solid State Physics",
+  type: "MCQ",
+
+  question: String.raw`
+The number of atoms in the basis of a primitive cell of hexagonal closed packed structure is:
+`,
+
+  options: [
+    String.raw`1`,
+    String.raw`2`,
+    String.raw`3`,
+    String.raw`4`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 13,
+  year: 2024,
+  subject: "Boolean Algebra",
+  type: "MCQ",
+
+  question: String.raw`
+Consider the following logic circuit.
+
+The output \(Y\) is LOW when:
+`,
+
+  questionImage: "/images/13_24.png",
+
+  options: [
+    String.raw`\[
+A \text{ is HIGH and } B \text{ is LOW}
+\]`,
+
+    String.raw`\[
+A \text{ is LOW and } B \text{ is HIGH}
+\]`,
+
+    String.raw`\[
+\text{Both } A \text{ and } B \text{ are LOW}
+\]`,
+
+    String.raw`\[
+\text{Both } A \text{ and } B \text{ are HIGH}
+\]`,
+  ],
+
+  correctAnswers: [3],
+},
+
+{
+  id: 14,
+  year: 2024,
+  subject: "Vector Calculus",
+  type: "MCQ",
+
+  question: String.raw`
+The value of the line integral for the vector,
+
+\[
+\vec v = 2\hat x + yz^2\hat y + (3y+z^2)\hat z
+\]
+
+along the closed path OABO (as shown in the figure) is:
+`,
+
+  questionImage: "/images/14_24.png",
+
+  options: [
+    String.raw`\[
+\frac{1}{4}(3\pi-1)
+\]`,
+
+    String.raw`\[
+3\pi-\frac{1}{4}
+\]`,
+
+    String.raw`\[
+\frac{3\pi}{4}-1
+\]`,
+
+    String.raw`\[
+3\pi-1
+\]`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 15,
+  year: 2024,
+  subject: "Vector Calculus",
+  type: "MCQ",
+
+  question: String.raw`
+In the \(x\)-\(y\) plane, a vector is given by
+
+\[
+\vec F(x,y)=\frac{-y\hat x+x\hat y}{x^2+y^2}.
+\]
+
+The magnitude of the flux of \(\nabla\times\vec F\), through a circular loop of radius 2, centered at the origin, is:
+`,
+
+  options: [
+    String.raw`\[
+\pi
+\]`,
+
+    String.raw`\[
+2\pi
+\]`,
+
+    String.raw`\[
+4\pi
+\]`,
+
+    String.raw`0`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 16,
+  year: 2024,
+  subject: "Complex Numbers",
+  type: "MCQ",
+
+  question: String.raw`
+The roots of the polynomial,
+
+\[
+f(z)=z^4-8z^3+27z^2-38z+26,
+\]
+
+are \(z_1,z_2,z_3,\&\,z_4\), where \(z\) is a complex variable. Which of the following statements is correct?
+`,
+
+  options: [
+    String.raw`\[
+\frac{z_1+z_2+z_3+z_4}{z_1z_2z_3z_4}=-\frac{4}{19}
+\]`,
+
+    String.raw`\[
+\frac{z_1+z_2+z_3+z_4}{z_1z_2z_3z_4}=\frac{4}{13}
+\]`,
+
+    String.raw`\[
+\frac{z_1z_2z_3z_4}{z_1+z_2+z_3+z_4}=-\frac{26}{27}
+\]`,
+
+    String.raw`\[
+\frac{z_1z_2z_3z_4}{z_1+z_2+z_3+z_4}=\frac{13}{19}
+\]`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 17,
+  year: 2024,
+  subject: "Quantum Mechanics",
+  type: "MCQ",
+
+  question: String.raw`
+The ultraviolet catastrophe in the classical (Rayleigh-Jeans) theory of cavity radiation is attributed to the assumption that
+`,
+
+  options: [
+    String.raw`the standing waves of all allowed frequencies in the cavity have the same average energy`,
+
+    String.raw`the density of the standing waves in the cavity is independent of the shape and size of the cavity`,
+
+    String.raw`the allowed frequencies of the standing waves inside the cavity have no upper limit`,
+
+    String.raw`the number of allowed frequencies for the standing waves in a frequency range \(\nu\) to \((\nu+d\nu)\) is proportional to \(\nu^2\)`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 18,
+  year: 2024,
+  subject: "Special Relativity",
+  type: "MCQ",
+
+  question: String.raw`
+Given that the rest mass of electron is \(0.511\,\text{MeV}/c^2\), the speed (in units of \(c\)) of an electron with kinetic energy \(5.11\,\text{MeV}\) is closest to:
+`,
+
+  options: [
+    String.raw`0.996`,
+    String.raw`0.993`,
+    String.raw`0.990`,
+    String.raw`0.998`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 19,
+  year: 2024,
+  subject: "Quantum Mechanics",
+  type: "MCQ",
+
+  question: String.raw`
+A one-dimensional infinite square-well potential is given by:
+
+\[
+V(x)=0 \quad \text{for} \quad -\frac a2 < x < +\frac a2
+\]
+
+\[
+=\infty \quad \text{elsewhere}
+\]
+
+Let \(E_e(x)\) and \(\psi_e(x)\) be the ground state energy and the corresponding wave function, respectively, if an electron \((e)\) is trapped in that well. Similarly, let \(E_\mu(x)\) and \(\psi_\mu(x)\) be the corresponding quantities, if a muon \((\mu)\) is trapped in the well. Choose the correct option:
+`,
+
+  options: [
+    "",
+    "",
+    "",
+    "",
+  ],
+
+  optionImages: [
+    "/images/19a_24.png",
+    "/images/19b_24.png",
+    "/images/19c_24.png",
+    "/images/19d_24.png",
+  ],
+
+  correctAnswers: [2],
+},
+
+{
+  id: 20,
+  year: 2024,
+  subject: "Wave Optics",
+  type: "MCQ",
+
+  question: String.raw`
+In a Newton’s rings experiment (using light of free space wavelength \(580\,\text{nm}\)), there is an air gap of height \(d\) between the glass plate and a plano-convex lens (see figure). The central fringe is observed to be bright.
+
+The least possible value of \(d\) (in nm) is:
+`,
+
+  questionImage: "/images/20_24.png",
+
+  options: [
+    String.raw`145`,
+    String.raw`290`,
+    String.raw`580`,
+    String.raw`72.5`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 21,
+  year: 2024,
+  subject: "Polarization",
+  type: "MCQ",
+
+  question: String.raw`
+Linearly polarized light (free space wavelength \(\lambda_0=600\,\text{nm}\)) is incident normally on a retarding plate \((n_e-n_o=0.05 \text{ at } \lambda_0=600\,\text{nm})\). The emergent light is observed to be linearly polarized, irrespective of the angle between the direction of polarization and the optic axis of the plate. The minimum thickness (in \(\mu\text{m}\)) of the plate is:
+`,
+
+  options: [
+    String.raw`6`,
+    String.raw`3`,
+    String.raw`2`,
+    String.raw`1`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 22,
+  year: 2024,
+  subject: "Electromagnetic Theory",
+  type: "MCQ",
+
+  question: String.raw`
+A \(15.7\,\text{mW}\) laser beam has a diameter of \(4\,\text{mm}\). If the amplitude of the associated magnetic field is expressed as
+
+\[
+\frac{A}{\sqrt{\varepsilon_0 c^3}},
+\]
+
+the value of \(A\) is:
+
+(\(\varepsilon_0\) is the free space permittivity and \(c\) is the speed of light)
+`,
+
+  options: [
+    String.raw`50`,
+    String.raw`35.4`,
+    String.raw`100`,
+    String.raw`70.8`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 23,
+  year: 2024,
+  subject: "Electrostatics",
+  type: "MCQ",
+
+  question: String.raw`
+The plane \(z=0\) separates two linear dielectric media with relative permittivities \(\varepsilon_{r1}=4\) and \(\varepsilon_{r2}=3\), respectively. There is no free charge at the interface. If the electric field in the medium 1 is
+
+\[
+\vec E_1 = 3\hat x + 2\hat y + 4\hat z,
+\]
+
+then the displacement vector \(\vec D_2\) in medium 2 is:
+
+(\(\varepsilon_0\) is the permittivity of free space)
+`,
+
+  options: [
+    String.raw`\[
+(3\hat x+4\hat y+6\hat z)\varepsilon_0
+\]`,
+
+    String.raw`\[
+(3\hat x+6\hat y+8\hat z)\varepsilon_0
+\]`,
+
+    String.raw`\[
+(9\hat x+6\hat y+16\hat z)\varepsilon_0
+\]`,
+
+    String.raw`\[
+(4\hat x+2\hat y+3\hat z)\varepsilon_0
+\]`,
+  ],
+
+  correctAnswers: [2],
+},
+
+{
+  id: 24,
+  year: 2024,
+  subject: "Classical Mechanics",
+  type: "MCQ",
+
+  question: String.raw`
+A tank, placed on the ground, is filled with water up to a height \(h\). A small hole is made at a height \(h_1\) such that \(h_1<h\). The water jet emerging from the hole strikes the ground at a horizontal distance \(D\), as shown schematically in the figure. Which of the following statements is correct?
+
+(\(g\) is the acceleration due to gravity)
+`,
+
+  questionImage: "/images/24_24.png",
+
+  options: [
+    String.raw`\[
+\text{Velocity at } h_1 \text{ is } \sqrt{2gh_1}
+\]`,
+
+    String.raw`\[
+D=2(h-h_1)
+\]`,
+
+    String.raw`\[
+D \text{ will be maximum when } h_1=\frac{2}{3}h
+\]`,
+
+    String.raw`\[
+\text{The maximum value of } D \text{ is } h
+\]`,
+  ],
+
+  correctAnswers: [3],
+},
+
+{
+  id: 25,
+  year: 2024,
+  subject: "Waves",
+  type: "MCQ",
+
+  question: String.raw`
+An incompressible fluid is flowing through a vertical pipe (height \(h\) and cross-sectional area \(A_o\)). A thin mesh, having \(n\) circular holes of area \(A_h\), is fixed at the bottom end of the pipe. The speed of the fluid entering the top-end of the pipe is \(v_o\). The volume flow rate from an individual hole of the mesh is given by:
+
+(\(g\) is the acceleration due to gravity)
+`,
+
+  options: [
+    String.raw`\[
+\frac{A_o}{n}\sqrt{v_o^2+2gh}
+\]`,
+
+    String.raw`\[
+\frac{A_o}{n}\sqrt{v_o^2+gh}
+\]`,
+
+    String.raw`\[
+n(A_o-A_h)\sqrt{v_o^2+2gh}
+\]`,
+
+    String.raw`\[
+n(A_o-A_h)\sqrt{v_o^2+gh}
+\]`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 26,
+  year: 2024,
+  subject: "Classical Mechanics",
+  type: "MCQ",
+
+  question: String.raw`
+A ball is dropped from a height \(h\) to the ground. If the coefficient of restitution is \(e\), the time required for the ball to stop bouncing is proportional to:
+`,
+
+  options: [
+    String.raw`\[
+\frac{2+e}{1-e}
+\]`,
+
+    String.raw`\[
+\frac{1+e}{1-e}
+\]`,
+
+    String.raw`\[
+\frac{1-e}{1+e}
+\]`,
+
+    String.raw`\[
+\frac{2-e}{1+e}
+\]`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 27,
+  year: 2024,
+  subject: "Thermodynamics",
+  type: "MCQ",
+
+  question: String.raw`
+A cylinder-piston system contains \(N\) atoms of an ideal gas. If \(t_{avg}\) is the average time between successive collisions of a given atom with other atoms. If the temperature \(T\) of the gas is increased isobarically, then \(t_{avg}\) is proportional to:
+`,
+
+  options: [
+    String.raw`\[
+\sqrt{T}
+\]`,
+
+    String.raw`\[
+\frac{1}{\sqrt{T}}
+\]`,
+
+    String.raw`\[
+T
+\]`,
+
+    String.raw`\[
+\frac{1}{T}
+\]`,
+  ],
+
+  correctAnswers: [0],
+},
+
+{
+  id: 28,
+  year: 2024,
+  subject: "Thermodynamics",
+  type: "MCQ",
+
+  question: String.raw`
+A gas consists of particles, each having three translational and three rotational degrees of freedom. The ratio of specific heats, \(C_p/C_v\), is:
+
+(\(C_p\) and \(C_v\) are the specific heats at constant pressure and constant volume, respectively)
+`,
+
+  options: [
+    String.raw`\[
+\frac{5}{3}
+\]`,
+
+    String.raw`\[
+\frac{7}{5}
+\]`,
+
+    String.raw`\[
+\frac{4}{3}
+\]`,
+
+    String.raw`\[
+\frac{3}{2}
+\]`,
+  ],
+
+  correctAnswers: [2],
+},
+
+{
+  id: 29,
+  year: 2024,
+  subject: "Waves",
+  type: "MCQ",
+
+  question: String.raw`
+If two traveling waves, given by
+
+\[
+y_1=A_0\sin(kx-\omega t)
+\]
+
+and
+
+\[
+y_2=A_0\sin(\alpha kx-\beta\omega t)
+\]
+
+are superposed, which of the following statements is correct?
+`,
+
+  options: [
+    String.raw`\[
+\text{For } \alpha=\beta=1,\ \text{the resultant wave is a standing wave}
+\]`,
+
+    String.raw`\[
+\text{For } \alpha=\beta=-1,\ \text{the resultant wave is a standing wave}
+\]`,
+
+    String.raw`\[
+\text{For } \alpha=\beta=2,\ \text{the carrier frequency of the resultant wave is } \frac{3}{2}\omega
+\]`,
+
+    String.raw`\[
+\text{For } \alpha=\beta=2,\ \text{the carrier frequency of the resultant wave is } 3\omega
+\]`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 30,
+  year: 2024,
+  subject: "Wave Optics",
+  type: "MCQ",
+
+  question: String.raw`
+Suppose that there is a dispersive medium whose refractive index depends on the wavelength as given by
+
+\[
+n(\lambda)=n_0+\frac{a}{\lambda^2}-\frac{b}{\lambda^4}.
+\]
+
+The value of \(\lambda\) at which the group and phase velocities would be the same, is:
+`,
+
+  options: [
+    String.raw`\[
+\sqrt{\frac{2b}{a}}
+\]`,
+
+    String.raw`\[
+\sqrt{\frac{b}{2a}}
+\]`,
+
+    String.raw`\[
+\sqrt{\frac{3b}{a}}
+\]`,
+
+    String.raw`\[
+\sqrt{\frac{b}{3a}}
+\]`,
+  ],
+
+  correctAnswers: [2],
+},
+
+{
+  id: 31,
+  year: 2024,
+  subject: "Semiconductors",
+  type: "MSQ",
+
+  question: String.raw`
+A pure Si crystal can be converted to an \(n\)-type crystal by doping with
+`,
+
+  options: [
+    String.raw`P`,
+    String.raw`As`,
+    String.raw`Sb`,
+    String.raw`In`,
+  ],
+
+  correctAnswers: [0,1,2],
+},
+
+{
+  id: 32,
+  year: 2024,
+  subject: "Electronics",
+  type: "MSQ",
+
+  question: String.raw`
+In the following OP-AMP circuit, \(v_{in}\) and \(v_{out}\) represent the input and output signals, respectively.
+
+Choose the correct statement(s):
+`,
+
+  questionImage: "/images/32_24.png",
+
+  options: [
+    String.raw`\[
+v_{out} \text{ is out-of-phase with } v_{in}
+\]`,
+
+    String.raw`\[
+\text{Gain is unity when } R_1=R_2
+\]`,
+
+    String.raw`\[
+v_{out} \text{ is in-phase with } v_{in}
+\]`,
+
+    String.raw`\[
+v_{out} \text{ is zero}
+\]`,
+  ],
+
+  correctAnswers: [1,2],
+},
+
+{
+  id: 33,
+  year: 2024,
+  subject: "Oscillations",
+  type: "MSQ",
+
+  question: String.raw`
+A spring-mass system (spring constant \(80\,\text{N/m}\) and damping coefficient \(40\,\text{N-s/m}\)), initially at rest, is lying along the \(y\)-axis in the horizontal plane. One end of the spring is fixed and the mass (\(5\,\text{kg}\)) is attached at its other end. The mass is pulled along the \(y\)-axis by \(0.5\,\text{m}\) from its equilibrium position and then released. Choose the correct statement(s).
+
+(Ignore mass of the spring)
+`,
+
+  options: [
+    String.raw`\[
+\text{Motion will be under damped}
+\]`,
+
+    String.raw`\[
+y(t)=\frac{1}{2}(1+t)e^{-4t}
+\]`,
+
+    String.raw`\[
+\text{Motion will be critically damped}
+\]`,
+
+    String.raw`\[
+y(t)=\frac{1}{2}(1+4t)e^{-4t}
+\]`,
+  ],
+
+  correctAnswers: [2,3],
+},
+
+{
+  id: 34,
+  year: 2024,
+  subject: "Modern Physics",
+  type: "MSQ",
+
+  question: String.raw`
+Consider two different Compton scattering experiments, in which X-rays and \(\gamma\)-rays of wavelength \((\lambda)\) \(1.024\AA\) and \(0.049\AA\), respectively, are scattered from stationary free electrons. The scattered wavelength \((\lambda')\) is measured as a function of the scattering angle \((\theta)\). If Compton shift is \(\Delta\lambda=\lambda'-\lambda\), then which of the following statement(s) is/are true:
+
+\[
+(h=6.63\times10^{-34}\,\text{J.s},\ m_e=9.11\times10^{-31}\,\text{kg},\ c=3\times10^8\,\text{m/s})
+\]
+`,
+
+  options: [
+    String.raw`\[
+\text{For }\gamma\text{-rays, } \lambda'_{\max}\approx0.098\AA
+\]`,
+
+    String.raw`\[
+\text{For X-rays, } (\Delta\lambda)_{\max}\text{ is observed at } \theta=180^\circ
+\]`,
+
+    String.raw`\[
+\text{For X-rays, } (\Delta\lambda)_{\max}\approx1.049\AA
+\]`,
+
+    String.raw`\[
+\text{For }\gamma\text{-rays, at } \theta=90^\circ,\ \lambda'\approx0.049\AA
+\]`,
+  ],
+
+  correctAnswers: [0,1],
+},
+
+{
+  id: 35,
+  year: 2024,
+  subject: "Gravitation",
+  type: "MSQ",
+
+  question: String.raw`
+A particle of mass \(m\), having an energy \(E\) and angular momentum \(L\), is in a parabolic trajectory around a planet of mass \(M\). If the distance of the closest approach to the planet is \(r_m\), which of the following statement(s) is(are) true?
+
+(\(G\) is the Gravitational constant)
+`,
+
+  options: [
+    String.raw`\[
+E>0
+\]`,
+
+    String.raw`\[
+E=0
+\]`,
+
+    String.raw`\[
+L=\sqrt{2GMm^2r_m}
+\]`,
+
+    String.raw`\[
+L=\sqrt{2GM^2mr_m}
+\]`,
+  ],
+
+  correctAnswers: [1,2],
+},
+
+{
+  id: 36,
+  year: 2024,
+  subject: "Relativity",
+  type: "MSQ",
+
+  question: String.raw`
+The inertial frame \(S'\) is moving away from the inertial frame \(S\) with a speed \(v=0.6c\) along the negative \(x\)-direction (see figure). The origins \(O'\) and \(O\) of the frames coincide at \(t=t'=0\). As observed in the frame \(S'\), two events occur simultaneously at two points on the \(x'\)-axis with a separation of \(\Delta x'=5\,\text{m}\). If \(\Delta t\) and \(\Delta x\) are the magnitudes of the time interval and the space interval, respectively, between the events in \(S\), then which of the following statement(s)is(are) correct?
+
+\[
+(c=3\times10^8\,\text{m/s})
+\]
+`,
+
+  questionImage: "/images/36_24.png",
+
+  options: [
+    String.raw`\[
+\Delta t=12.5\,\text{ns}
+\]`,
+
+    String.raw`\[
+\Delta t=4.2\,\text{ns}
+\]`,
+
+    String.raw`\[
+\Delta x=10.6\,\text{m}
+\]`,
+
+    String.raw`\[
+\Delta x=6.25\,\text{m}
+\]`,
+  ],
+
+  correctAnswers: [0,3],
+},
+
+{
+  id: 37,
+  year: 2024,
+  subject: "AC Circuits",
+  type: "MSQ",
+
+  question: String.raw`
+For the LCR AC-circuit (resonance frequency \(\omega_0\)) shown in the figure below, choose the correct statement(s).
+`,
+
+  questionImage: "/images/37_24.png",
+
+  options: [
+    String.raw`\[
+\omega_0 \text{ depends on the values of } L,C,\text{ and } R
+\]`,
+
+    String.raw`\[
+\text{At } \omega=\omega_0,\ \text{voltage } V_R \text{ and current } I \text{ are in-phase}
+\]`,
+
+    String.raw`\[
+\text{The amplitude of } V_R \text{ at } \omega=\omega_0/2 \text{ is independent of } R
+\]`,
+
+    String.raw`\[
+\text{The amplitude of } V_R \text{ at } \omega=\omega_0 \text{ is independent of } L \text{ and } C
+\]`,
+  ],
+
+  correctAnswers: [1,3],
+},
+
+{
+  id: 38,
+  year: 2024,
+  subject: "Thermodynamics",
+  type: "MSQ",
+
+  question: String.raw`
+The \(P\)-\(V\) diagram of an engine is shown in the figure below. The temperatures at points \(1,2,3\) and \(4\) are \(T_1,T_2,T_3\) and \(T_4\), respectively. \(1\to2\) and \(3\to4\) are adiabatic processes, and \(2\to3\) and \(4\to1\) are isochoric processes.
+
+Identify the correct statement(s).
+
+[\(\gamma\) is the ratio of specific heats \(C_p\) (at constant \(P\)) and \(C_v\) (at constant \(V\))]
+`,
+
+  questionImage: "/images/38_24.png",
+
+  options: [
+    String.raw`\[
+T_1T_3=T_2T_4
+\]`,
+
+    String.raw`\[
+\text{The efficiency of the engine is }
+1-\left(\frac{P_1}{P_2}\right)^{\frac{\gamma-1}{\gamma}}
+\]`,
+
+    String.raw`\[
+\text{The change in entropy for the entire cycle is zero}
+\]`,
+
+    String.raw`\[
+T_1T_2=T_3T_4
+\]`,
+  ],
+
+  correctAnswers: [0,1,2],
+},
+
+{
+  id: 39,
+  year: 2024,
+  subject: "Waves",
+  type: "MSQ",
+
+  question: String.raw`
+A whistle \(S\) of sound frequency \(f\) is oscillating with angular frequency \(\omega\) along the \(x\)-axis. Its instantaneous position and the velocity are given by
+
+\[
+x(t)=a\sin(\omega t)
+\]
+
+and
+
+\[
+v(t)=v_0\cos(\omega t),
+\]
+
+respectively. An observer \(P\) is located on the \(y\)-axis at a distance \(L\) from the origin (see figure). Let \(v_{PS}(t)\) be the component of \(v(t)\) along the line joining the source and the observer. Choose the correct option(s):
+
+(Here \(a\) and \(v_0\) are constants)
+`,
+
+  questionImage: "/images/39_24.png",
+
+  options: [
+    String.raw`\[
+v_{PS}(t)=\frac{1}{2}\frac{av_0}{\sqrt{a^2\sin^2\omega t+L^2}}\sin(2\omega t)
+\]`,
+
+    String.raw`\[
+\text{The observed frequency will be } f \text{ when the source is at } x=0 \text{ and } x=\pm a
+\]`,
+
+    String.raw`\[
+\text{The observed frequency will be } f \text{ when the source is at position } x=\pm\frac{a}{2}
+\]`,
+
+    String.raw`\[
+v_{PS}(t)=\frac{1}{2}\frac{av_0}{\sqrt{a^2+L^2}}\sin(2\omega t)
+\]`,
+  ],
+
+  correctAnswers: [0,1],
+},
+
+{
+  id: 40,
+  year: 2024,
+  subject: "Thermodynamics",
+  type: "MSQ",
+
+  question: String.raw`
+One mole of an ideal monoatomic gas, initially at temperature \(T_0\) is expanded from an initial volume \(V_0\) to \(2.5V_0\). Which of the following statements is(are) correct?
+
+(\(R\) is the ideal gas constant)
+`,
+
+  options: [
+
+    String.raw`
+\[
+\begin{aligned}
+&\text{When the process is isothermal,} \\
+&\text{the work done is } RT_0\ln2
+\end{aligned}
+\]
+`,
+
+    String.raw`
+\[
+\begin{aligned}
+&\text{When the process is isothermal,} \\
+&\text{the change in internal energy is zero}
+\end{aligned}
+\]
+`,
+
+    String.raw`
+\[
+\begin{aligned}
+&\text{When the process is isobaric,} \\
+&\text{the work done is } \frac{3}{2}RT_0
+\end{aligned}
+\]
+`,
+
+    String.raw`
+\[
+\begin{aligned}
+&\text{When the process is isobaric,} \\
+&\text{the change in internal energy is } \frac{9}{4}RT_0
+\end{aligned}
+\]
+`,
+
+  ],
+
+  correctAnswers: [1,2],
 },
 
 ];

@@ -81,3 +81,23 @@ body {
 .option-copy .katex {
   font-size: 1.18em;
 }
+
+.math-copy .katex {
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+.math-copy .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 6px;
+}
+
+.math-copy {
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.math-copy p {
+  width: 100%;
+}
