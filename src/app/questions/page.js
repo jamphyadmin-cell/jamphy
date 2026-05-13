@@ -157,6 +157,7 @@ export default function IITJamPhysicsHub() {
         "Quantum Mechanics",
         "Special Relativity",
         "Modern Physics",
+        "Nuclear Physics",
       ],
     },
 
@@ -392,24 +393,35 @@ export default function IITJamPhysicsHub() {
 
   const submitNATAnswer = () => {
 
-    const correctAnswer =
-      String(activeQuestion.correctAnswer).trim();
+  const enteredAnswer = Number(
+    String(natAnswer).trim()
+  );
 
-    const enteredAnswer =
-      String(natAnswer).trim();
+  if (isNaN(enteredAnswer)) {
+    return;
+  }
 
-    if (!enteredAnswer) {
-
-      return;
-
-    }
+  if (
+    activeQuestion.correctAnswerMin !== undefined &&
+    activeQuestion.correctAnswerMax !== undefined
+  ) {
 
     setIsCorrect(
-      Number(enteredAnswer) ===
-      Number(correctAnswer)
+      enteredAnswer >= activeQuestion.correctAnswerMin &&
+      enteredAnswer <= activeQuestion.correctAnswerMax
     );
 
-  };
+    return;
+  }
+
+  const correctAnswer = Number(
+    activeQuestion.correctAnswer
+  );
+
+  setIsCorrect(
+    enteredAnswer === correctAnswer
+  );
+};
 
   return (
 
@@ -785,36 +797,21 @@ export default function IITJamPhysicsHub() {
 
   <div className="flex gap-4 items-start w-full min-w-0 overflow-hidden">
 
-    <div
-      className={`
-        w-12 h-12 shrink-0
-        rounded-full
-        flex items-center justify-center
-        text-xl
-        ${
-          isSelected
-            ? "bg-blue-600"
-            : "bg-zinc-700"
-        }
-      `}
-    >
-
-      {isMSQ ? (
-
-        <input
-          type="checkbox"
-          checked={isSelected}
-          readOnly
-          className="pointer-events-none w-5 h-5"
-        />
-
-      ) : (
-
-        String.fromCharCode(65 + index)
-
-      )}
-
-    </div>
+  <div
+    className={`
+      w-12 h-12 shrink-0
+      rounded-full
+      flex items-center justify-center
+      text-xl text-white
+      ${
+        isSelected
+          ? "bg-blue-600"
+          : "bg-zinc-700"
+      }
+    `}
+  >
+    {String.fromCharCode(65 + index)}
+  </div>
 
     <div className="flex-1 min-w-0 overflow-hidden">
 
@@ -920,15 +917,26 @@ export default function IITJamPhysicsHub() {
 
                       {isNAT ? (
 
-                        activeQuestion.correctAnswer
+  activeQuestion.correctAnswerMin !== undefined ? (
 
-                      ) : (
+    <span>
+      {activeQuestion.correctAnswerMin} to{" "}
+      {activeQuestion.correctAnswerMax}
+    </span>
 
-                        <MathText className="inline-block">
-                          {getCorrectOptions(activeQuestion).join(", ")}
-                        </MathText>
+  ) : (
 
-                      )}
+    activeQuestion.correctAnswer
+
+  )
+
+) : (
+
+  <MathText className="inline-block">
+    {getCorrectOptions(activeQuestion).join(", ")}
+  </MathText>
+
+)}
 
                     </div>
 

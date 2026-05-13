@@ -57,7 +57,7 @@ Consider the superposition of two electromagnetic waves with their electric fiel
     String.raw`\(\phi=0\) and \(A_1=A_2\)`
   ],
 
-  correctAnswer: 2,
+  correctAnswer: 0,
 },
 
 {
@@ -373,7 +373,7 @@ Consider a multilayered structure composed of thin films of refractive indices \
     String.raw`The ray emerges at an angle of \(44^\circ\) with the horizontal in the \(4^{\text{th}}\) layer`
   ],
 
-  correctAnswer: 0,
+  correctAnswer: 2,
 },
 
 {
@@ -486,7 +486,7 @@ A mass attached to the bottom end of a vertical massless spring stretches the sp
     String.raw`\(1\)`
   ],
 
-  correctAnswer: 2,
+  correctAnswer: 3,
 },
 
 {
@@ -533,7 +533,7 @@ Which of the following statements is correct?
     String.raw`The magnitude of the maximum voltage across the capacitor equals the maximum voltage across the resistor`
   ],
 
-  correctAnswer: 1,
+  correctAnswer: 3,
 },
 
 {
@@ -568,7 +568,7 @@ a_0 = \frac{3\pi}{2}
 \)`
   ],
 
-  correctAnswer: 3,
+  correctAnswer: 1,
 },
 
 {
@@ -588,7 +588,7 @@ Using Taylor series, expand \(f(x)=x^3-\frac{1}{8}\) around \(x_0=1\) up to seco
     String.raw`\(-3\)`
   ],
 
-  correctAnswer: 1,
+  correctAnswer: 3,
 },
 
 {
@@ -647,7 +647,7 @@ Which of the following statements is correct for the resultant vector \(\vec{\na
     String.raw`It is along the \(x\) direction`
   ],
 
-  correctAnswer: 2,
+  correctAnswer: 0,
 },
 
 {
@@ -735,7 +735,7 @@ W_{DA}=0
 `
   ],
 
-  correctAnswer: 1,
+  correctAnswer: 0,
 },
 
 {
@@ -888,7 +888,7 @@ Which of the following statements is/are correct?
     String.raw`\(F_1\) and \(F_2\) are zero in uniform circular motion`
   ],
 
-  correctAnswers: [0, 3],
+  correctAnswers: [0, 2],
 },
 
 {
@@ -921,7 +921,7 @@ Events \((9,-1,1,-1)\) and \((-10,1,0,-1)\) are time-like separated
 `
   ],
 
-  correctAnswers: [0, 2],
+  correctAnswers: [3],
 },
 
 {
@@ -989,7 +989,7 @@ Which of the following statements is/are correct?
     String.raw`The maximum potential difference across the inductor is \(2.0~V\)`
   ],
 
-  correctAnswers: [1, 2, 3],
+  correctAnswers: [0, 2, 3],
 },
 
 {
@@ -1014,7 +1014,7 @@ Which of the following options is/are true?
     String.raw`Internal energy of the gas depends both on temperature and pressure`
   ],
 
-  correctAnswers: [0, 1],
+  correctAnswers: [0],
 },
 
 {
@@ -1093,7 +1093,7 @@ Which of the following statements is/are true for a first order phase transition
     String.raw`Entropy changes discontinuously with temperature at \(T_c\)`
   ],
 
-  correctAnswers: [2, 3],
+  correctAnswers: [0, 2, 3],
 },
 
 {
@@ -1108,7 +1108,8 @@ Considering the diameter of the pupil of a human eye to be \(2~mm\), the angular
 (Rounded off to two decimal places)
 `,
 
-  correctAnswer: 1.05,
+  correctAnswerMin: 1.01,
+  correctAnswerMax: 1.11,
 },
 
 {
@@ -1125,7 +1126,8 @@ Consider a \(10~mW\) laser beam focused using a biconvex lens to a circular spot
 [Use permittivity of free space \(\varepsilon_0 = 8.854 \times 10^{-12}~C^2/(Nm^2)\), and speed of light \(c = 3 \times 10^8~m/s\)]
 `,
 
-  correctAnswer: 86.8,
+  correctAnswerMin: 273.0,
+  correctAnswerMax: 276.0,
 },
 
 {
@@ -1140,7 +1142,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
 (Answer in integer)
 `,
 
-  correctAnswer: 162,
+  correctAnswerMin: 160,
+  correctAnswerMax: 170,
 },
 
 {
@@ -1150,7 +1153,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "A particle of mass $10^{-20}\\ kg$ is moving along a circular orbit of radius $1\\ nm$. The speed of the particle corresponds to the average thermal energy at temperature $10^{-6}K$. Assuming the Bohr’s angular momentum quantization condition, the quantum number of the circular path of the particle is ____.\n\n(Answer in integer)\n\n[Use $h = 6.64 \\times 10^{-34}\\ J\\ s$ and $k_B = 1.38 \\times 10^{-23}\\ J/K$]",
-  correctAnswer: 9
+  correctAnswerMin: 6,
+  correctAnswerMax: 6,
 },
 {
   id: 45,
@@ -1159,7 +1163,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "One mole of an ideal gas undergoes a reversible isothermal expansion from $V_i = 1.5 \\times 10^{-5}\\ m^3$ to $V_f = 1.6 \\times 10^{-5}m^3$ at a temperature $273\\ K$. The amount of heat transfer during the process is $\\alpha R$, where $R$ is the gas constant. The value of $\\alpha$ is ____.\n\n(Rounded off to one decimal place)",
-  correctAnswer: 17.6
+  correctAnswerMin: 16.5,
+  correctAnswerMax: 18.5,
 },
 {
   id: 46,
@@ -1168,7 +1173,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "The value of $(1 - i\\sqrt{3})^3$ is ____.\n\n(Answer in integer)",
-  correctAnswer: -8
+  correctAnswerMin: -8,
+  correctAnswerMax: -8,
 },
 
 {
@@ -1178,7 +1184,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "Two thermodynamic systems separated by diathermic wall have the equations of state $U_1 = \\frac{3}{2} R N_1 T_1$ and $U_2 = \\frac{5}{2} R N_2 T_2$, where $R$ is the gas constant. $N_1, N_2$ and $T_1, T_2$ are the mole numbers and the temperature of the two systems, respectively. The composite system in equilibrium has the total energy $1.5 \\times 10^3$ Joule. If $N_1 = 3$ and $N_2 = 2$, then the internal energy $U_1$ of the system one is ________.\n\n(Answer in integer)",
-  correctAnswer: 450
+  correctAnswerMin: 709,
+  correctAnswerMax: 712,
 },
 {
   id: 48,
@@ -1187,7 +1194,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "Light of wavelength $500\\ nm$ is incident on the surface of Na metal for photoelectric emission. The corresponding threshold wavelength is $600\\ nm$. The maximum kinetic energy of the emitted electron, in $eV$, is ____.\n\n(Rounded off to two decimal places)\n\n[Use Planck’s constant $h = 6.625 \\times 10^{-34}\\ J\\ s$, speed of light $c = 3 \\times 10^8\\ m/s$, charge of electron $e = 1.6 \\times 10^{-19}\\ C$]",
-  correctAnswer: 0.5
+  correctAnswerMin: 0.38,
+  correctAnswerMax: 0.44,
 },
 {
   id: 49,
@@ -1196,7 +1204,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "The first order Bragg peak for $(100)$ plane of a material with simple cubic structure is measured using an X-ray of wavelength $1\\text{Å}$. If the lattice constant is $5\\text{Å}$ then the Bragg peak is observed at an angle, in degrees, ____.\n\n(Rounded off to two decimal places)",
-  correctAnswer: 5.74
+  correctAnswerMin: 5.55,
+  correctAnswerMax: 5.95,
 },
 
 {
@@ -1206,7 +1215,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "Consider an ensemble of hydrogen gas. The temperature, in $K$, at which the $rms$ speed of the hydrogen molecule is twice the $rms$ speed of the molecule at $300\\ K$ is ________.\n\n(Answer in integer)",
-  correctAnswer: 1200
+  correctAnswerMin: 1200,
+  correctAnswerMax: 1200,
 },
 {
   id: 51,
@@ -1215,7 +1225,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "A particle of mass $m$ undergoes periodic motion in one-dimension with its total energy given as $E = \\frac{1}{2}m\\dot{x}^2 + \\frac{1}{4}kx^4$, where $k$ is a positive constant and $\\dot{x}=\\frac{dx}{dt}$. Assuming that $E$ is conserved, the time period $T$ has the relation $T \\propto E^{-1/n}$. The value of $n$ is ________.\n\n(Answer in integer)",
-  correctAnswer: 4
+  correctAnswerMin: 4,
+  correctAnswerMax: 4,
 },
 {
   id: 52,
@@ -1224,7 +1235,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "A spacecraft is placed $200\\ km$ above Earth in a circular orbit. The minimum change in the speed required to place the spacecraft in a parabolic orbit, in $km/s$, is ______.\n\n(Rounded off to one decimal place)\n\n[Use $G = 6.67 \\times 10^{-11}Nm^2/kg^2$, mass of Earth $= 6 \\times 10^{24}\\ kg$, radius of Earth $= 6400\\ km$]",
-  correctAnswer: 3.2
+  correctAnswerMin: 3.0,
+  correctAnswerMax: 3.5,
 },
 
 {
@@ -1235,7 +1247,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   question:
     "Consider a light source having a spectral linewidth of $10^{10}\\ Hz$, used in a Michelson interferometer. The mirrors $M_1$ and $M_2$ are equidistant from the beam-splitter of negligible thickness as shown in the figure. The minimum distance $d_2$ that the mirror $M_1$ is to be moved for the interference pattern to completely disappear, in $cm$, is ____.\n\n(Rounded off to one decimal place)\n\n[Use speed of light to be $3 \\times 10^8\\ m/s$]",
   image: "/images/53.png",
-  correctAnswer: 1.5
+  correctAnswerMin: 1.5,
+  correctAnswerMax: 1.5,
 },
 {
   id: 54,
@@ -1244,7 +1257,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "Muons are unstable relativistic particles created at high altitudes above the Earth, having a lifetime of $2.2 \\times 10^{-6}s$ in their rest frame. As measured by an observer on the ground, the minimum velocity the muon requires to travel a distance of $6000\\ m$ is $v$. The value of $v/c$ is ______.\n\n(Rounded off to three decimal places)\n\n[Speed of light $c = 3 \\times 10^8m/s$]",
-  correctAnswer: 0.994
+  correctAnswerMin: 0.992,
+  correctAnswerMax: 0.997,
 },
 
 {
@@ -1254,7 +1268,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "On the surface of a thin water film of refractive index $1.33$, two light beams of wavelength $\\lambda_1 = 0.64\\ \\mu m$ and $\\lambda_2 = 0.40\\ \\mu m$ are incident at an angle of $30^\\circ$. The light of wavelength $\\lambda_1$ exhibits maximum reflection, but that of wavelength $\\lambda_2$ is not reflected at all. The minimum thickness of the water film, in $\\mu m$, is ______ .\n\n(Rounded off to two decimal places)\n\n[Assume refractive index is independent of wavelength]",
-  correctAnswer: 0.24
+  correctAnswerMin: 0.61,
+  correctAnswerMax: 0.71,
 },
 {
   id: 56,
@@ -1263,7 +1278,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "An electron is confined in a one-dimensional box of width $L = 10\\ \\text{Å}$. The electron in the first excited state de-excites to the ground state. The wavelength of the emitted radiation, in $\\mu m$, is ____.\n\n(Rounded off to one decimal place)\n\n[Use the mass of the electron $m_e = 9.1 \\times 10^{-31}\\ kg$, Planck’s constant $h = 6.625 \\times10^{-34}\\ J\\ s$, $c = 3 \\times 10^8\\ m/s$]",
-  correctAnswer: 0.5
+  correctAnswerMin: 0.9,
+  correctAnswerMax: 1.3,
 },
 {
   id: 57,
@@ -1272,7 +1288,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "An electron is accelerated through a potential of $200\\ V$ and then it passes through a slit of width $1.0\\ nm$ held normal to the path of the electron. Assuming the uncertainty relation $\\Delta x \\Delta p_x \\approx \\hbar/2$, maximum scattering angle of the electron after the slit is $\\alpha \\times 10^{-3}\\ radian$.\n\nThe value of $\\alpha$ is ____.\n\n(Rounded off to nearest integer)\n\nGiven $\\hbar = 1.054 \\times10^{-34}\\ J\\ s$",
-  correctAnswer: 31
+  correctAnswerMin: 6.6,
+  correctAnswerMax: 7.4,
 },
 
 {
@@ -1283,7 +1300,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   question:
     "A uniform electric field of $70\\ V/m$ makes an angle of $60^\\circ$ with the positive x-axis, as shown in the figure. The potential difference between the points $P$ and $Q$ which are $2\\ m$ and $\\sqrt{3}\\ m$ away from the origin, in Volts, is ____.\n\n(Rounded off to one decimal place)",
   image: "/images/58.png",
-  correctAnswer: 140.0
+  correctAnswerMin: 34.5,
+  correctAnswerMax: 35.5,
 },
 {
   id: 59,
@@ -1292,7 +1310,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "NAT",
   question:
     "Consider a simple pendulum of length $l$ and time period $T$. In a laboratory experiment, the time for $100$ oscillations is measured to be $80\\ s$ using a stop-watch with least count $1\\ s$. The gravitational constant is known with a percentage error of $2.5\\%$.\n\nThe percentage error in the measured length of the pendulum, in %, is ____.\n\n(Answer in integer)",
-  correctAnswer: 8
+  correctAnswerMin: 5,
+  correctAnswerMax: 5,
 },
 
 {
@@ -1303,7 +1322,8 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   question:
     "A particle of mass $m$ in a potential $V(x)=\\frac{1}{2}kx^2$ is described by normalized wavefunction $\\sum_{n=0}^{\\infty}(\\sqrt{2})^{-(n+1)}\\phi_n(x)$, where $\\{\\phi_n\\}$ are the eigenstates of the particle. The energy corresponding to the wavefunction, in units of $\\dfrac{h}{\\pi}\\sqrt{\\dfrac{k}{m}}$, is ____.\n\n(Rounded off to two decimal places)\n\n[Given: $\\sum_{n=0}^{\\infty}(a)^{-n}=\\dfrac{a}{a-1},\\ a>1$]",
   image: "/images/questions/q60.png",
-  correctAnswer: 0.85
+  correctAnswerMin: 0.75,
+  correctAnswerMax: 0.75,
 },
 
 {
@@ -1319,7 +1339,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$\\dfrac{V}{3}$",
     "$\\dfrac{V}{9}$"
   ],
-  correctAnswer: 2
+  correctAnswer: 2,
 },
 
 {
@@ -1336,7 +1356,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$\\dfrac{m_1^2 v_2}{m_2^2 v_1}$",
     "$\\dfrac{m_1 v_2}{m_2 v_1}$"
   ],
-  correctAnswer: 1,
+  correctAnswer: 0,
 },
 
 {
@@ -1376,7 +1396,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$\\tan^{-1} \\sqrt{\\frac{2}{3}}$",
     "$\\tan^{-1} \\sqrt{\\frac{1}{3}}$"
   ],
-  correctAnswer: 1,
+  correctAnswer: 0,
 },
 
 {
@@ -1433,7 +1453,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "/images/7c_25.png",
     "/images/7d_25.png"
   ],
-  correctAnswer: 1,
+  correctAnswer: 0,
 },
 
 {
@@ -1489,7 +1509,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "/images/10c_25.png",
     "/images/10d_25.png"
   ],
-  correctAnswer: 2,
+  correctAnswer: 3,
 },
 
 {
@@ -1506,7 +1526,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$90^\\circ$",
     "$-90^\\circ$"
   ],
-  correctAnswer: 1,
+  correctAnswer: 2,
 },
 
 {
@@ -1570,7 +1590,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$r^2$",
     "$r^3$"
   ],
-  correctAnswer: 2,
+  correctAnswer: 3,
 },
 
 {
@@ -1587,7 +1607,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$\\sqrt{\\dfrac{GM}{3d^3}}$",
     "$\\sqrt{\\dfrac{GM}{d^3}}$"
   ],
-  correctAnswer: 3,
+  correctAnswer: 1,
 },
 
 {
@@ -1620,7 +1640,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$\\rho(2gH+v^2)$",
     "$\\frac{\\rho}{2}(gH+v^2)$",
   ],
-  correctAnswer: 1,
+  correctAnswer: 0,
 },
 
 {
@@ -1754,7 +1774,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$\\frac{m}{2}\\sqrt{\\frac{9-\\beta^2}{2-\\beta^2}}$",
     "$\\frac{m}{4}\\sqrt{\\frac{1-\\beta^2}{2-\\beta^2}}$",
   ],
-  correctAnswer: 1,
+  correctAnswer: 0,
 },
 
 {
@@ -1809,6 +1829,52 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
 },
 
 {
+  id: 30,
+  year: 2025,
+  subject: "Electromagnetic Theory",
+  type: "MCQ",
+
+  question: String.raw`
+A magnetic field is given by
+
+\[
+\vec{B} = \nabla \times \vec{A}
+\]
+
+where \(\vec{A}\) is the magnetic vector potential. If
+
+\[
+\vec{A} = (ax^2 + by^2)\hat{i}
+\]
+
+the corresponding current density \(\vec{J}\) is
+
+(\(a\) and \(b\) are non-zero constants)
+`,
+
+  options: [
+
+    String.raw`\[
+-\frac{1}{\mu_0}(2a + 2b)\hat{i}
+\]`,
+
+    String.raw`\[
+\frac{1}{\mu_0}(2a + 2b)\hat{i}
+\]`,
+
+    String.raw`\[
+-\frac{1}{\mu_0}(2a)\hat{i}
+\]`,
+
+    String.raw`\[
+-\frac{1}{\mu_0}(2b)\hat{i}
+\]`,
+  ],
+
+  correctAnswers: [3],
+},
+
+{
   id: 31,
   year: 2025,
   subject: "Boolean Algebra",
@@ -1822,7 +1888,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$P=1,\\ Q=0$",
     "$P=1,\\ Q=1$",
   ],
-  correctAnswer: [1, 2],
+  correctAnswer: [3],
 },
 
 {
@@ -1838,7 +1904,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
     "$\\omega=\\sqrt{\\frac{G(m_1+m_2)}{(r_1+r_2)^3}}$",
     "$m_2r_1=m_1r_2$",
   ],
-  correctAnswer: [1, 2, 3],
+  correctAnswer: [0, 1, 2],
 },
 
 {
@@ -2089,7 +2155,7 @@ For a body centered cubic (bcc) system, the x-ray diffraction peaks are observed
     "7",
   ],
 
-  correctAnswers: [0, 1],
+  correctAnswers: [1],
 },
 
 {
@@ -2142,7 +2208,8 @@ exists in medium \(1\).
 The magnitude of the displacement vector \(\mathbf{D}_2\) in medium \(2\) is \_\_\_\_\_ \(\varepsilon_0\). (up to two decimal places)
 `,
 
-  correctAnswer: "13.45",
+  correctAnswerMin: 12.65,
+  correctAnswerMax: 13.05,
 },
 
 {
@@ -2167,6 +2234,7 @@ is \_\_\_\_\_. (in integer)
 
   correctAnswer: "2",
 },
+
 {
   id: 45,
   year: 2025,
@@ -2179,7 +2247,8 @@ An ideal p-n junction diode (ideality factor \(\eta=1\)) is operating in forward
 If the diode current is \(26\ \text{mA}\) for an applied bias of \(1.0\ \text{V}\), the dynamic resistance \((r_{ac})\) is \_\_\_\_\_ \(\Omega\). (up to two decimal places)
 `,
 
-  correctAnswer: "1.00",
+  correctAnswerMin: 0.95,
+  correctAnswerMax: 1.05,
 },
 {
   id: 46,
@@ -2197,7 +2266,8 @@ Considering the Maxwell-Boltzmann distribution, the temperature at which \(2\%\)
 \]
 `,
 
-  correctAnswer: "592.41",
+  correctAnswerMin: 591.00,
+  correctAnswerMax: 597.00,
 },
 
 {
@@ -2216,7 +2286,8 @@ As they penetrate the classically forbidden region, the distance at which the pr
 \]
 `,
 
-  correctAnswer: "10.54",
+  correctAnswerMin: 1.55,
+  correctAnswerMax: 1.70,
 },
 {
   id: 48,
@@ -2262,7 +2333,8 @@ at the corresponding wavelength \((\lambda)\) has the value \_\_\_\_\_ \(\times 
 The ratio of the density of atoms between the \((111)\) and \((110)\) planes in a simple cubic \((sc)\) lattice is \_\_\_\_\_. (up to two decimal places)
 `,
 
-  correctAnswer: "0.82",
+  correctAnswerMin: 0.80,
+  correctAnswerMax: 0.84,
 },
 
 {
@@ -2275,7 +2347,8 @@ The ratio of the density of atoms between the \((111)\) and \((110)\) planes in 
 The packing fraction for a two-dimensional hexagonal lattice having sides \(2r\) with atoms of radii \(r\) placed at each vertex and at the center is \_\_\_\_\_. (up to two decimal places)
 `,
 
-  correctAnswer: "0.91",
+  correctAnswerMin: [0.89, 89],
+  correctAnswerMax: [0.93, 93]
 },
 
 {
@@ -2298,7 +2371,7 @@ The maximum value of base resistance \(R_{BB}\) is \_\_\_\_\_ k\(\Omega\). (in i
 
   questionImage: "/images/51_25.png",
 
-  correctAnswer: "19",
+  correctAnswer: "20",
 },
 {
   id: 52,
@@ -2324,7 +2397,8 @@ is \_\_\_\_\_. (up to two decimal places)
 
   questionImage: "/images/52_25.png",
 
-  correctAnswer: "2.00",
+  correctAnswerMin: 1.78,
+  correctAnswerMax: 1.82,
 },
 
 {
@@ -2347,7 +2421,8 @@ The change in entropy of the whole system in this entire process is \_\_\_\_\_ c
 \]
 `,
 
-  correctAnswer: "5.32",
+  correctAnswerMin: 0.90,
+  correctAnswerMax: 1.10,
 },
 {
   id: 54,
@@ -2445,7 +2520,8 @@ passes through an ideal linear polarizer whose transmission axis is tilted by \(
 If \(E_{01}=4\ \text{V/m}\) and \(E_{02}=2\ \text{V/m}\), the electric field amplitude of the emerging light beam from the polarizer is \_\_\_\_\_ V/m. (up to two decimal places)
 `,
 
-  correctAnswer: "3.74",
+  correctAnswerMin: 3.59,
+  correctAnswerMax: 3.63,
 },
 
 {
@@ -2479,7 +2555,8 @@ In an orthorhombic crystal, the lattice constants are \(3.0\ \text{\AA}\), \(3.2
 The distance \(d_{101}\) between the successive \((101)\) planes is \_\_\_\_\_ \(\text{\AA}\). (up to one decimal place)
 `,
 
-  correctAnswer: "2.4",
+  correctAnswerMin: 2.3,
+  correctAnswerMax: 2.5,
 },
 
 {
@@ -2504,7 +2581,8 @@ The pressure (in Pascal) to which the chamber needs to be evacuated so that the 
 \]
 `,
 
-  correctAnswer: "3.59",
+  correctAnswerMin: 0.70,
+  correctAnswerMax: 1.20,
 },
 
 {
@@ -2544,7 +2622,7 @@ The sum of three binary numbers, \(10110.10\), \(11010.01\), and \(10101.11\), i
     String.raw`69.50`,
   ],
 
-  correctAnswers: [0],
+  correctAnswers: [2],
 },
 
 {
@@ -2616,7 +2694,7 @@ The divergence of a 3-dimensional vector \(\dfrac{\hat r}{r^3}\) (\(\hat r\) is 
 \]`,
   ],
 
-  correctAnswers: [1],
+  correctAnswers: [0],
 },
 
 {
@@ -2676,7 +2754,7 @@ A particle moving along the \(x\)-axis approaches \(x=0\) from \(x=-\infty\) wit
     "/images/6d_24.png",
   ],
 
-  correctAnswers: [1],
+  correctAnswers: [2],
 },
 
 {
@@ -2726,7 +2804,7 @@ then the value of \(a\) is:
     String.raw`-800`,
   ],
 
-  correctAnswers: [1],
+  correctAnswers: [0],
 },
 
 {
@@ -2798,7 +2876,7 @@ A crystal plane of a lattice intercepts the principal axes \(\vec a_1\), \(\vec 
     String.raw`(243)`,
   ],
 
-  correctAnswers: [1],
+  correctAnswers: [0],
 },
 
 {
@@ -2853,7 +2931,7 @@ A \text{ is LOW and } B \text{ is HIGH}
 \]`,
   ],
 
-  correctAnswers: [3],
+  correctAnswers: [0],
 },
 
 {
@@ -3068,7 +3146,7 @@ The least possible value of \(d\) (in nm) is:
     String.raw`72.5`,
   ],
 
-  correctAnswers: [1],
+  correctAnswers: [0],
 },
 
 {
@@ -3361,7 +3439,7 @@ are superposed, which of the following statements is correct?
 \]`,
   ],
 
-  correctAnswers: [1],
+  correctAnswers: [2],
 },
 
 {
@@ -3398,7 +3476,7 @@ The value of \(\lambda\) at which the group and phase velocities would be the sa
 \]`,
   ],
 
-  correctAnswers: [2],
+  correctAnswers: [0],
 },
 
 {
@@ -3453,7 +3531,7 @@ v_{out} \text{ is zero}
 \]`,
   ],
 
-  correctAnswers: [1,2],
+  correctAnswers: [0,1],
 },
 
 {
@@ -3757,7 +3835,7 @@ One mole of an ideal monoatomic gas, initially at temperature \(T_0\) is expande
 \[
 \begin{aligned}
 &\text{When the process is isobaric,} \\
-&\text{the change in internal energy is } \frac{9}{4}RT_0
+&\text{the change in internal energy is } \frac{9}{2}RT_0
 \end{aligned}
 \]
 `,
@@ -3765,6 +3843,351 @@ One mole of an ideal monoatomic gas, initially at temperature \(T_0\) is expande
   ],
 
   correctAnswers: [1,2],
+},
+
+{
+  id: 41,
+  year: 2024,
+  subject: "Semiconductor Physics",
+  type: "NAT",
+
+  question: String.raw`
+Consider a \(p\)-\(n\) junction diode which has \(10^{23}\) acceptor-atoms/\(\text{m}^3\) in the \(p\)-side and \(10^{22}\) donor-atoms/\(\text{m}^3\) in the \(n\)-side. If the depletion width in the \(p\)-side is \(0.16\,\mu\text{m}\), then the value of depletion width in the \(n\)-side will be ______ \(\mu\text{m}\). (Rounded off to one decimal place)
+`,
+
+  correctAnswerMin: 1.6,
+  correctAnswerMax: 1.6,
+},
+{
+  id: 42,
+  year: 2024,
+  subject: "Mathematical Physics",
+  type: "NAT",
+
+  question: String.raw`
+The co-ordinate system \((x,y,z)\) is transformed to the system \((u,v,w)\), as given by:
+
+\[
+u = 2x + 3y - z
+\]
+
+\[
+v = x - 4y + z
+\]
+
+\[
+w = x + y
+\]
+
+The Jacobian of the above transformation is __________.
+`,
+
+
+  correctAnswerMin: -8,
+  correctAnswerMax: -8,
+},
+{
+  id: 43,
+  year: 2024,
+  subject: "Vector Calculus",
+  type: "NAT",
+
+  question: String.raw`
+Two sides of a triangle OAB are given by:
+
+\[
+\overrightarrow{OA} = \hat{x} + 2\hat{y} + \hat{z}
+\]
+
+\[
+\overrightarrow{OB} = 2\hat{x} - \hat{y} + 3\hat{z}
+\]
+
+The area of the triangle is __________. (Rounded off to one decimal place)
+`,
+
+
+  correctAnswerMin: 4.2,
+  correctAnswerMax: 4.4,
+},
+{
+  id: 44,
+  year: 2024,
+  subject: "Classical Mechanics",
+  type: "NAT",
+
+  question: String.raw`
+A particle of mass \(1\,\text{kg}\), initially at rest, starts sliding down from the top of a frictionless inclined plane of angle \(\pi/6\) (as schematically shown in the figure). The magnitude of the torque on the particle about the point \(O\) after a time \(2\) seconds is _________ N-m. (Rounded off to nearest integer)
+
+(Take \(g = 10\,\text{m/s}^2\))
+`,
+
+  questionImage: "/images/44_24.png",
+
+  correctAnswerMin: 85,
+  correctAnswerMax: 88,
+},
+{
+  id: 45,
+  year: 2024,
+  subject: "Rotational Dynamics",
+  type: "NAT",
+
+  question: String.raw`
+The moment of inertia of a solid hemisphere (mass \(M\) and radius \(R\)) about the axis passing through the hemisphere and parallel to its flat surface is \(\frac{2}{5}MR^2\). The distance of the axis from the center of mass of the hemisphere (in units of \(R\)) is ________. (Rounded off to two decimal places)
+`,
+
+  correctAnswerMin: 0.36,
+  correctAnswerMax: 0.40,
+},
+{
+  id: 46,
+  year: 2024,
+  subject: "Wave Optics",
+  type: "NAT",
+
+  question: String.raw`
+A collimated light beam of intensity \(I_0\) is incident normally on an air-dielectric (refractive index \(2.0\)) interface. The intensity of the reflected light is ________ \(I_0\). (Rounded off to two decimal places)
+`,
+
+  correctAnswerMin: 0.10,
+  correctAnswerMax: 0.12,
+},
+{
+  id: 47,
+  year: 2024,
+  subject: "Electrostatics",
+  type: "NAT",
+
+  question: String.raw`
+A charge of \(-9\,\text{C}\) is placed at the center of a concentric spherical shell made of a linear dielectric material (relative permittivity \(9\)) and having inner and outer radii of \(0.1\,\text{m}\) and \(0.2\,\text{m}\), respectively. The total charge induced on its inner surface is ______ C. (Rounded off to two decimal places)
+`,
+
+  correctAnswerMin: 7.90,
+  correctAnswerMax: 8.10,
+},
+{
+  id: 48,
+  year: 2024,
+  subject: "Electronics",
+  type: "NAT",
+
+  question: String.raw`
+A Zener diode (rating \(10\,\text{V}, 2\,\text{W}\)) and a normal diode (turn-on voltage \(0.7\,\text{V}\)) are connected in a circuit as shown in the figure. The voltage drop \(V_L\) across the \(2\,\text{k}\Omega\) resistance is _________ V. (Rounded off to one decimal place)
+`,
+
+  questionImage: "/images/48_24.png",
+
+  correctAnswerMin: 6.2,
+  correctAnswerMax: 6.2,
+},
+{
+  id: 49,
+  year: 2024,
+  subject: "Solid State Physics",
+  type: "NAT",
+
+  question: String.raw`
+The Fermi energy of a system is \(5.5\,\text{eV}\). At \(500\,\text{K}\), the energy of a level for which the probability of occupancy is \(0.2\), is ________ eV. (Rounded off to two decimal places)
+
+(Boltzmann constant \(k_B = 8.62 \times 10^{-5}\,\text{eV/K}\))
+`,
+
+
+  correctAnswerMin: 5.55,
+  correctAnswerMax: 5.57,
+},
+{
+  id: 50,
+  year: 2024,
+  subject: "Thermodynamics",
+  type: "NAT",
+
+  question: String.raw`
+One mole of an ideal monoatomic gas is heated in a closed container, first from \(273\,\text{K}\) to \(303\,\text{K}\), and then from \(303\,\text{K}\) to \(373\,\text{K}\). The net change in the entropy is ______ \(R\). (Rounded off to two decimal places)
+
+(\(R\) is the ideal gas constant)
+`,
+
+  correctAnswerMin: 0.44,
+  correctAnswerMax: 0.48,
+},
+{
+  id: 51,
+  year: 2024,
+  subject: "Wave Optics",
+  type: "NAT",
+
+  question: String.raw`
+For a simple cubic crystal, the smallest inter-planar spacing \(d\) that can be determined from its second order diffraction using monochromatic X-rays of wavelength \(1.32\,\text{\AA}\) is ________ \(\text{\AA}\). (Rounded off to two decimal places)
+`,
+
+  correctAnswerMin: 1.32,
+  correctAnswerMax: 1.32,
+},
+{
+  id: 52,
+  year: 2024,
+  subject: "Electronics",
+  type: "NAT",
+
+  question: String.raw`
+A transistor (\(\beta = 100\), \(V_{BE} = 0.7\,\text{V}\)) is connected as shown in the circuit below.
+
+The current \(I_C\) will be ________ mA. (Rounded off to two decimal places)
+`,
+
+  questionImage: "/images/52_24.png",
+
+  correctAnswerMin: 1.10,
+  correctAnswerMax: 1.15,
+},
+{
+  id: 53,
+  year: 2024,
+  subject: "Mathematical Physics",
+  type: "NAT",
+
+  question: String.raw`
+In the Taylor expansion of function,
+
+\[
+F(x) = e^x \sin x
+\]
+
+around \(x = 0\), the coefficient of \(x^5\) is __________. (Rounded off to three decimal places)
+`,
+
+  correctAnswerMin: -0.034,
+  correctAnswerMax: -0.032,
+},
+{
+  id: 54,
+  year: 2024,
+  subject: "Nuclear Physics",
+  type: "NAT",
+
+  question: String.raw`
+A stationary nitrogen \(\left(^{14}_{7}N\right)\) nucleus is bombarded with \(\alpha\)-particle \(\left(^{4}_{2}He\right)\) and the following nuclear reaction takes place:
+
+\[
+^{4}_{2}He + ^{14}_{7}N \rightarrow ^{17}_{8}O + ^{1}_{1}H
+\]
+
+Masses:
+
+\[
+^{4}_{2}He = 4.003u,\quad
+^{14}_{7}N = 14.003u,\quad
+^{17}_{8}O = 16.999u,\quad
+^{1}_{1}H = 1.008u
+\]
+
+If the kinetic energies of \(^{4}_{2}He\) and \(^{1}_{1}H\) are \(5.314\,\text{MeV}\) and \(4.012\,\text{MeV}\), respectively, then the kinetic energy of \(^{17}_{8}O\) is ______ MeV. (Rounded off to one decimal place)
+
+(Masses are given in units of \(u = 931.5\,\text{MeV}/c^2\))
+`,
+
+  correctAnswerMin: 0.4,
+  correctAnswerMax: 0.4,
+},
+{
+  id: 55,
+  year: 2024,
+  subject: "Gravitation",
+  type: "NAT",
+
+  question: String.raw`
+A satellite of mass \(10\,\text{kg}\), in a circular orbit around a planet, is having a speed \(v = 200\,\text{m/s}\). The total energy of the satellite is ________ kJ. (Rounded off to nearest integer)
+`,
+
+  correctAnswerMin: -200,
+  correctAnswerMax: -200,
+},
+{
+  id: 56,
+  year: 2024,
+  subject: "Wave Optics",
+  type: "NAT",
+
+  question: String.raw`
+When a system of multiple long narrow slits (width \(2\,\mu\text{m}\) and period \(4\,\mu\text{m}\)) is illuminated with a laser of wavelength \(600\,\text{nm}\). There are \(40\) minima between the two consecutive principal maxima observed in its diffraction pattern. Then maximum resolving power of the system is ________.
+`,
+
+  correctAnswerMin: 246,
+  correctAnswerMax: 246,
+},
+{
+  id: 57,
+  year: 2024,
+  subject: "Wave Optics",
+  type: "NAT",
+
+  question: String.raw`
+Consider a thick biconvex lens (thickness \(t = 4\,\text{cm}\) and refractive index \(n = 1.5\)) whose magnitudes of the radii of curvature \(R_1\) and \(R_2\), of the first and second surfaces are \(30\,\text{cm}\) and \(20\,\text{cm}\), respectively. Surface \(2\) is silvered to act as a mirror.
+
+A point object is placed at point \(A\) on the axis (\(OA = 60\,\text{cm}\)) as shown in the figure. If its image is formed at point \(Q\), the distance \(d\) between \(O\) and \(Q\) is ______ cm. (Rounded off to two decimal places)
+`,
+
+  questionImage: "/images/57_24.png",
+
+  correctAnswerMin: 3.55,
+  correctAnswerMax: 3.90,
+},
+{
+  id: 58,
+  year: 2024,
+  subject: "Relativity",
+  type: "NAT",
+
+  question: String.raw`
+An unstable particle created at a point \(P\) moves with a constant speed of \(0.998c\) until it decays at a point \(Q\). If the lifetime of the particle in its rest frame is \(632\,\text{ns}\), the distance between points \(P\) and \(Q\) is ______ m. (Rounded off to the nearest integer)
+
+(\(c = 3 \times 10^8\,\text{m/s}\))
+`,
+
+  correctAnswerMin: 2992,
+  correctAnswerMax: 2994,
+},
+{
+  id: 59,
+  year: 2024,
+  subject: "Electrostatics",
+  type: "NAT",
+
+  question: String.raw`
+Two positive charges \(Q\) and \(2Q\) are kept at points \(A\) and \(B\), separated by a distance \(2d\), as shown in the figure. MCL is a semicircle of radius \(2d\) centered at the origin \(O\). If \(Q = 2\,\text{C}\) and \(d = 10\,\text{cm}\), the value of the line integral
+
+\[
+\int_M^L \vec{E}\cdot d\vec{l}
+\]
+
+(where \(\vec{E}\) represents electric field) along the path MCL will be _________ V.
+`,
+
+  questionImage: "/images/59_24.png",
+
+  correctAnswerMin: 0,
+  correctAnswerMax: 0,
+},
+{
+  id: 60,
+  year: 2024,
+  subject: "Electromagnetic Induction",
+  type: "NAT",
+
+  question: String.raw`
+A time dependent magnetic field inside a long solenoid of radius \(0.05\,\text{m}\) is given by
+
+\[
+\vec{B}(t) = B_0 \sin \omega t \,\hat{z}
+\]
+
+If \(\omega = 100\,\text{rad/s}\) and \(B_0 = 0.98\,\text{Wb/m}^2\), then the amplitude of the induced electric field at a distance of \(0.07\,\text{m}\) from the axis of the solenoid is ______ V/m. (Rounded off to two decimal places)
+`,
+
+  correctAnswerMin: 1.71,
+  correctAnswerMax: 1.75,
 },
 
 ];
