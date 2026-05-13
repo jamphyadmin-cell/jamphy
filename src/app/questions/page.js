@@ -584,7 +584,7 @@ export default function IITJamPhysicsHub() {
             {filteredQuestions.map((question) => (
 
               <button
-                key={question.id}
+                key={`${question.year}-${question.id}`}
                 onClick={() => {
 
                   setActiveQuestion(question);
@@ -678,90 +678,128 @@ export default function IITJamPhysicsHub() {
 
             )}
 
-            <div className="grid md:grid-cols-2 gap-4 mt-8">
+            {/* NAT QUESTION */}
 
-              {activeQuestion.options.map(
-                (option, index) => {
+{isNAT ? (
 
-                  const correct =
-                    getCorrectOptions(
-                      activeQuestion
-                    ).includes(option);
+  <div className="mt-8">
 
-                  const isSelected =
-                    selectedAnswer === option;
+    <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
-                  let style =
-                    "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
+      <input
+        type="number"
+        value={natAnswer}
+        onChange={(e) =>
+          setNatAnswer(e.target.value)
+        }
+        disabled={isCorrect !== null}
+        placeholder="Enter answer"
+        className="w-full rounded-2xl border border-zinc-700 bg-black px-5 py-4 text-xl text-white outline-none"
+      />
 
-                  if (isCorrect !== null) {
+      <button
+        onClick={submitNATAnswer}
+        disabled={
+          isCorrect !== null ||
+          natAnswer.trim() === ""
+        }
+        className="mt-5 rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40"
+      >
+        Submit Answer
+      </button>
 
-                    if (correct) {
+    </div>
 
-                      style =
-                        "border-green-500 bg-green-500/20";
+  </div>
 
-                    }
+) : (
 
-                    if (
-                      isSelected &&
-                      !correct
-                    ) {
+  <div className="grid md:grid-cols-2 gap-4 mt-8">
 
-                      style =
-                        "border-red-500 bg-red-500/20";
+    {activeQuestion.options.map(
+      (option, index) => {
 
-                    }
-                  }
+        const correct =
+          getCorrectOptions(
+            activeQuestion
+          ).includes(option);
 
-                  return (
+        const isSelected =
+          selectedAnswer === option;
 
-                    <button
-                      key={index}
-                      disabled={
-                        isCorrect !== null
-                      }
-                      onClick={() =>
-                        handleSingleAnswer(option)
-                      }
-                      className={`rounded-3xl border min-h-[100px] p-5 text-left transition ${style}`}
-                    >
+        let style =
+          "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
 
-                      <div className="flex gap-4 items-start">
+        if (isCorrect !== null) {
 
-                        <div className="w-12 h-12 rounded-full bg-zinc-700 flex items-center justify-center text-xl shrink-0">
-                          {String.fromCharCode(65 + index)}
-                        </div>
+          if (correct) {
 
-                        <div className="flex-1">
+            style =
+              "border-green-500 bg-green-500/20";
 
-                          {activeQuestion.optionImages?.[index] && (
+          }
 
-                            <Image
-                              src={activeQuestion.optionImages[index]}
-                              alt={`Option ${index + 1}`}
-                              width={500}
-                              height={300}
-                              className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
-                            />
+          if (
+            isSelected &&
+            !correct
+          ) {
 
-                          )}
+            style =
+              "border-red-500 bg-red-500/20";
 
-                          <MathText className="option-copy text-[18px] leading-relaxed text-white pt-1 overflow-x-auto">
-                            {option}
-                          </MathText>
+          }
+        }
 
-                        </div>
+        return (
 
-                      </div>
+          <button
+            key={index}
+            disabled={
+              isCorrect !== null
+            }
+            onClick={() =>
+              handleSingleAnswer(option)
+            }
+            className={`rounded-3xl border min-h-[100px] p-5 text-left transition ${style}`}
+          >
 
-                    </button>
+            <div className="flex gap-4 items-start">
 
-                  );
-                }
-              )}
+              <div className="w-12 h-12 rounded-full bg-zinc-700 flex items-center justify-center text-xl shrink-0">
+                {String.fromCharCode(65 + index)}
+              </div>
+
+              <div className="flex-1">
+
+                {activeQuestion.optionImages?.[index] && (
+
+                  <Image
+                    src={activeQuestion.optionImages[index]}
+                    alt={`Option ${index + 1}`}
+                    width={500}
+                    height={300}
+                    className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
+                  />
+
+                )}
+
+                <MathText className="option-copy text-[18px] leading-relaxed text-white pt-1 overflow-x-auto">
+                  {option}
+                </MathText>
+
+              </div>
 
             </div>
+
+          </button>
+
+        );
+      }
+    )}
+
+  </div>
+
+)}
 
             <div className="mt-8 flex items-center justify-between gap-4 flex-wrap">
 
@@ -789,21 +827,49 @@ export default function IITJamPhysicsHub() {
 
             {isCorrect !== null && (
 
-              <div
-                className={`mt-6 rounded-2xl border p-5 text-lg font-bold ${
-                  isCorrect
-                    ? "border-green-500 bg-green-500/20 text-green-200"
-                    : "border-red-500 bg-red-500/20 text-red-200"
-                }`}
-              >
+  <div
+    className={`mt-6 rounded-2xl border p-5 text-lg font-bold ${
+      isCorrect
+        ? "border-green-500 bg-green-500/20 text-green-200"
+        : "border-red-500 bg-red-500/20 text-red-200"
+    }`}
+  >
 
-                {isCorrect
-                  ? "Correct answer"
-                  : "Not quite. The correct option is highlighted."}
+    {isCorrect ? (
 
-              </div>
+      "Correct answer"
 
-            )}
+    ) : (
+
+      <div className="flex flex-wrap items-center gap-2">
+
+  <span>
+    Correct answer is:
+  </span>
+
+  <div className="text-white">
+
+    {isNAT ? (
+
+      activeQuestion.correctAnswer
+
+    ) : (
+
+      <MathText className="inline-block">
+        {getCorrectOptions(activeQuestion).join(", ")}
+      </MathText>
+
+    )}
+
+  </div>
+
+</div>
+
+    )}
+
+  </div>
+
+)}
 
           </div>
 

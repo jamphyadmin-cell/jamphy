@@ -1832,7 +1832,6 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   type: "MSQ",
   question:
     "Two particles of masses $m_1$ and $m_2$, interacting via gravity, rotate in circular orbits about their common center of mass with the same angular velocity $\\omega$. For masses $m_1$ and $m_2$, respectively, $r_1$ and $r_2$ are the constant distances from the center of mass, $L_1$ and $L_2$ are the magnitudes of the angular momenta about the center of mass, and $K_1$ and $K_2$ are the kinetic energies. Which of the following is(are) correct? ($G$ is the universal gravitational constant)",
-  image: "/images/32_25.png",
   options: [
     "$\\frac{L_1}{L_2}=\\frac{m_2}{m_1}$",
     "$\\frac{K_1}{K_2}=\\frac{m_2}{m_1}$",
