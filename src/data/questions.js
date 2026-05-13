@@ -1655,6 +1655,858 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
   correctAnswer: 0,
 },
 
+{
+  id: 21,
+  year: 2025,
+  subject: "Wave Optics",
+  type: "MCQ",
+  question:
+    "An unpolarized light ray passing through air (refractive index $n_a=1$) is incident on a glass slab (refractive index $n_g=\\sqrt{3}$) at an angle of $60^\\circ$, as shown in the figure below. The amplitude of the in-plane $(x-y)$ electric field component of the incident light is $4\\ \\text{V/m}$ and amplitude of the out of plane $(z)$ electric field component is $3\\ \\text{V/m}$. After passing through the glass slab, the electric field amplitude (in V/m) of the light is",
+  image: "/images/21_25.png",
+  options: [
+    "5",
+    "4",
+    "7",
+    "3",
+  ],
+  correctAnswer: 1,
+},
+
+{
+  id: 22,
+  year: 2025,
+  subject: "Electromagnetic Theory",
+  type: "MCQ",
+  question:
+    "Consider a slowly charging parallel plate capacitor (distance between the plates is $d$) having circular plates each with an area $A$, as shown in the figure below. An electric field of magnitude $E = E_0\\sin(\\omega t)$ exists between the plates while charging. The associated magnitude of the magnetic field $B$ at the periphery (outer edge) of the capacitor is (Neglect fringe effects)",
+  image: "/images/22_25.png",
+  options: [
+    "$\\\\frac{1}{2c^2}\\\\sqrt{\\\\frac{A}{\\\\pi}}E_0\\\\omega\\\\cos(\\\\omega t)$",
+    "$\\\\frac{1}{2c^2}\\\\sqrt{\\\\frac{A}{\\\\pi}}E_0\\\\omega\\\\sin(\\\\omega t)$",
+    "$\\\\frac{1}{c^2}\\\\sqrt{\\\\frac{A}{\\\\pi}}E_0\\\\omega\\\\cos(\\\\omega t)$",
+    "$\\\\frac{1}{c^2}\\\\sqrt{\\\\frac{A}{\\\\pi}}E_0\\\\omega\\\\sin(\\\\omega t)$",
+  ],
+  correctAnswer: 0,
+},
+
+{
+  id: 23,
+  year: 2025,
+  subject: "Electromagnetism",
+  type: "MCQ",
+  question:
+    "A surface current density $K = ae^{-y}$ exists on a thin strip of width $b$, as shown in the figure below. The associated surface current is ($a$ is a constant of appropriate dimensions)",
+  image: "/images/23_25.png",
+  options: [
+    "$a(1-e^{-b})$",
+    "$a(1+e^{-b})$",
+    "$a(e^{-b}-1)$",
+    "$a(e^b+e^{-b})$",
+  ],
+  correctAnswer: 0,
+},
+
+{
+  id: 24,
+  year: 2025,
+  subject: "Electromagnetic Theory",
+  type: "MCQ",
+  question:
+    "For an electromagnetic wave, consider an electric field $\\mathbf{E}=E_0 e^{-i[a(x+y)-\\omega t]}\\hat{k}$. The corresponding magnetic field $\\mathbf{B}$ is ($E_0$, $a$, $\\omega$ are constants of appropriate dimensions and $c$ is the speed of light)",
+
+  options: [
+    "$\\\\frac{1}{c\\\\sqrt{2}}E_0 e^{-i[a(x+y)-\\\\omega t]}(\\\\hat{i}-\\\\hat{j})$",
+    "$\\\\frac{1}{c\\\\sqrt{2}}E_0 e^{-i[a(x+y)-\\\\omega t]}(\\\\hat{i}+\\\\hat{j})$",
+    "$\\\\frac{1}{c\\\\sqrt{2}}E_0 e^{-i[a(x+y)-\\\\omega t]}(-\\\\hat{i}-\\\\hat{j})$",
+    "$\\\\frac{1}{c\\\\sqrt{2}}E_0 e^{-i[a(x+y)-\\\\omega t]}(-\\\\hat{i}+\\\\hat{j})$",
+  ],
+  correctAnswer: 0,
+},
+
+{
+  id: 25,
+  year: 2025,
+  subject: "Thermodynamics",
+  type: "MCQ",
+  question:
+    "Consider Maxwell’s relation $\\left(\\frac{\\partial S}{\\partial V}\\right)_T = \\left(\\frac{\\partial P}{\\partial T}\\right)_V$. The equation of state of a thermodynamic system is given as $P = \\frac{AT}{V^2} + \\frac{BT^3}{V}$, where $A$ and $B$ are constants of appropriate dimensions. Then $\\left(\\frac{\\partial C_V}{\\partial V}\\right)_T$ of the system varies with temperature as ($C_V$ is the heat capacity at constant volume)",
+
+  options: [
+    "$T^2$",
+    "$T$",
+    "$T^{-1}$",
+    "$T^3$",
+  ],
+  correctAnswer: 0,
+},
+
+{
+  id: 26,
+  year: 2025,
+  subject: "Special Relativity",
+  type: "MCQ",
+  question:
+    "Consider a relativistic particle of rest mass $2m$ moving with a speed $v$ along the $x$ direction. It collides with another relativistic particle of rest mass $m$ moving with the same speed but in the opposite direction. These two particles coalesce to form one particle whose rest mass $M$ is ($\\beta = \\frac{v}{c}$, where $c$ is the speed of light)",
+
+  options: [
+    "$m\\\\sqrt{\\\\frac{9-\\\\beta^2}{1-\\\\beta^2}}$",
+    "$2m\\\\sqrt{\\\\frac{3-\\\\beta^2}{1-\\\\beta^2}}$",
+    "$\\\\frac{m}{2}\\\\sqrt{\\\\frac{9-\\\\beta^2}{2-\\\\beta^2}}$",
+    "$\\\\frac{m}{4}\\\\sqrt{\\\\frac{1-\\\\beta^2}{2-\\\\beta^2}}$",
+  ],
+  correctAnswer: 1,
+},
+
+{
+  id: 27,
+  year: 2025,
+  subject: "Quantum Mechanics",
+  type: "MCQ",
+  question:
+    "A particle of mass $m$ is subjected to a potential $V(x)$. If its wavefunction is given by $$\\psi(x,t)=\\alpha x^2 e^{-\\beta x} e^{i\\gamma t/\\hbar},\\ x>0$$ $$\\psi(x,t)=0,\\ x\\leq0,$$ then $V(x)$ is ($\\alpha$, $\\beta$ and $\\gamma$ are constants of appropriate dimensions)",
+
+  options: [
+    "$-\\\\gamma+\\\\frac{\\\\hbar^2}{2m}\\\\left(\\\\frac{2}{x^2}-\\\\frac{4\\\\beta}{x}+\\\\beta^2\\\\right)$",
+    "$-\\\\gamma+\\\\frac{\\\\hbar^2}{2m}\\\\left(\\\\frac{2}{x^2}+\\\\frac{4\\\\beta}{x}+\\\\beta^2\\\\right)$",
+    "$-\\\\gamma+\\\\frac{\\\\hbar^2}{2m}\\\\left(\\\\frac{2}{x^2}-\\\\frac{4\\\\beta}{x}-\\\\beta^2\\\\right)$",
+    "$-\\\\gamma+\\\\frac{\\\\hbar^2}{2m}\\\\left(-\\\\frac{2}{x^2}-\\\\frac{4\\\\beta}{x}+\\\\beta^2\\\\right)$",
+  ],
+  correctAnswer: 0,
+},
+
+{
+  id: 28,
+  year: 2025,
+  subject: "Classical Mechanics",
+  type: "MCQ",
+  question:
+    "Two non-relativistic particles with masses $m_1$ and $m_2$ move with momenta $p_1$ and $p_2$, respectively, in an inertial frame $S$. In another inertial frame $S'$, moving with a constant speed with respect to $S$, the same particles are observed to have momenta $p_1'$ and $p_2'$, respectively. Galilean invariance implies that",
+
+  options: [
+    "$m_2p_1'-m_1p_2'=m_2p_1-m_1p_2$",
+    "$m_2p_1'+m_1p_2'=m_2p_1+m_1p_2$",
+    "$m_1p_1'-m_2p_2'=m_1p_1-m_2p_2$",
+    "$m_1p_1'+m_2p_2'=m_1p_1+m_2p_2$",
+  ],
+  correctAnswer: 0,
+},
+
+{
+  id: 29,
+  year: 2025,
+  subject: "Nuclear Physics",
+  type: "MCQ",
+  question:
+    "The binding energy $B(A,Z)$ of an atomic nucleus of mass number $A$, atomic number $Z$, and number of neutrons $N=A-Z$, can be expressed as $$B(A,Z)=a_1A-a_2A^{2/3}-a_3\\frac{Z^2}{A^{1/3}}-a_4\\frac{(A-2Z)^2}{A},$$ where $a_1,a_2,a_3,$ and $a_4$ are constants of appropriate dimensions. Let $B(A,Z')$ be the binding energy of a mirror nucleus (which has the same $A$, but the number of protons and neutrons are interchanged). Then, at constant $A$, $[B(A,Z)-B(A,Z')]$ is",
+
+  options: [
+    "proportional to $Z^2$",
+    "proportional to $(Z^2-N^2)$",
+    "proportional to $N^2$",
+    "constant",
+  ],
+  correctAnswer: 1,
+},
+
+{
+  id: 31,
+  year: 2025,
+  subject: "Boolean Algebra",
+  type: "MSQ",
+  question:
+    "In the logic circuit shown below, for which of the following combination(s) of inputs $P$ and $Q$, the output $Y$ will be $0$?",
+  image: "/images/31_25.png",
+  options: [
+    "$P=0,\\ Q=0$",
+    "$P=0,\\ Q=1$",
+    "$P=1,\\ Q=0$",
+    "$P=1,\\ Q=1$",
+  ],
+  correctAnswer: [1, 2],
+},
+
+{
+  id: 32,
+  year: 2025,
+  subject: "Classical Mechanics",
+  type: "MSQ",
+  question:
+    "Two particles of masses $m_1$ and $m_2$, interacting via gravity, rotate in circular orbits about their common center of mass with the same angular velocity $\\omega$. For masses $m_1$ and $m_2$, respectively, $r_1$ and $r_2$ are the constant distances from the center of mass, $L_1$ and $L_2$ are the magnitudes of the angular momenta about the center of mass, and $K_1$ and $K_2$ are the kinetic energies. Which of the following is(are) correct? ($G$ is the universal gravitational constant)",
+  image: "/images/32_25.png",
+  options: [
+    "$\\\\frac{L_1}{L_2}=\\\\frac{m_2}{m_1}$",
+    "$\\\\frac{K_1}{K_2}=\\\\frac{m_2}{m_1}$",
+    "$\\\\omega=\\\\sqrt{\\\\frac{G(m_1+m_2)}{(r_1+r_2)^3}}$",
+    "$m_2r_1=m_1r_2$",
+  ],
+  correctAnswer: [1, 2, 3],
+},
+
+{
+  id: 33,
+  year: 2025,
+  subject: "Solid State Physics",
+  type: "MSQ",
+  question:
+    "Which of these cubic lattice plane pairs is(are) perpendicular to each other?",
+  image: "/images/33_25.png",
+  options: [
+    "$(100),\\ (010)$",
+    "$(220),\\ (001)$",
+    "$(110),\\ (010)$",
+    "$(112),\\ (220)$",
+  ],
+  correctAnswer: [0, 1],
+},
+
+{
+  id: 34,
+  year: 2025,
+  subject: "Optics",
+  type: "MSQ",
+
+  question: String.raw`
+For a thin convex lens of focal length \(f\), the image of an object at \(O\) is formed at \(I\), as shown in the figure below. The distances of object and image from the two focal points \((F_O \text{ and } F_I)\) are \(x_0\) and \(x_1\), respectively.
+
+Which of the following graphs correctly represent(s) the variation of the quantities shown in the figure?
+`,
+
+  questionImage: "/images/34_25.png",
+
+  options: [
+    "",
+    "",
+    "",
+    ""
+  ],
+
+  optionImages: [
+    "/images/34a_25.png",
+    "/images/34b_25.png",
+    "/images/34c_25.png",
+    "/images/34d_25.png"
+  ],
+
+  correctAnswers: [0, 2],
+},
+
+{
+  id: 35,
+  year: 2025,
+  subject: "Waves",
+  type: "MSQ",
+
+  question: String.raw`
+Identify which of the following wave functions describe(s) travelling wave(s).
+
+\[
+(A_0, B_0, a, \text{ and } b \text{ are positive constants of appropriate dimensions})
+\]
+`,
+
+  options: [
+    String.raw`\(\psi(x,t)=A_0(x+t)^2\)`,
+    String.raw`\(\psi(x,t)=A_0\sin(ax^2+bt^2)\)`,
+    String.raw`\(\psi(x,t)=\dfrac{A_0}{B_0(x-t)^2+1}\)`,
+    String.raw`\(\psi(x,t)=A_0e^{(ax+bt)^2}\)`,
+  ],
+
+  correctAnswers: [0, 2, 3],
+},
+
+{
+  id: 36,
+  year: 2025,
+  subject: "Electrodynamics",
+  type: "MSQ",
+
+  question: String.raw`
+A spherical ball having a uniformly distributed charge \(Q\) and radius \(R\) pulsates with frequency \(\omega\) such that the radius changes by \(\pm 10\%\), as shown in the figure below.
+
+Which of the following is(are) correct?
+`,
+
+  questionImage: "/images/36_25.png",
+
+  options: [
+    String.raw`The net outward electric flux across a spherical surface of radius \(r>1.5R\) pulsates with a frequency \(\omega\)`,
+
+    String.raw`The net outward electric flux across a spherical surface of radius \(r=2R\) is \(\dfrac{Q}{\varepsilon_0}\)`,
+
+    String.raw`The potential fluctuates with frequency \(\omega\) at \(r=2R\)`,
+
+    String.raw`The electric field inside the sphere at \(r=0.5R\) will not be time dependent`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 37,
+  year: 2025,
+  subject: "Electrodynamics",
+  type: "MSQ",
+
+  question: String.raw`
+Which of the following relations is(are) valid for linear dielectrics?
+
+\[
+[E=\text{Electric field},\ P=\text{Polarization},\ D=\text{Electric displacement},
+\]
+
+\[
+\varepsilon_0=\text{Permittivity of free space},\ \varepsilon=\text{Dielectric permittivity},
+\]
+
+\[
+\chi_e=\text{Electric susceptibility},\ \rho_f=\text{Free charge density},
+\]
+
+\[
+\rho_b=\text{Bound charge density}]
+\]
+`,
+
+  options: [
+    String.raw`\(\mathbf{P}=\varepsilon_0\chi_e\mathbf{E}\)`,
+
+    String.raw`\(\varepsilon=\varepsilon_0(1+\chi_e)\)`,
+
+    String.raw`\(\mathbf{D}=\varepsilon_0\mathbf{E}+\mathbf{P}\)`,
+
+    String.raw`\(\nabla\cdot\mathbf{D}=\rho_f+\rho_b\)`,
+  ],
+
+  correctAnswers: [0, 1, 2],
+},
+
+{
+  id: 38,
+  year: 2025,
+  subject: "Thermodynamics",
+  type: "MSQ",
+
+  question: String.raw`
+Three gaseous systems, \(G_1, G_2,\) and \(G_3\) with pressure and volume \((P_1,V_1)\), \((P_2,V_2)\), and \((P_3,V_3)\), respectively, are such that
+
+(I) when \(G_1\) and \(G_2\) are in thermal equilibrium,
+
+\[
+P_1V_1-P_2V_2+\alpha P_2=0
+\]
+
+is satisfied, and
+
+(II) when \(G_1\) and \(G_3\) are in thermal equilibrium,
+
+\[
+P_3V_3-P_1V_1+\frac{\beta P_1V_1}{V_3}=0
+\]
+
+is satisfied.
+
+The relation(s) valid at thermal equilibrium is(are)
+
+\[
+(\alpha \text{ and } \beta \text{ are constants of appropriate dimensions})
+\]
+`,
+
+  options: [
+    String.raw`\(
+P_3V_3-(P_2V_2-\alpha P_2)\left(1-\frac{\beta}{V_3}\right)=0
+\)`,
+
+    String.raw`\(
+P_3V_3+(P_2V_2+\alpha P_2)\left(1+\frac{\beta}{V_3}\right)=0
+\)`,
+
+    String.raw`\(
+P_1V_1=P_2V_2=P_3V_3
+\)`,
+
+    String.raw`\(
+P_3V_3+P_1V_1\left(\frac{\beta}{V_3}-1\right)=0
+\)`,
+  ],
+
+  correctAnswers: [0, 3],
+},
+
+{
+  id: 39,
+  year: 2025,
+  subject: "Thermodynamics",
+  type: "MSQ",
+
+  question: String.raw`
+An ideal mono-atomic gas is expanded adiabatically from \(A\) to \(B\). It is then compressed in an isobaric process from \(B\) to \(C\). Finally, the pressure is increased in an isochoric process from \(C\) to \(A\).
+
+The cyclic process is shown in the figure below. For this system, which of the following is(are) correct?
+`,
+
+  questionImage: "/images/39_25.png",
+
+  options: [
+    String.raw`Work done along the path \(AB\) is \((P_1V_1-P_2V_2)\)`,
+
+    String.raw`Total work done during the entire process is
+\[
+\frac{3}{2}(P_1V_1-P_2V_2)+P_2(V_1-V_2)
+\]`,
+
+    String.raw`Total heat absorbed during the entire process is
+\[
+\frac{3}{2}(P_1-P_2)V_1
+\]`,
+
+    String.raw`Total change in internal energy during the entire process is
+\[
+\frac{5}{2}P_2(V_2-V_1)
+\]`,
+  ],
+
+  correctAnswers: [1],
+},
+
+{
+  id: 40,
+  year: 2025,
+  subject: "Solid State Physics",
+  type: "MSQ",
+
+  question: String.raw`
+For a body centered cubic (bcc) system, the x-ray diffraction peaks are observed for the following \(h^2+k^2+l^2\) value(s)
+
+\[
+[h,k,\text{ and } l \text{ are Miller indices}]
+\]
+`,
+
+  options: [
+    "3",
+    "4",
+    "5",
+    "7",
+  ],
+
+  correctAnswers: [0, 1],
+},
+
+{
+  id: 41,
+  year: 2025,
+  subject: "Mechanics",
+  type: "NAT",
+
+  question: String.raw`
+Two solid cylinders of the same density are found to have the same moment of inertia about their respective principal axes.
+
+The length of the second cylinder is \(16\) times that of the first cylinder.
+
+If the radius of the first cylinder is \(4\ \text{cm}\), the radius of the second cylinder is \_\_\_\_\_ cm. (in integer)
+`,
+
+  correctAnswer: "2",
+},
+{
+  id: 42,
+  year: 2025,
+  subject: "Optics",
+  type: "NAT",
+
+  question: String.raw`
+The shortest distance between an object and its real image formed by a thin convex lens of focal length \(20\ \text{cm}\) is \_\_\_\_\_ cm. (in integer)
+`,
+
+  correctAnswer: "80",
+},
+{
+  id: 43,
+  year: 2025,
+  subject: "Electrodynamics",
+  type: "NAT",
+
+  question: String.raw`
+Consider two media \(1\) and \(2\) having permittivities \(\varepsilon_0\) and \(\varepsilon_1(=2\varepsilon_0)\), respectively.
+
+The interface between the two media aligns with the \(x\)-\(y\) plane.
+
+An electric field
+
+\[
+\mathbf{E}_1=4\hat{i}-5\hat{j}-\hat{k}
+\]
+
+exists in medium \(1\).
+
+The magnitude of the displacement vector \(\mathbf{D}_2\) in medium \(2\) is \_\_\_\_\_ \(\varepsilon_0\). (up to two decimal places)
+`,
+
+  correctAnswer: "13.45",
+},
+
+{
+  id: 44,
+  year: 2025,
+  subject: "Thermodynamics",
+  type: "NAT",
+
+  question: String.raw`
+\(G1\) and \(G2\) are two ideal gases at temperatures \(T_1\) and \(T_2\), respectively.
+
+The molecular weight of the constituents of \(G1\) is half that of \(G2\).
+
+If the average speeds of the molecules of both gases are equal, then assuming Maxwell-Boltzmann distributions for the molecular speeds, the ratio
+
+\[
+\frac{T_2}{T_1}
+\]
+
+is \_\_\_\_\_. (in integer)
+`,
+
+  correctAnswer: "2",
+},
+{
+  id: 45,
+  year: 2025,
+  subject: "Electronics",
+  type: "NAT",
+
+  question: String.raw`
+An ideal p-n junction diode (ideality factor \(\eta=1\)) is operating in forward bias at room temperature (thermal energy \(=26\ \text{meV}\)).
+
+If the diode current is \(26\ \text{mA}\) for an applied bias of \(1.0\ \text{V}\), the dynamic resistance \((r_{ac})\) is \_\_\_\_\_ \(\Omega\). (up to two decimal places)
+`,
+
+  correctAnswer: "1.00",
+},
+{
+  id: 46,
+  year: 2025,
+  subject: "Quantum Mechanics",
+  type: "NAT",
+
+  question: String.raw`
+In a two-level atomic system, the excited state is \(0.2\ \text{eV}\) above the ground state.
+
+Considering the Maxwell-Boltzmann distribution, the temperature at which \(2\%\) of the atoms will be in the excited state is \_\_\_\_\_ K. (up to two decimal places)
+
+\[
+(k_B = 8.62\times10^{-5}\ \text{eV/K})
+\]
+`,
+
+  correctAnswer: "592.41",
+},
+
+{
+  id: 47,
+  year: 2025,
+  subject: "Quantum Mechanics",
+  type: "NAT",
+
+  question: String.raw`
+Neutrons of energy \(8\ \text{MeV}\) are incident on a potential step of height \(48\ \text{MeV}\).
+
+As they penetrate the classically forbidden region, the distance at which the probability density of finding neutrons decreases by a factor of \(100\) is \_\_\_\_\_ fm. (up to two decimal places)
+
+\[
+(\hbar c = 200\ \text{MeV fm},\ \text{and the rest mass energy of neutron}=1\ \text{GeV})
+\]
+`,
+
+  correctAnswer: "10.54",
+},
+{
+  id: 48,
+  year: 2025,
+  subject: "Modern Physics",
+  type: "NAT",
+
+  question: String.raw`
+At a particular temperature \(T\), Planck’s energy density of black body radiation in terms of frequency is
+
+\[
+\rho_T(\nu)=8\times10^{-18}\ \frac{\text{J/m}^3}{\text{Hz}}
+\]
+
+at
+
+\[
+\nu=3\times10^{14}\ \text{Hz}.
+\]
+
+Then Planck’s energy density
+
+\[
+\rho_T(\lambda)
+\]
+
+at the corresponding wavelength \((\lambda)\) has the value \_\_\_\_\_ \(\times 10^2\ \dfrac{\text{J/m}^3}{\text{m}}\). (in integer)
+
+\[
+[\text{Speed of light } c=3\times10^8\ \text{m/s}]
+\]
+`,
+
+  correctAnswer: "24",
+},
+{
+  id: 49,
+  year: 2025,
+  subject: "Solid State Physics",
+  type: "NAT",
+
+  question: String.raw`
+The ratio of the density of atoms between the \((111)\) and \((110)\) planes in a simple cubic \((sc)\) lattice is \_\_\_\_\_. (up to two decimal places)
+`,
+
+  correctAnswer: "0.82",
+},
+
+{
+  id: 50,
+  year: 2025,
+  subject: "Solid State Physics",
+  type: "NAT",
+
+  question: String.raw`
+The packing fraction for a two-dimensional hexagonal lattice having sides \(2r\) with atoms of radii \(r\) placed at each vertex and at the center is \_\_\_\_\_. (up to two decimal places)
+`,
+
+  correctAnswer: "0.91",
+},
+
+{
+  id: 51,
+  year: 2025,
+  subject: "Electronics",
+  type: "NAT",
+
+  question: String.raw`
+A NPN bipolar junction transistor (BJT) is connected in common emitter (CE) configuration as shown in the circuit diagram below.
+
+The amplifier is operating in the saturation regime.
+
+The collector-emitter saturation voltage \((V_{CE}^{sat})\) is \(0.2\ \text{V}\).
+
+The current gain \(\beta=100\).
+
+The maximum value of base resistance \(R_{BB}\) is \_\_\_\_\_ k\(\Omega\). (in integer)
+`,
+
+  questionImage: "/images/51_25.png",
+
+  correctAnswer: "19",
+},
+{
+  id: 52,
+  year: 2025,
+  subject: "Electronics",
+  type: "NAT",
+
+  question: String.raw`
+For a Zener diode as shown in the circuit diagram below, the Zener voltage \(V_Z\) is \(3.7\ \text{V}\).
+
+For a load resistance \((R_L)\) of \(1\ \text{k}\Omega\), a current \(I_1\) flows through the load.
+
+If \(R_L\) is decreased to \(500\ \Omega\), the current changes to \(I_2\).
+
+The ratio
+
+\[
+\frac{I_2}{I_1}
+\]
+
+is \_\_\_\_\_. (up to two decimal places)
+`,
+
+  questionImage: "/images/52_25.png",
+
+  correctAnswer: "2.00",
+},
+
+{
+  id: 53,
+  year: 2025,
+  subject: "Thermodynamics",
+  type: "NAT",
+
+  question: String.raw`
+One kg of water at \(27^\circ\text{C}\) is brought in contact with a heat reservoir kept at \(37^\circ\text{C}\).
+
+Upon reaching thermal equilibrium, this mass of water is brought in contact with another heat reservoir kept at \(47^\circ\text{C}\).
+
+The final temperature of water is \(47^\circ\text{C}\).
+
+The change in entropy of the whole system in this entire process is \_\_\_\_\_ cal/K. (up to two decimal places)
+
+\[
+[\text{Take specific heat at constant pressure of water as }1\ \text{cal/(g K)}]
+\]
+`,
+
+  correctAnswer: "5.32",
+},
+{
+  id: 54,
+  year: 2025,
+  subject: "Mathematical Methods",
+  type: "NAT",
+
+  question: String.raw`
+Consider a vector
+
+\[
+\mathbf{F}=\frac{1}{\pi}\left[-\sin y\,\hat{i}+x(1-\cos y)\,\hat{j}\right].
+\]
+
+The value of the integral
+
+\[
+\oint \mathbf{F}\cdot d\mathbf{r}
+\]
+
+over a circle
+
+\[
+x^2+y^2=1
+\]
+
+evaluated in the anti-clockwise direction is \_\_\_\_\_. (in integer)
+`,
+
+  correctAnswer: "1",
+},
+{
+  id: 55,
+  year: 2025,
+  subject: "Mechanics",
+  type: "NAT",
+
+  question: String.raw`
+A particle is moving with a constant angular velocity \(2\ \text{rad/s}\) in an orbit on a plane.
+
+The radial distance of the particle from the origin at time \(t\) is given by
+
+\[
+r=r_0e^{2\beta t}
+\]
+
+where \(r_0\) and \(\beta\) are positive constants.
+
+The radial component of the acceleration vanishes for
+
+\[
+\beta=\_\_\_\_\_ \text{ rad/s}.
+\]
+
+(in integer)
+`,
+
+  correctAnswer: "1",
+},
+
+{
+  id: 56,
+  year: 2025,
+  subject: "Mechanics",
+  type: "NAT",
+
+  question: String.raw`
+A planet rotates in an elliptical orbit with a star situated at one of the foci.
+
+The distance from the center of the ellipse to any focus is half of the semi-major axis.
+
+The ratio of the speed of the planet when it is nearest (perihelion) to the star to that at the farthest (aphelion) is \_\_\_\_\_. (in integer)
+`,
+
+  correctAnswer: "3",
+},
+
+{
+  id: 57,
+  year: 2025,
+  subject: "Optics",
+  type: "NAT",
+
+  question: String.raw`
+A light beam given by
+
+\[
+\mathbf{E}(z,t)=E_{01}\sin(kz-\omega t)\,\hat{i}
++
+E_{02}\sin\left(kz-\omega t+\frac{\pi}{6}\right)\,\hat{j}
+\]
+
+passes through an ideal linear polarizer whose transmission axis is tilted by \(60^\circ\) from \(x\)-axis (in \(x\)-\(y\) plane).
+
+If \(E_{01}=4\ \text{V/m}\) and \(E_{02}=2\ \text{V/m}\), the electric field amplitude of the emerging light beam from the polarizer is \_\_\_\_\_ V/m. (up to two decimal places)
+`,
+
+  correctAnswer: "3.74",
+},
+
+{
+  id: 58,
+  year: 2025,
+  subject: "Optics",
+  type: "NAT",
+
+  question: String.raw`
+A wedge-shaped thin film is formed using soap-water solution.
+
+The refractive index of the film is \(1.25\).
+
+At near normal incidence, when the film is illuminated by a monochromatic light of wavelength \(600\ \text{nm}\), \(10\) interference fringes per cm are observed.
+
+The wedge angle (in radians) is \_\_\_\_\_ \(\times 10^{-5}\). (in integer)
+`,
+
+  correctAnswer: "24",
+},
+
+{
+  id: 59,
+  year: 2025,
+  subject: "Solid State Physics",
+  type: "NAT",
+
+  question: String.raw`
+In an orthorhombic crystal, the lattice constants are \(3.0\ \text{\AA}\), \(3.2\ \text{\AA}\), and \(4.0\ \text{\AA}\).
+
+The distance \(d_{101}\) between the successive \((101)\) planes is \_\_\_\_\_ \(\text{\AA}\). (up to one decimal place)
+`,
+
+  correctAnswer: "2.4",
+},
+
+{
+  id: 60,
+  year: 2025,
+  subject: "Thermodynamics",
+  type: "NAT",
+
+  question: String.raw`
+Consider a chamber at room temperature \((27^\circ\text{C})\) filled with a gas having a molecular diameter of \(0.35\ \text{nm}\).
+
+The pressure (in Pascal) to which the chamber needs to be evacuated so that the molecules have a mean free path of \(1\ \text{km}\) is
+
+\[
+\_\_\_\_\_ \times 10^{-5}\ \text{Pa}.
+\]
+
+(up to two decimal places)
+
+\[
+(k_B=1.38\times10^{-23}\ \text{J/K})
+\]
+`,
+
+  correctAnswer: "3.59",
+},
 
 ];
 
