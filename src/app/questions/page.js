@@ -100,6 +100,9 @@ export default function IITJamPhysicsHub() {
         "Fourier Series",
         "Mathematical Physics",
         "Complex Numbers",
+        "Taylor Series",
+        "Linear Algebra",
+        "Integral Calculus",
       ],
     },
 
@@ -137,7 +140,7 @@ export default function IITJamPhysicsHub() {
         "Electromagnetic Theory",
         "Electromagnetic Induction",
         "Electromagnetism",
-        "LCR Circuits",
+        "Electrodynamics",
       ],
     },
 
@@ -165,11 +168,12 @@ export default function IITJamPhysicsHub() {
       id: "solid",
       name: "Solid State & Electronics",
       subtopics: [
-        "Semiconductor Physics",
+        "Semiconductors",
         "Electronics",
         "Solid State Physics",
         "Boolean Algebra",
         "AC Circuits",
+        "LCR Circuits",
       ],
     },
   ];

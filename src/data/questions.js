@@ -23,7 +23,7 @@ Light of wavelength \(632\,nm\) is passing through an optically active medium of
 {
   id: 2,
   year: 2026,
-  subject: "Semiconductor Physics",
+  subject: "Semiconductors",
   type: "MCQ",
 
   question: String.raw`
@@ -201,7 +201,7 @@ Consider the electrostatic potential in two dimensions \(V(x,y)=x^8y^9\). What i
 {
   id: 10,
   year: 2026,
-  subject: "Matrices",
+  subject: "Linear Algebra",
   type: "MCQ",
 
   question: String.raw`
@@ -574,7 +574,7 @@ a_0 = \frac{3\pi}{2}
 {
   id: 25,
   year: 2026,
-  subject: "Mathematics",
+  subject: "Taylor Series",
   type: "MCQ",
 
   question: String.raw`
@@ -741,7 +741,7 @@ W_{DA}=0
 {
   id: 30,
   year: 2026,
-  subject: "Mechanics",
+  subject: "Classical Mechanics",
   type: "MCQ",
 
   question: String.raw`
@@ -856,7 +856,7 @@ For what value(s) of the input voltage \(V_i\), the Zener diode is in ON state?
 {
   id: 33,
   year: 2026,
-  subject: "Mechanics",
+  subject: "Classical Mechanics",
   type: "MSQ",
 
   question: String.raw`
@@ -927,7 +927,7 @@ Events \((9,-1,1,-1)\) and \((-10,1,0,-1)\) are time-like separated
 {
   id: 35,
   year: 2026,
-  subject: "Mechanics",
+  subject: "Classical Mechanics",
   type: "MSQ",
 
   question: String.raw`
@@ -1548,7 +1548,7 @@ An OP-AMP has differential gain of \(A_d = 4000\), two input voltages \(V_{i1} =
 {
   id: 13,
   year: 2025,
-  subject: "Matrices",
+  subject: "Linear Algebra",
   type: "MCQ",
   question:
     "If the system of linear equations\n\n$$x + my + az = 0$$\n$$2x + ay + mz = 0$$\n$$ax + 2y - z = 0$$\n\nwith $m$ and $a$ as non-zero constants, admits a non-trivial solution, then which one of the following conditions is correct?",
@@ -2161,7 +2161,7 @@ For a body centered cubic (bcc) system, the x-ray diffraction peaks are observed
 {
   id: 41,
   year: 2025,
-  subject: "Mechanics",
+  subject: "Classical Mechanics",
   type: "NAT",
 
   question: String.raw`
@@ -2427,7 +2427,7 @@ The change in entropy of the whole system in this entire process is \_\_\_\_\_ c
 {
   id: 54,
   year: 2025,
-  subject: "Mathematical Methods",
+  subject: "Vector Calculus",
   type: "NAT",
 
   question: String.raw`
@@ -2457,7 +2457,7 @@ evaluated in the anti-clockwise direction is \_\_\_\_\_. (in integer)
 {
   id: 55,
   year: 2025,
-  subject: "Mechanics",
+  subject: "Classical Mechanics",
   type: "NAT",
 
   question: String.raw`
@@ -2486,7 +2486,7 @@ The radial component of the acceleration vanishes for
 {
   id: 56,
   year: 2025,
-  subject: "Mechanics",
+  subject: "Classical Mechanics",
   type: "NAT",
 
   question: String.raw`
@@ -2628,11 +2628,11 @@ The sum of three binary numbers, \(10110.10\), \(11010.01\), and \(10101.11\), i
 {
   id: 3,
   year: 2024,
-  subject: "Matrices",
+  subject: "Linear Algebra",
   type: "MCQ",
 
   question: String.raw`
-Which of the following matrices is Hermitian as well as unitary?
+Which of the following Linear Algebra is Hermitian as well as unitary?
 `,
 
   options: [
@@ -3848,7 +3848,7 @@ One mole of an ideal monoatomic gas, initially at temperature \(T_0\) is expande
 {
   id: 41,
   year: 2024,
-  subject: "Semiconductor Physics",
+  subject: "Semiconductors",
   type: "NAT",
 
   question: String.raw`
@@ -3930,7 +3930,7 @@ A particle of mass \(1\,\text{kg}\), initially at rest, starts sliding down from
 {
   id: 45,
   year: 2024,
-  subject: "Rotational Dynamics",
+  subject: "Classical Mechanics",
   type: "NAT",
 
   question: String.raw`
@@ -4045,7 +4045,7 @@ The current \(I_C\) will be ________ mA. (Rounded off to two decimal places)
 {
   id: 53,
   year: 2024,
-  subject: "Mathematical Physics",
+  subject: "Taylor Series",
   type: "NAT",
 
   question: String.raw`
