@@ -206,6 +206,37 @@ export default function IITJamPhysicsHub() {
   const [natAnswer, setNatAnswer] =
     useState("");
 
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportDescription, setReportDescription] = useState("");
+  const [isReporting, setIsReporting] = useState(false);
+
+  const handleReportQuestion = async () => {
+    if (!reportDescription.trim()) return;
+    setIsReporting(true);
+    try {
+      const res = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questionId: `${activeQuestion.year}-${activeQuestion.id}`,
+          description: reportDescription,
+        }),
+      });
+      if (res.ok) {
+        setIsReportModalOpen(false);
+        setReportDescription("");
+        alert("Report submitted successfully. Thank you!");
+      } else {
+        alert("Failed to submit report. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsReporting(false);
+    }
+  };
+
   const filteredQuestions = useMemo(() => {
 
     return questions.filter((q) => {
@@ -498,6 +529,12 @@ export default function IITJamPhysicsHub() {
                 </button>
               </div>
             )}
+            <Link
+              href="/admin"
+              className="px-4 py-2 text-sm rounded-xl text-zinc-400 hover:text-white transition hidden sm:block"
+            >
+              Admin
+            </Link>
             <Link
               href="/"
               className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition hidden sm:block"
@@ -964,6 +1001,15 @@ export default function IITJamPhysicsHub() {
 
             </div>
 
+            <div className="mt-8 flex justify-end">
+              <button
+                onClick={() => setIsReportModalOpen(true)}
+                className="text-sm text-zinc-500 hover:text-red-400 transition underline decoration-zinc-700 underline-offset-4"
+              >
+                Report an error with this question
+              </button>
+            </div>
+
             {isCorrect !== null && (
 
               <div
@@ -1024,6 +1070,38 @@ export default function IITJamPhysicsHub() {
 
         </section>
 
+      )}
+
+      {isReportModalOpen && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 max-w-lg w-full">
+            <h3 className="text-2xl font-bold text-white mb-4">Report Question Error</h3>
+            <p className="text-zinc-400 mb-6">
+              Found a mistake in the question, options, or answer? Let us know and we'll fix it.
+            </p>
+            <textarea
+              value={reportDescription}
+              onChange={(e) => setReportDescription(e.target.value)}
+              placeholder="Describe the error..."
+              className="w-full h-32 bg-black border border-zinc-700 rounded-2xl p-4 text-white outline-none mb-6 resize-none focus:border-zinc-500 transition"
+            />
+            <div className="flex gap-4 justify-end">
+              <button
+                onClick={() => setIsReportModalOpen(false)}
+                className="px-6 py-3 rounded-2xl border border-zinc-700 text-white hover:bg-zinc-800 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReportQuestion}
+                disabled={isReporting || !reportDescription.trim()}
+                className="px-6 py-3 rounded-2xl bg-white text-black font-bold disabled:opacity-50 transition"
+              >
+                {isReporting ? "Submitting..." : "Submit Report"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

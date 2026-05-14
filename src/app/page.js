@@ -117,6 +117,13 @@ export default function IITJamPrepPlatform() {
             )}
 
             <Link
+              href="/admin"
+              className="px-4 py-2 text-sm rounded-xl text-zinc-400 hover:text-white transition hidden sm:block"
+            >
+              Admin
+            </Link>
+
+            <Link
               href="/questions"
               className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition"
             >
