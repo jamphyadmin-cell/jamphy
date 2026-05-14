@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { questions } from "../../data/questions";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -187,6 +189,11 @@ export default function IITJamPhysicsHub() {
   const [selectedSubtopic, setSelectedSubtopic] =
     useState("All");
 
+  const [selectedType, setSelectedType] =
+    useState("All");
+
+  const { data: session } = useSession();
+
   const [activeQuestion, setActiveQuestion] =
     useState(null);
 
@@ -217,10 +224,16 @@ export default function IITJamPhysicsHub() {
           ? true
           : q.subject === selectedSubtopic;
 
+      const typeMatch =
+        selectedType === "All"
+          ? true
+          : q.type === selectedType;
+
       return (
         subjectMatch &&
         yearMatch &&
-        subtopicMatch
+        subtopicMatch &&
+        typeMatch
       );
 
     });
@@ -229,15 +242,16 @@ export default function IITJamPhysicsHub() {
     selectedSubject,
     selectedYear,
     selectedSubtopic,
+    selectedType,
   ]);
 
   const currentQuestionIndex =
     activeQuestion
       ? filteredQuestions.findIndex(
-          (q) =>
-            q.id === activeQuestion.id &&
-            q.year === activeQuestion.year
-        )
+        (q) =>
+          q.id === activeQuestion.id &&
+          q.year === activeQuestion.year
+      )
       : -1;
 
   const hasPreviousQuestion =
@@ -289,35 +303,35 @@ export default function IITJamPhysicsHub() {
 
   const getCorrectOptions = (question) => {
 
-  if (question.type === "NAT") {
+    if (question.type === "NAT") {
 
-    return [String(question.correctAnswer)];
+      return [String(question.correctAnswer)];
 
-  }
+    }
 
-  // MSQ
-  if (Array.isArray(question.correctAnswers)) {
+    // MSQ
+    if (Array.isArray(question.correctAnswers)) {
 
-    return question.correctAnswers.map(
-      (answerIndex) => question.options[answerIndex]
-    );
+      return question.correctAnswers.map(
+        (answerIndex) => question.options[answerIndex]
+      );
 
-  }
+    }
 
-  // MCQ
-  if (
-    typeof question.correctAnswer === "number"
-  ) {
+    // MCQ
+    if (
+      typeof question.correctAnswer === "number"
+    ) {
 
-    return [
-      question.options[question.correctAnswer]
-    ];
+      return [
+        question.options[question.correctAnswer]
+      ];
 
-  }
+    }
 
-  return [];
+    return [];
 
-};
+  };
 
   const arraysMatch = (first, second) => {
 
@@ -397,35 +411,35 @@ export default function IITJamPhysicsHub() {
 
   const submitNATAnswer = () => {
 
-  const enteredAnswer = Number(
-    String(natAnswer).trim()
-  );
-
-  if (isNaN(enteredAnswer)) {
-    return;
-  }
-
-  if (
-    activeQuestion.correctAnswerMin !== undefined &&
-    activeQuestion.correctAnswerMax !== undefined
-  ) {
-
-    setIsCorrect(
-      enteredAnswer >= activeQuestion.correctAnswerMin &&
-      enteredAnswer <= activeQuestion.correctAnswerMax
+    const enteredAnswer = Number(
+      String(natAnswer).trim()
     );
 
-    return;
-  }
+    if (isNaN(enteredAnswer)) {
+      return;
+    }
 
-  const correctAnswer = Number(
-    activeQuestion.correctAnswer
-  );
+    if (
+      activeQuestion.correctAnswerMin !== undefined &&
+      activeQuestion.correctAnswerMax !== undefined
+    ) {
 
-  setIsCorrect(
-    enteredAnswer === correctAnswer
-  );
-};
+      setIsCorrect(
+        enteredAnswer >= activeQuestion.correctAnswerMin &&
+        enteredAnswer <= activeQuestion.correctAnswerMax
+      );
+
+      return;
+    }
+
+    const correctAnswer = Number(
+      activeQuestion.correctAnswer
+    );
+
+    setIsCorrect(
+      enteredAnswer === correctAnswer
+    );
+  };
 
   return (
 
@@ -440,19 +454,58 @@ export default function IITJamPhysicsHub() {
       />
 
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
-
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-center">
-
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={200}
-            height={200}
-            className="rounded-2xl"
-          />
-
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href="/">
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={200}
+                height={200}
+                className="rounded-2xl"
+              />
+            </Link>
+          </div>
+          <div className="flex gap-3 items-center">
+            {!session ? (
+              <button
+                onClick={() => signIn("google")}
+                className="px-4 py-2 rounded-xl border border-zinc-700 hover:bg-zinc-800 transition"
+              >
+                Login with Google
+              </button>
+            ) : (
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  {session.user?.image && (
+                    <Image
+                      src={session.user.image}
+                      alt="Profile"
+                      width={32}
+                      height={32}
+                      className="rounded-full"
+                    />
+                  )}
+                  <span className="text-sm text-zinc-300 hidden sm:block">
+                    {session.user?.name}
+                  </span>
+                </div>
+                <button
+                  onClick={() => signOut()}
+                  className="px-4 py-2 text-sm rounded-xl border border-zinc-700 hover:bg-zinc-800 transition"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+            <Link
+              href="/"
+              className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition hidden sm:block"
+            >
+              Home
+            </Link>
+          </div>
         </div>
-
       </nav>
 
       {!selectedSubject && (
@@ -472,6 +525,8 @@ export default function IITJamPhysicsHub() {
                   setSelectedYear("All");
 
                   setSelectedSubtopic("All");
+
+                  setSelectedType("All");
 
                 }}
                 className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-left hover:bg-zinc-900 transition"
@@ -568,12 +623,27 @@ export default function IITJamPhysicsHub() {
 
             </select>
 
+            <select
+              value={selectedType}
+              onChange={(e) =>
+                setSelectedType(e.target.value)
+              }
+              className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
+            >
+              <option value="All">All Types</option>
+              <option value="MCQ">MCQ</option>
+              <option value="MSQ">MSQ</option>
+              <option value="NAT">NAT</option>
+            </select>
+
             <button
               onClick={() => {
 
                 setSelectedYear("All");
 
                 setSelectedSubtopic("All");
+
+                setSelectedType("All");
 
               }}
               className="rounded-2xl border border-zinc-700 px-5 py-4 text-white hover:bg-zinc-900"
@@ -768,25 +838,25 @@ export default function IITJamPhysicsHub() {
                       return (
 
                         <button
-  key={index}
-  disabled={
-    !isMSQ &&
-    isCorrect !== null
-  }
-  onClick={() => {
+                          key={index}
+                          disabled={
+                            !isMSQ &&
+                            isCorrect !== null
+                          }
+                          onClick={() => {
 
-    if (isMSQ) {
+                            if (isMSQ) {
 
-      handleMultipleAnswer(option);
+                              handleMultipleAnswer(option);
 
-    } else {
+                            } else {
 
-      handleSingleAnswer(option);
+                              handleSingleAnswer(option);
 
-    }
+                            }
 
-  }}
-  className={`
+                          }}
+                          className={`
     w-full
     rounded-3xl
     border
@@ -797,53 +867,52 @@ export default function IITJamPhysicsHub() {
     min-h-[120px]
     ${style}
   `}
->
+                        >
 
-  <div className="flex gap-4 items-start w-full min-w-0 overflow-hidden">
+                          <div className="flex gap-4 items-start w-full min-w-0 overflow-hidden">
 
-  <div
-    className={`
+                            <div
+                              className={`
       w-12 h-12 shrink-0
       rounded-full
       flex items-center justify-center
       text-xl text-white
-      ${
-        isSelected
-          ? "bg-blue-600"
-          : "bg-zinc-700"
-      }
+      ${isSelected
+                                  ? "bg-blue-600"
+                                  : "bg-zinc-700"
+                                }
     `}
-  >
-    {String.fromCharCode(65 + index)}
-  </div>
+                            >
+                              {String.fromCharCode(65 + index)}
+                            </div>
 
-    <div className="flex-1 min-w-0 overflow-hidden">
+                            <div className="flex-1 min-w-0 overflow-hidden">
 
-      {activeQuestion.optionImages?.[index] && (
+                              {activeQuestion.optionImages?.[index] && (
 
-        <Image
-          src={activeQuestion.optionImages[index]}
-          alt={`Option ${index + 1}`}
-          width={500}
-          height={300}
-          className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
-        />
+                                <Image
+                                  src={activeQuestion.optionImages[index]}
+                                  alt={`Option ${index + 1}`}
+                                  width={500}
+                                  height={300}
+                                  className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
+                                />
 
-      )}
+                              )}
 
-      <div className="overflow-x-auto overflow-y-hidden max-w-full">
+                              <div className="overflow-x-auto overflow-y-hidden max-w-full">
 
-        <MathText className="option-copy w-full text-[14px] sm:text-[15px] md:text-[17px] leading-relaxed text-white break-words">
-          {option}
-        </MathText>
+                                <MathText className="option-copy w-full text-[14px] sm:text-[15px] md:text-[17px] leading-relaxed text-white break-words">
+                                  {option}
+                                </MathText>
 
-      </div>
+                              </div>
 
-    </div>
+                            </div>
 
-  </div>
+                          </div>
 
-</button>
+                        </button>
 
                       );
                     }
@@ -898,11 +967,10 @@ export default function IITJamPhysicsHub() {
             {isCorrect !== null && (
 
               <div
-                className={`mt-6 rounded-2xl border p-5 text-lg font-bold ${
-                  isCorrect
-                    ? "border-green-500 bg-green-500/20 text-green-200"
-                    : "border-red-500 bg-red-500/20 text-red-200"
-                }`}
+                className={`mt-6 rounded-2xl border p-5 text-lg font-bold ${isCorrect
+                  ? "border-green-500 bg-green-500/20 text-green-200"
+                  : "border-red-500 bg-red-500/20 text-red-200"
+                  }`}
               >
 
                 {isCorrect ? (
@@ -921,26 +989,26 @@ export default function IITJamPhysicsHub() {
 
                       {isNAT ? (
 
-  activeQuestion.correctAnswerMin !== undefined ? (
+                        activeQuestion.correctAnswerMin !== undefined ? (
 
-    <span>
-      {activeQuestion.correctAnswerMin} to{" "}
-      {activeQuestion.correctAnswerMax}
-    </span>
+                          <span>
+                            {activeQuestion.correctAnswerMin} to{" "}
+                            {activeQuestion.correctAnswerMax}
+                          </span>
 
-  ) : (
+                        ) : (
 
-    activeQuestion.correctAnswer
+                          activeQuestion.correctAnswer
 
-  )
+                        )
 
-) : (
+                      ) : (
 
-  <MathText className="inline-block">
-    {getCorrectOptions(activeQuestion).join(", ")}
-  </MathText>
+                        <MathText className="inline-block">
+                          {getCorrectOptions(activeQuestion).join(", ")}
+                        </MathText>
 
-)}
+                      )}
 
                     </div>
 
