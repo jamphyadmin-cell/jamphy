@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { adminLogout, updateReportStatus } from "./actions";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
   // We already have middleware, but we can do an extra check here if we want
   
