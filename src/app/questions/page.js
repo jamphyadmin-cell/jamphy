@@ -7,11 +7,9 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import UserMenu from "../../components/UserMenu";
 import { questions } from "../../data/questions";
-import ReactMarkdown from "react-markdown";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-
-import "katex/dist/katex.min.css";
+import { syllabus } from "../../data/syllabus";
+import TestManager from "../../components/test/TestManager";
+import MathText from "../../components/MathText";
 
 const icons = {
   math: "∫",
@@ -22,31 +20,6 @@ const icons = {
   modern: "☄",
   solid: "⌁",
 };
-
-const markdownComponents = {
-  p: ({ children }) => <p>{children}</p>,
-};
-
-const normalizeMathDelimiters = (value) =>
-  String(value)
-    .replace(/\\\[/g, "$$")
-    .replace(/\\\]/g, "$$")
-    .replace(/\\\(/g, "$")
-    .replace(/\\\)/g, "$");
-
-function MathText({ children, className = "" }) {
-  return (
-    <div className={`math-copy ${className}`}>
-      <ReactMarkdown
-        components={markdownComponents}
-        remarkPlugins={[remarkMath]}
-        rehypePlugins={[rehypeKatex]}
-      >
-        {normalizeMathDelimiters(children)}
-      </ReactMarkdown>
-    </div>
-  );
-}
 
 export default function IITJamPhysicsHub() {
 
@@ -93,94 +66,7 @@ export default function IITJamPhysicsHub() {
 
   }, []);
 
-  const syllabus = [
-    {
-      id: "math",
-      name: "Mathematical Methods",
-      subtopics: [
-        "Differential Equations",
-        "Matrices",
-        "Vector Calculus",
-        "Fourier Series",
-        "Mathematical Physics",
-        "Complex Numbers",
-        "Taylor Series",
-        "Linear Algebra",
-        "Integral Calculus",
-      ],
-    },
-
-    {
-      id: "mechanics",
-      name: "Mechanics & General Properties",
-      subtopics: [
-        "Classical Mechanics",
-        "Rotational Dynamics",
-        "Circular Motion",
-        "Work Power Energy",
-        "Gravitation",
-        "Relativity",
-      ],
-    },
-
-    {
-      id: "waves",
-      name: "Oscillations, Waves & Optics",
-      subtopics: [
-        "Polarization",
-        "Wave Optics",
-        "Optics",
-        "Waves",
-        "Simple Harmonic Motion",
-        "Oscillations",
-      ],
-    },
-
-    {
-      id: "em",
-      name: "Electricity & Magnetism",
-      subtopics: [
-        "Electrostatics",
-        "Electromagnetic Theory",
-        "Electromagnetic Induction",
-        "Electromagnetism",
-        "Electrodynamics",
-      ],
-    },
-
-    {
-      id: "thermo",
-      name: "Thermodynamics & KTG",
-      subtopics: [
-        "Thermodynamics",
-        "Phase Transitions",
-      ],
-    },
-
-    {
-      id: "modern",
-      name: "Modern Physics",
-      subtopics: [
-        "Quantum Mechanics",
-        "Special Relativity",
-        "Modern Physics",
-        "Nuclear Physics",
-      ],
-    },
-
-    {
-      id: "solid",
-      name: "Solid State & Electronics",
-      subtopics: [
-        "Semiconductors",
-        "Electronics",
-        "Solid State Physics",
-        "Boolean Algebra",
-        "AC Circuits",
-        "LCR Circuits",
-      ],
-    },
-  ];
+  const [testActive, setTestActive] = useState(false);
 
   const [selectedSubject, setSelectedSubject] =
     useState(null);
@@ -571,13 +457,19 @@ export default function IITJamPhysicsHub() {
             </Link>
           </div>
           <div className="flex gap-3 items-center">
-            <UserMenu session={session} />
+            <button
+              onClick={() => setTestActive(true)}
+              className="px-4 py-2 rounded-xl border border-zinc-700 bg-zinc-900 text-white font-semibold hover:bg-zinc-800 transition hidden sm:block shadow-[0_0_10px_rgba(255,255,255,0.1)]"
+            >
+              Create Test
+            </button>
             <Link
               href="/"
               className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition hidden sm:block"
             >
               Home
             </Link>
+            <UserMenu session={session} />
           </div>
         </div>
       </nav>
@@ -607,10 +499,10 @@ export default function IITJamPhysicsHub() {
                   className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 hover:border-zinc-500 transition-all text-white font-bold text-lg group"
                 >
                   Sign in with
-                  <img 
-                    src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" 
-                    alt="Google" 
-                    className="h-6 w-auto object-contain mt-0.5 group-hover:scale-105 transition-transform" 
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+                    alt="Google"
+                    className="h-6 w-auto object-contain mt-0.5 group-hover:scale-105 transition-transform"
                   />
                 </button>
               </>
@@ -620,7 +512,7 @@ export default function IITJamPhysicsHub() {
                 <p className="text-zinc-400 mb-6 font-medium text-sm">
                   Just a few more details before you start practicing!
                 </p>
-                
+
                 {profileMessage.text && (
                   <div className={`mb-6 p-3 rounded-xl border text-sm w-full ${profileMessage.type === "success" ? "bg-green-500/10 border-green-500/30 text-green-400" : "bg-red-500/10 border-red-500/30 text-red-400"}`}>
                     {profileMessage.text}
@@ -688,7 +580,7 @@ export default function IITJamPhysicsHub() {
                       className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors text-sm"
                     />
                   </div>
-                  
+
                   <button
                     type="submit"
                     disabled={isSavingProfile}
@@ -703,7 +595,7 @@ export default function IITJamPhysicsHub() {
         </div>
       )}
 
-      {!selectedSubject && (
+      {!selectedSubject && !testActive && (
 
         <section className="max-w-7xl mx-auto px-6 py-16">
 
@@ -721,17 +613,15 @@ export default function IITJamPhysicsHub() {
 
                   setSelectedSubtopic("All");
 
-                  setSelectedType("All");
-
                 }}
-                className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-left hover:bg-zinc-900 transition"
+                className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 text-left hover:bg-zinc-900 transition h-full flex flex-col items-start"
               >
 
-                <div className="w-16 h-16 rounded-2xl bg-zinc-800 flex items-center justify-center text-3xl mb-6">
+                <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center text-2xl mb-4">
                   {icons[subject.id]}
                 </div>
 
-                <h3 className="text-3xl font-bold tracking-tight">
+                <h3 className="text-2xl font-bold tracking-tight">
                   {subject.name}
                 </h3>
 
@@ -745,7 +635,7 @@ export default function IITJamPhysicsHub() {
 
       )}
 
-      {selectedSubject && !activeQuestion && (
+      {selectedSubject && !activeQuestion && !testActive && (
 
         <section className="max-w-7xl mx-auto px-6 py-16">
 
@@ -904,7 +794,7 @@ export default function IITJamPhysicsHub() {
 
       )}
 
-      {activeQuestion && (
+      {activeQuestion && !testActive && (
 
         <section className="max-w-7xl mx-auto px-4 md:px-6 py-6">
 
@@ -1228,6 +1118,13 @@ export default function IITJamPhysicsHub() {
 
         </section>
 
+      )}
+
+      {testActive && (
+        <TestManager
+          allQuestions={questions}
+          onClose={() => setTestActive(false)}
+        />
       )}
 
       {isReportModalOpen && (
