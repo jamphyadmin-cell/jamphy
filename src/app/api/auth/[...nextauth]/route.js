@@ -19,6 +19,22 @@ export const authOptions = {
       // Add the user id to the session for convenience
       if (session.user && token.sub) {
         session.user.id = token.sub;
+
+        // Fetch latest user data from database so session is always up-to-date
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.sub },
+            select: { name: true, image: true, username: true }
+          });
+          
+          if (dbUser) {
+            session.user.name = dbUser.name;
+            session.user.image = dbUser.image;
+            session.user.username = dbUser.username;
+          }
+        } catch (error) {
+          console.error("Error fetching user session data:", error);
+        }
       }
       return session;
     },

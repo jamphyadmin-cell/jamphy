@@ -1,5 +1,7 @@
 import "./globals.css";
 import { Providers } from "../components/Providers";
+import AdminShortcut from "../components/AdminShortcut";
+
 export const metadata = {
   title: "IIT JAM Physics Hub",
   description: "Practice IIT JAM Physics questions with math-ready explanations.",
@@ -12,7 +14,10 @@ export default function RootLayout({ children }) {
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <AdminShortcut />
+        </Providers>
       </body>
     </html>
   );

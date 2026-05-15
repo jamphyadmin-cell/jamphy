@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
+import UserMenu from "../../components/UserMenu";
 import { questions } from "../../data/questions";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -498,43 +499,7 @@ export default function IITJamPhysicsHub() {
             </Link>
           </div>
           <div className="flex gap-3 items-center">
-            {!session ? (
-              <button
-                onClick={() => signIn("google")}
-                className="px-4 py-2 rounded-xl border border-zinc-700 hover:bg-zinc-800 transition"
-              >
-                Login with Google
-              </button>
-            ) : (
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  {session.user?.image && (
-                    <Image
-                      src={session.user.image}
-                      alt="Profile"
-                      width={32}
-                      height={32}
-                      className="rounded-full"
-                    />
-                  )}
-                  <span className="text-sm text-zinc-300 hidden sm:block">
-                    {session.user?.name}
-                  </span>
-                </div>
-                <button
-                  onClick={() => signOut()}
-                  className="px-4 py-2 text-sm rounded-xl border border-zinc-700 hover:bg-zinc-800 transition"
-                >
-                  Sign Out
-                </button>
-              </div>
-            )}
-            <Link
-              href="/admin"
-              className="px-4 py-2 text-sm rounded-xl text-zinc-400 hover:text-white transition hidden sm:block"
-            >
-              Admin
-            </Link>
+            <UserMenu session={session} />
             <Link
               href="/"
               className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition hidden sm:block"
