@@ -266,14 +266,14 @@ export default function IITJamPhysicsHub() {
   };
 
   const handleSingleAnswer = (index) => {
-
+    if (isCorrect !== null) return;
     setSelectedAnswer(index);
+  };
 
-    const [correctOptionIndex] =
-      getCorrectOptions(activeQuestion);
-
-    setIsCorrect(index === correctOptionIndex);
-
+  const submitSingleAnswer = () => {
+    if (selectedAnswer === null) return;
+    const [correctOptionIndex] = getCorrectOptions(activeQuestion);
+    setIsCorrect(selectedAnswer === correctOptionIndex);
   };
 
   const handleMultipleAnswer = (index) => {
@@ -852,14 +852,13 @@ export default function IITJamPhysicsHub() {
 
                 </div>
 
-                {isMSQ && (
+                {(isMSQ || activeQuestion?.type === "MCQ") && (
 
                   <button
-                    onClick={submitMultipleAnswer}
+                    onClick={activeQuestion?.type === "MCQ" ? submitSingleAnswer : submitMultipleAnswer}
                     disabled={
                       isCorrect !== null ||
-                      !Array.isArray(selectedAnswer) ||
-                      selectedAnswer.length === 0
+                      (isMSQ ? (!Array.isArray(selectedAnswer) || selectedAnswer.length === 0) : selectedAnswer === null)
                     }
                     className="mt-6 rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40"
                   >
