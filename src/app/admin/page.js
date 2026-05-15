@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
   // We already have middleware, but we can do an extra check here if we want
-  
+
   // Fetch users
   const users = await prisma.user.findMany({
     orderBy: {
@@ -58,7 +58,7 @@ export default async function AdminDashboard() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 py-12 space-y-16">
-        
+
         {/* Reports Section */}
         <section>
           <div className="flex items-center justify-between mb-8">
@@ -77,55 +77,55 @@ export default async function AdminDashboard() {
               {reports.map(report => {
                 const approveAction = updateReportStatus.bind(null, report.id, "APPROVED");
                 const declineAction = updateReportStatus.bind(null, report.id, "DECLINED");
-                
+
                 return (
-                <div key={report.id} className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-3">
-                      <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-bold">
-                        {report.questionId}
-                      </span>
-                      <span className="text-zinc-500 text-sm">
-                        {new Date(report.createdAt).toLocaleString()}
-                      </span>
-                    </div>
-                    <div>
-                      {report.status === "PENDING" ? (
-                        <div className="flex items-center gap-2">
-                          <form action={approveAction}>
-                            <button type="submit" className="px-3 py-1 text-sm bg-green-500/20 text-green-500 rounded-full hover:bg-green-500/30 transition">
-                              Approve
-                            </button>
-                          </form>
-                          <form action={declineAction}>
-                            <button type="submit" className="px-3 py-1 text-sm bg-zinc-800 text-zinc-400 rounded-full hover:bg-zinc-700 transition">
-                              Decline
-                            </button>
-                          </form>
-                        </div>
-                      ) : (
-                        <span className={`px-3 py-1 text-sm rounded-full font-bold ${
-                          report.status === 'APPROVED' ? 'bg-green-500/20 text-green-500' : 'bg-zinc-800 text-zinc-500'
-                        }`}>
-                          {report.status}
+                  <div key={report.id} className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-bold">
+                          {report.questionId}
                         </span>
-                      )}
+                        <span className="text-zinc-500 text-sm">
+                          {new Date(report.createdAt).toLocaleString()}
+                        </span>
+                      </div>
+                      <div>
+                        {report.status === "PENDING" ? (
+                          <div className="flex items-center gap-2">
+                            <form action={approveAction}>
+                              <button type="submit" className="px-3 py-1 text-sm bg-green-500/20 text-green-500 rounded-full hover:bg-green-500/30 transition">
+                                Approve
+                              </button>
+                            </form>
+                            <form action={declineAction}>
+                              <button type="submit" className="px-3 py-1 text-sm bg-zinc-800 text-zinc-400 rounded-full hover:bg-zinc-700 transition">
+                                Decline
+                              </button>
+                            </form>
+                          </div>
+                        ) : (
+                          <span className={`px-3 py-1 text-sm rounded-full font-bold ${report.status === 'APPROVED' ? 'bg-green-500/20 text-green-500' : 'bg-zinc-800 text-zinc-500'
+                            }`}>
+                            {report.status}
+                          </span>
+                        )}
+                      </div>
                     </div>
+                    <p className="text-zinc-300 mb-4 whitespace-pre-wrap">{report.description}</p>
+
+                    {report.user && (
+                      <div className="flex items-center gap-2 pt-4 border-t border-zinc-800 mt-4">
+                        {report.user.image ? (
+                          <img src={report.user.image} alt={report.user.name} className="w-6 h-6 rounded-full" />
+                        ) : (
+                          <div className="w-6 h-6 bg-zinc-800 rounded-full" />
+                        )}
+                        <span className="text-sm text-zinc-400">Reported by {report.user.name || report.user.email}</span>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-zinc-300 mb-4 whitespace-pre-wrap">{report.description}</p>
-                  
-                  {report.user && (
-                    <div className="flex items-center gap-2 pt-4 border-t border-zinc-800 mt-4">
-                      {report.user.image ? (
-                        <img src={report.user.image} alt={report.user.name} className="w-6 h-6 rounded-full" />
-                      ) : (
-                        <div className="w-6 h-6 bg-zinc-800 rounded-full" />
-                      )}
-                      <span className="text-sm text-zinc-400">Reported by {report.user.name || report.user.email}</span>
-                    </div>
-                  )}
-                </div>
-              )})}
+                )
+              })}
             </div>
           )}
         </section>

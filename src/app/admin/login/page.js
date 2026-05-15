@@ -51,7 +51,7 @@ export default function AdminLogin() {
         </div>
         <h1 className="text-3xl font-black mb-2 text-center">Admin Login</h1>
         <p className="text-zinc-500 text-center mb-8">Enter your credentials to access the dashboard</p>
-        
+
         {error && (
           <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-xl mb-6 text-sm">
             {error}

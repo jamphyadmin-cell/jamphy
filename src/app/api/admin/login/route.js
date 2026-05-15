@@ -14,7 +14,7 @@ export async function POST(req) {
 
     if (username === validUsername && password === validPassword) {
       const response = NextResponse.json({ success: true }, { status: 200 });
-      
+
       response.cookies.set({
         name: "admin_session",
         value: "authenticated",
