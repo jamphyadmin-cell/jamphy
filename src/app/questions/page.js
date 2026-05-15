@@ -295,9 +295,7 @@ export default function IITJamPhysicsHub() {
     // MSQ
     if (Array.isArray(question.correctAnswers)) {
 
-      return question.correctAnswers.map(
-        (answerIndex) => question.options[answerIndex]
-      );
+      return question.correctAnswers;
 
     }
 
@@ -306,9 +304,7 @@ export default function IITJamPhysicsHub() {
       typeof question.correctAnswer === "number"
     ) {
 
-      return [
-        question.options[question.correctAnswer]
-      ];
+      return [question.correctAnswer];
 
     }
 
@@ -332,18 +328,18 @@ export default function IITJamPhysicsHub() {
 
   };
 
-  const handleSingleAnswer = (option) => {
+  const handleSingleAnswer = (index) => {
 
-    setSelectedAnswer(option);
+    setSelectedAnswer(index);
 
-    const [correctOption] =
+    const [correctOptionIndex] =
       getCorrectOptions(activeQuestion);
 
-    setIsCorrect(option === correctOption);
+    setIsCorrect(index === correctOptionIndex);
 
   };
 
-  const handleMultipleAnswer = (option) => {
+  const handleMultipleAnswer = (index) => {
 
     if (isCorrect !== null) {
 
@@ -357,15 +353,15 @@ export default function IITJamPhysicsHub() {
         ? current
         : [];
 
-      if (currentAnswers.includes(option)) {
+      if (currentAnswers.includes(index)) {
 
         return currentAnswers.filter(
-          (answer) => answer !== option
+          (answer) => answer !== index
         );
 
       }
 
-      return [...currentAnswers, option];
+      return [...currentAnswers, index];
 
     });
 
@@ -890,12 +886,12 @@ export default function IITJamPhysicsHub() {
                       const correct =
                         getCorrectOptions(
                           activeQuestion
-                        ).includes(option);
+                        ).includes(index);
 
                       const isSelected =
                         Array.isArray(selectedAnswer)
-                          ? selectedAnswer.includes(option)
-                          : selectedAnswer === option;
+                          ? selectedAnswer.includes(index)
+                          : selectedAnswer === index;
 
                       let style =
                         "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
@@ -932,11 +928,11 @@ export default function IITJamPhysicsHub() {
 
                             if (isMSQ) {
 
-                              handleMultipleAnswer(option);
+                              handleMultipleAnswer(index);
 
                             } else {
 
-                              handleSingleAnswer(option);
+                              handleSingleAnswer(index);
 
                             }
 

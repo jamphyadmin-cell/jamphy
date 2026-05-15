@@ -18,10 +18,10 @@ export default function TestResult({ questions, answers, onClose }) {
     const getCorrectOptions = (question) => {
       if (question.type === "NAT") return [String(question.correctAnswer)];
       if (Array.isArray(question.correctAnswers)) {
-        return question.correctAnswers.map(idx => question.options[idx]);
+        return question.correctAnswers;
       }
       if (typeof question.correctAnswer === "number") {
-        return [question.options[question.correctAnswer]];
+        return [question.correctAnswer];
       }
       return [];
     };

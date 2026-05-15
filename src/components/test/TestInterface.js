@@ -48,17 +48,17 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
   const isNAT = activeQuestion?.type === "NAT";
   const isMSQ = activeQuestion?.type === "MSQ";
 
-  const handleSingleAnswer = (option) => {
-    setCurrentValue(option);
+  const handleSingleAnswer = (index) => {
+    setCurrentValue(index);
   };
 
-  const handleMultipleAnswer = (option) => {
+  const handleMultipleAnswer = (index) => {
     setCurrentValue(prev => {
       const current = Array.isArray(prev) ? prev : [];
-      if (current.includes(option)) {
-        return current.filter(ans => ans !== option);
+      if (current.includes(index)) {
+        return current.filter(ans => ans !== index);
       }
-      return [...current, option];
+      return [...current, index];
     });
   };
 
@@ -216,13 +216,13 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 {activeQuestion.options.map((option, index) => {
                   const isSelected = isMSQ 
-                    ? Array.isArray(currentValue) && currentValue.includes(option)
-                    : currentValue === option;
+                    ? Array.isArray(currentValue) && currentValue.includes(index)
+                    : currentValue === index;
 
                   return (
                     <button
                       key={index}
-                      onClick={() => isMSQ ? handleMultipleAnswer(option) : handleSingleAnswer(option)}
+                      onClick={() => isMSQ ? handleMultipleAnswer(index) : handleSingleAnswer(index)}
                       className={`
                         w-full rounded-3xl border p-4 md:p-6 text-left transition overflow-hidden min-h-[120px]
                         ${isSelected ? 'border-blue-500 bg-blue-500/10' : 'border-zinc-800 bg-zinc-900 hover:bg-zinc-800'}
