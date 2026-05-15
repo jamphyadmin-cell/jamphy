@@ -591,7 +591,9 @@ export default function IITJamPhysicsHub() {
         </div>
       )}
 
-      {!selectedSubject && !testActive && (
+      {status === "authenticated" && session?.user?.username && (
+        <>
+          {!selectedSubject && !testActive && (
 
         <section className="max-w-7xl mx-auto px-6 py-16">
 
@@ -1116,11 +1118,13 @@ export default function IITJamPhysicsHub() {
 
       )}
 
-      {testActive && (
-        <TestManager
-          allQuestions={questions}
-          onClose={() => setTestActive(false)}
-        />
+          {testActive && (
+            <TestManager
+              allQuestions={questions}
+              onClose={() => setTestActive(false)}
+            />
+          )}
+        </>
       )}
 
       {isReportModalOpen && (
