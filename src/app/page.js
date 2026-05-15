@@ -12,11 +12,11 @@ export default function IITJamPrepPlatform() {
 
   useEffect(() => {
 
-    let mouseX = 0;
-    let mouseY = 0;
+    let mouseX = -100;
+    let mouseY = -100;
 
-    let currentX = 0;
-    let currentY = 0;
+    let currentX = -100;
+    let currentY = -100;
 
     const moveCursor = (e) => {
 
@@ -29,13 +29,13 @@ export default function IITJamPrepPlatform() {
 
     const animate = () => {
 
-      currentX += (mouseX - currentX) * 0.12;
-      currentY += (mouseY - currentY) * 0.12;
+      currentX += (mouseX - currentX) * 0.35;
+      currentY += (mouseY - currentY) * 0.35;
 
       if (cursorRef.current) {
 
         cursorRef.current.style.transform =
-          `translate(${currentX}px, ${currentY}px)`;
+          `translate3d(calc(${currentX}px - 50%), calc(${currentY}px - 50%), 0)`;
 
       }
 
