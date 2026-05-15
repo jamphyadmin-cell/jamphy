@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import UserMenu from "../../components/UserMenu";
 import { questions } from "../../data/questions";
 import ReactMarkdown from "react-markdown";
@@ -193,7 +194,71 @@ export default function IITJamPhysicsHub() {
   const [selectedType, setSelectedType] =
     useState("All");
 
-  const { data: session } = useSession();
+  const { data: session, status, update } = useSession();
+
+  const [profileFormData, setProfileFormData] = useState({
+    username: "",
+    dob: "",
+    college: "",
+    year: "",
+    course: "",
+  });
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileMessage, setProfileMessage] = useState({ type: "", text: "" });
+
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!profileFormData.username.trim()) {
+      setProfileMessage({ type: "error", text: "Username field is mandatory." });
+      return;
+    }
+    if (!profileFormData.dob) {
+      setProfileMessage({ type: "error", text: "Date of Birth field is mandatory." });
+      return;
+    }
+    if (!profileFormData.college.trim()) {
+      setProfileMessage({ type: "error", text: "College / University field is mandatory." });
+      return;
+    }
+    if (!profileFormData.year) {
+      setProfileMessage({ type: "error", text: "Year field is mandatory." });
+      return;
+    }
+    if (!profileFormData.course.trim()) {
+      setProfileMessage({ type: "error", text: "Course field is mandatory." });
+      return;
+    }
+
+    setIsSavingProfile(true);
+    setProfileMessage({ type: "", text: "" });
+
+    try {
+      const res = await fetch("/api/user/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...profileFormData,
+          name: session?.user?.name,
+          image: session?.user?.image,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        await update();
+      } else {
+        setProfileMessage({ type: "error", text: data.error || "Failed to save profile." });
+      }
+    } catch (error) {
+      setProfileMessage({ type: "error", text: "An unexpected error occurred." });
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
 
   const [activeQuestion, setActiveQuestion] =
     useState(null);
@@ -473,8 +538,15 @@ export default function IITJamPhysicsHub() {
     );
   };
 
-  return (
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-zinc-800 border-t-white rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
+  return (
     <div className="min-h-screen bg-black text-white overflow-hidden cursor-none">
 
       <div
@@ -509,6 +581,127 @@ export default function IITJamPhysicsHub() {
           </div>
         </div>
       </nav>
+
+      {/* Auth Overlay */}
+      {status !== "loading" && (status === "unauthenticated" || !session?.user?.username) && (
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-xl flex flex-col items-center justify-center p-6">
+          <div className="w-full max-w-md bg-zinc-950/90 border border-zinc-800 rounded-[32px] p-8 md:p-10 shadow-2xl flex flex-col items-center text-center">
+            <div className="mb-8 drop-shadow-2xl">
+              <Image
+                src="/logo.png"
+                alt="Jamphy Logo"
+                width={140}
+                height={140}
+                className="rounded-3xl"
+              />
+            </div>
+
+            {status === "unauthenticated" ? (
+              <>
+                <h2 className="text-3xl font-black mb-3 text-white">Login Required</h2>
+                <p className="text-zinc-400 mb-8 font-medium text-sm">
+                  Please log in to access the practice questions and save your progress.
+                </p>
+                <button
+                  onClick={() => signIn("google")}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 hover:border-zinc-500 transition-all text-white font-bold text-lg group"
+                >
+                  Sign in with
+                  <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" 
+                    alt="Google" 
+                    className="h-6 w-auto object-contain mt-0.5 group-hover:scale-105 transition-transform" 
+                  />
+                </button>
+              </>
+            ) : (
+              <>
+                <h2 className="text-3xl font-black mb-3 text-white">Complete Profile</h2>
+                <p className="text-zinc-400 mb-6 font-medium text-sm">
+                  Just a few more details before you start practicing!
+                </p>
+                
+                {profileMessage.text && (
+                  <div className={`mb-6 p-3 rounded-xl border text-sm w-full ${profileMessage.type === "success" ? "bg-green-500/10 border-green-500/30 text-green-400" : "bg-red-500/10 border-red-500/30 text-red-400"}`}>
+                    {profileMessage.text}
+                  </div>
+                )}
+
+                <form onSubmit={handleProfileSubmit} className="w-full space-y-4 text-left">
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-400 mb-1 ml-1">Username <span className="text-red-500">*</span></label>
+                    <div className="flex bg-black border border-zinc-800 rounded-xl overflow-hidden focus-within:border-zinc-500 transition-colors">
+                      <span className="flex items-center justify-center pl-4 pr-2 text-zinc-500 bg-zinc-900 border-r border-zinc-800">
+                        @
+                      </span>
+                      <input
+                        type="text"
+                        placeholder="username"
+                        value={profileFormData.username}
+                        onChange={(e) => setProfileFormData(p => ({ ...p, username: e.target.value.replace(/[^a-zA-Z0-9_]/g, '') }))}
+                        className="w-full bg-transparent px-3 py-3 text-white outline-none text-sm"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-400 mb-1 ml-1">Date of Birth <span className="text-red-500">*</span></label>
+                    <input
+                      type="date"
+                      value={profileFormData.dob}
+                      onChange={(e) => setProfileFormData(p => ({ ...p, dob: e.target.value }))}
+                      className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors text-sm [color-scheme:dark]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-400 mb-1 ml-1">College / University <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      placeholder="E.g. IIT Delhi"
+                      value={profileFormData.college}
+                      onChange={(e) => setProfileFormData(p => ({ ...p, college: e.target.value }))}
+                      className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-400 mb-1 ml-1">Year <span className="text-red-500">*</span></label>
+                    <select
+                      value={profileFormData.year}
+                      onChange={(e) => setProfileFormData(p => ({ ...p, year: e.target.value }))}
+                      className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors text-sm"
+                    >
+                      <option value="">Select Year</option>
+                      <option value="1st Year">1st Year</option>
+                      <option value="2nd Year">2nd Year</option>
+                      <option value="3rd Year">3rd Year</option>
+                      <option value="4th Year">4th Year</option>
+                      <option value="Graduated">Graduated</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-400 mb-1 ml-1">Course Pursuing <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      placeholder="E.g. B.Sc Physics"
+                      value={profileFormData.course}
+                      onChange={(e) => setProfileFormData(p => ({ ...p, course: e.target.value }))}
+                      className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors text-sm"
+                    />
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    disabled={isSavingProfile}
+                    className="w-full mt-4 px-6 py-4 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 transition-colors disabled:opacity-50"
+                  >
+                    {isSavingProfile ? "Saving..." : "Start Practicing!"}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {!selectedSubject && (
 

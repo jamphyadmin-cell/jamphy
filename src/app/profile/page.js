@@ -167,12 +167,14 @@ export default function ProfilePage() {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <Link
-              href="/questions"
-              className="px-4 py-2 text-sm rounded-xl text-zinc-400 hover:text-white transition hidden sm:block"
-            >
-              Questions
-            </Link>
+            {session?.user?.username && (
+              <Link
+                href="/questions"
+                className="px-4 py-2 text-sm rounded-xl text-zinc-400 hover:text-white transition hidden sm:block"
+              >
+                Questions
+              </Link>
+            )}
             <UserMenu session={session} />
           </div>
         </div>
@@ -184,6 +186,12 @@ export default function ProfilePage() {
           <h1 className="text-4xl font-black mb-2">Your Profile</h1>
           <p className="text-zinc-400">Update your personal details and academic information.</p>
         </div>
+
+        {!session?.user?.username && (
+          <div className="mb-8 p-4 rounded-2xl border bg-blue-500/10 border-blue-500/30 text-blue-400 font-medium">
+            Please complete your profile (Username, College, and Year) to start practicing questions!
+          </div>
+        )}
 
         {message.text && (
           <div
@@ -267,14 +275,23 @@ export default function ProfilePage() {
               <label className="block text-sm font-medium text-zinc-400 mb-2">
                 Username
               </label>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="@username"
-                className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors"
-              />
+              <div className="flex bg-black border border-zinc-800 rounded-xl overflow-hidden focus-within:border-zinc-500 transition-colors">
+                <span className="flex items-center justify-center pl-4 pr-3 text-zinc-500 bg-zinc-900 border-r border-zinc-800">
+                  @
+                </span>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^a-zA-Z0-9_]/g, '');
+                    setFormData((prev) => ({ ...prev, username: val }));
+                  }}
+                  placeholder="username"
+                  required
+                  className="w-full bg-transparent px-4 py-3 text-white outline-none"
+                />
+              </div>
             </div>
 
             {/* Date of Birth */}
@@ -302,6 +319,7 @@ export default function ProfilePage() {
                 value={formData.college}
                 onChange={handleChange}
                 placeholder="E.g. IIT Delhi"
+                required
                 className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors"
               />
             </div>
@@ -315,6 +333,7 @@ export default function ProfilePage() {
                 name="year"
                 value={formData.year}
                 onChange={handleChange}
+                required
                 className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors"
               >
                 <option value="">Select Year</option>

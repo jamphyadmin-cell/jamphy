@@ -4,6 +4,7 @@ import Image from "next/image";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { adminLogout, updateReportStatus } from "./actions";
+import UserTable from "../../components/UserTable";
 
 export const dynamic = 'force-dynamic';
 
@@ -139,45 +140,7 @@ export default async function AdminDashboard() {
             </span>
           </div>
 
-          <div className="bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-zinc-800">
-                    <th className="p-4 text-sm font-medium text-zinc-500">User</th>
-                    <th className="p-4 text-sm font-medium text-zinc-500">Email</th>
-                    <th className="p-4 text-sm font-medium text-zinc-500">Provider</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800">
-                  {users.length === 0 ? (
-                    <tr>
-                      <td colSpan="3" className="p-8 text-center text-zinc-500">No users found.</td>
-                    </tr>
-                  ) : (
-                    users.map(user => (
-                      <tr key={user.id} className="hover:bg-zinc-900/50 transition">
-                        <td className="p-4">
-                          <div className="flex items-center gap-3">
-                            {user.image ? (
-                              <img src={user.image} alt={user.name} className="w-8 h-8 rounded-full" />
-                            ) : (
-                              <div className="w-8 h-8 bg-zinc-800 rounded-full" />
-                            )}
-                            <span className="font-medium">{user.name || 'Unknown'}</span>
-                          </div>
-                        </td>
-                        <td className="p-4 text-zinc-400">{user.email}</td>
-                        <td className="p-4 text-zinc-400">
-                          {user.accounts.map(acc => acc.provider).join(', ') || 'N/A'}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <UserTable initialUsers={users} />
         </section>
 
       </main>
