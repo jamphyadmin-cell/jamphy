@@ -945,7 +945,7 @@ export default function IITJamPhysicsHub() {
                       ) : (
 
                         <MathText className="inline-block">
-                          {getCorrectOptions(activeQuestion).join(", ")}
+                          {getCorrectOptions(activeQuestion).map(idx => String.fromCharCode(65 + Number(idx))).join(", ")}
                         </MathText>
 
                       )}
