@@ -77,7 +77,7 @@ export default function InvitesMenu() {
       {isOpen && (
         <div className="absolute right-0 mt-3 w-72 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-xl overflow-hidden z-50 origin-top-right transition-all">
           <div className="px-4 py-3 border-b border-zinc-800 bg-zinc-950">
-            <p className="text-sm font-bold text-white uppercase tracking-wider">Pending Invites</p>
+            <p className="text-sm font-bold text-white uppercase tracking-wider">Notifications</p>
           </div>
           <div className="max-h-64 overflow-y-auto p-2">
             {invites.length === 0 ? (
