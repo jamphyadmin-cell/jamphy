@@ -1216,7 +1216,7 @@ The amplitude is maximum when \(\cos(kx) = \pm 1\).
 This happens when \(kx = n\pi\).
 \((\frac{2\pi}{\lambda})x = n\pi \Rightarrow x = n\frac{\lambda}{2}\)
 
-Comparing with the options, Option 2 and Option 3 match these derivations exactly.`,
+Comparing with the options, Option C and Option D match these derivations exactly.`,
 
     correctAnswers: [2, 3],
   },
@@ -2243,7 +2243,7 @@ The magnitude and the sign of the vector depend on the \(y\)-coordinate:
 - For \(y < 0\) (below the x-axis), the vector points in the negative \(x\)-direction. Its magnitude increases linearly as you move further down.
 - For \(y = 0\) (on the x-axis), the vector is zero.
 
-The figure that accurately represents arrows parallel to the x-axis, pointing right in the upper half-plane and left in the lower half-plane, is Option 1 (A).`,
+The figure that accurately represents arrows parallel to the x-axis, pointing right in the upper half-plane and left in the lower half-plane, is Option B (A).`,
 
     correctAnswer: 0,
   },
@@ -3225,25 +3225,25 @@ Thus, the correct combination is \(P=1, Q=1\).`,
 Let the distances from the center of mass be \(r_1\) and \(r_2\).
 By the definition of the center of mass:
 \(m_1 r_1 = m_2 r_2\)
-This means Option 3 (\(m_2 r_1 = m_1 r_2\)) is incorrect because the subscripts are swapped.
+This means Option D (\(m_2 r_1 = m_1 r_2\)) is incorrect because the subscripts are swapped.
 
 They orbit with the same angular velocity \(\omega\).
 The magnitude of angular momentum for each is:
 \(L_1 = m_1 v_1 r_1 = m_1 (\omega r_1) r_1 = m_1 \omega r_1^2\)
 \(L_2 = m_2 \omega r_2^2\)
 Taking the ratio:
-\(\frac{L_1}{L_2} = \frac{m_1 r_1^2}{m_2 r_2^2} = \frac{m_1 r_1}{m_2 r_2} \left(\frac{r_1}{r_2}\right) = (1) \left(\frac{m_2}{m_1}\right) = \frac{m_2}{m_1}\) (Option 0 is correct)
+\(\frac{L_1}{L_2} = \frac{m_1 r_1^2}{m_2 r_2^2} = \frac{m_1 r_1}{m_2 r_2} \left(\frac{r_1}{r_2}\right) = (1) \left(\frac{m_2}{m_1}\right) = \frac{m_2}{m_1}\) (Option A is correct)
 
 The kinetic energy for each is:
 \(K_1 = \frac{1}{2} m_1 v_1^2 = \frac{1}{2} m_1 \omega^2 r_1^2\)
 \(K_2 = \frac{1}{2} m_2 \omega^2 r_2^2\)
 Taking the ratio:
-\(\frac{K_1}{K_2} = \frac{m_1 r_1^2}{m_2 r_2^2} = \frac{m_2}{m_1}\) (Option 1 is correct)
+\(\frac{K_1}{K_2} = \frac{m_1 r_1^2}{m_2 r_2^2} = \frac{m_2}{m_1}\) (Option B is correct)
 
 By equating the gravitational force to the centripetal force:
 \(\frac{G m_1 m_2}{(r_1+r_2)^2} = m_1 \omega^2 r_1\)
 Using \(r_1 = \frac{m_2}{m_1+m_2}(r_1+r_2)\), we get Kepler's Third Law:
-\(\omega^2 = \frac{G(m_1+m_2)}{(r_1+r_2)^3} \Rightarrow \omega = \sqrt{\frac{G(m_1+m_2)}{(r_1+r_2)^3}}\) (Option 2 is correct)`,
+\(\omega^2 = \frac{G(m_1+m_2)}{(r_1+r_2)^3} \Rightarrow \omega = \sqrt{\frac{G(m_1+m_2)}{(r_1+r_2)^3}}\) (Option C is correct)`,
 
     correctAnswer: [0, 1, 2],
   },
@@ -3267,16 +3267,16 @@ The condition for orthogonality is the dot product of their Miller indices being
 \(h_1 h_2 + k_1 k_2 + l_1 l_2 = 0\)
 
 Let's test the given pairs:
-Option 0: \((100)\) and \((010)\)
+Option A: \((100)\) and \((010)\)
 \(1(0) + 0(1) + 0(0) = 0\). (Perpendicular)
 
-Option 1: \((220)\) and \((001)\)
+Option B: \((220)\) and \((001)\)
 \(2(0) + 2(0) + 0(1) = 0\). (Perpendicular)
 
-Option 2: \((110)\) and \((010)\)
+Option C: \((110)\) and \((010)\)
 \(1(0) + 1(1) + 0(0) = 1 \neq 0\). (Not perpendicular)
 
-Option 3: \((112)\) and \((220)\)
+Option D: \((112)\) and \((220)\)
 \(1(2) + 1(2) + 2(0) = 4 \neq 0\). (Not perpendicular)`,
 
     correctAnswer: [0, 1],
@@ -3315,10 +3315,10 @@ Which of the following graphs correctly represent(s) the variation of the quanti
 
 This equation can be rewritten to understand the relationships:
 1) \(x_1 = \frac{f^2}{x_0}\)
-This is the equation of a rectangular hyperbola. Therefore, the plot of \(x_1\) versus \(x_0\) is a hyperbolic curve (Option 0).
+This is the equation of a rectangular hyperbola. Therefore, the plot of \(x_1\) versus \(x_0\) is a hyperbolic curve (Option A).
 
 2) \(x_1 = f^2 \left(\frac{1}{x_0}\right)\)
-This is the equation of a straight line (\(y = mx\)) passing through the origin, where the slope is \(f^2\). Therefore, the plot of \(x_1\) versus \(\frac{1}{x_0}\) is a straight line through the origin (Option 2).`,
+This is the equation of a straight line (\(y = mx\)) passing through the origin, where the slope is \(f^2\). Therefore, the plot of \(x_1\) versus \(\frac{1}{x_0}\) is a straight line through the origin (Option C).`,
 
     correctAnswers: [0, 2],
   },
@@ -3517,12 +3517,12 @@ This suggests the temperature function is \(\theta_1 = P_1V_1\) and \(\theta_2 =
 
 From Condition (II): \(G_1\) and \(G_3\) are in equilibrium (\(\theta_1 = \theta_3\)).
 \(P_3V_3 - P_1V_1 + \frac{\beta P_1V_1}{V_3} = 0 \Rightarrow P_3V_3 = P_1V_1 \left(1 - \frac{\beta}{V_3}\right)\)
-Rearranging gives: \(P_3V_3 + P_1V_1 \left(\frac{\beta}{V_3} - 1\right) = 0\) (This matches Option 3)
+Rearranging gives: \(P_3V_3 + P_1V_1 \left(\frac{\beta}{V_3} - 1\right) = 0\) (This matches Option D)
 Also, solving for \(\theta_1 = P_1V_1\), we get \(\theta_3 = \frac{P_3V_3}{1 - \beta/V_3}\).
 
 If \(G_2\) and \(G_3\) are in thermal equilibrium, their temperatures must be equal (\(\theta_2 = \theta_3\)):
 \(P_2(V_2 - \alpha) = \frac{P_3V_3}{1 - \beta/V_3}\)
-\(P_3V_3 - (P_2V_2 - \alpha P_2)\left(1 - \frac{\beta}{V_3}\right) = 0\) (This matches Option 0)`,
+\(P_3V_3 - (P_2V_2 - \alpha P_2)\left(1 - \frac{\beta}{V_3}\right) = 0\) (This matches Option A)`,
 
     correctAnswers: [0, 3],
   },
@@ -3566,7 +3566,7 @@ The cyclic process is shown in the figure below. For this system, which of the f
 The work done by an ideal gas during adiabatic expansion is \(W_{AB} = \frac{P_A V_A - P_B V_B}{\gamma - 1}\).
 For a mono-atomic gas, the adiabatic index \(\gamma = \frac{5}{3}\), so \(\gamma - 1 = \frac{2}{3}\).
 From the graph, \(P_A = P_1, V_A = V_1\) and \(P_B = P_2, V_B = V_2\).
-\(W_{AB} = \frac{3}{2}(P_1V_1 - P_2V_2)\). (Option 0 is incorrect, missing 3/2)
+\(W_{AB} = \frac{3}{2}(P_1V_1 - P_2V_2)\). (Option A is incorrect, missing 3/2)
 
 2) **Isobaric Process (\(B \to C\))**:
 The pressure is constant at \(P_2\). The volume changes from \(V_2\) to \(V_C = V_1\).
@@ -3577,7 +3577,7 @@ The volume is constant, so no work is done. \(W_{CA} = 0\).
 
 The total work done during the entire cycle is the sum of the work from each step:
 \(W_{total} = W_{AB} + W_{BC} + W_{CA} = \frac{3}{2}(P_1V_1 - P_2V_2) + P_2(V_1 - V_2)\).
-This matches exactly with Option 1.`,
+This matches exactly with Option B.`,
 
     correctAnswers: [1],
   },
@@ -4588,7 +4588,7 @@ i & 1
     detailedSolution: String.raw`A matrix $M$ is **Hermitian** if it is equal to its conjugate transpose: $M = M^\dagger$.
 A matrix $M$ is **Unitary** if its product with its conjugate transpose gives the identity matrix: $M^\dagger M = I$.
 
-Let's test Option 0: $H = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}$
+Let's test Option A: $H = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}$
 1. Conjugate transpose $H^\dagger$:
 Transpose the matrix: $\begin{pmatrix} 0 & i \\ -i & 0 \end{pmatrix}$
 Take the complex conjugate: $\begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}$
@@ -4730,7 +4730,7 @@ On the right side of the boundary, there is only a transmitted wave ($T e^{ik_2 
 The probability density of a pure traveling plane wave is constant: $P(x) = |T e^{ik_2 x}|^2 = |T|^2$.
 Therefore, the probability density on the right side must be a flat, horizontal line.
 
-Option 2 correctly shows the oscillating interference pattern on the left and a flat, constant density on the right.`,
+Option C correctly shows the oscillating interference pattern on the left and a flat, constant density on the right.`,
 
     correctAnswers: [2],
   },
@@ -5287,7 +5287,7 @@ Since $m_\mu > m_e$, it directly follows that $E_\mu < E_e$.
 The spatial wavefunction $\psi(x)$ depends entirely on the boundary conditions (the width of the well $a$) and the quantum number $n$. It is completely independent of the mass of the trapped particle.
 Therefore, the ground state wavefunctions for both particles are identical: $\psi_\mu(x) = \psi_e(x)$.
 
-Option 2 correctly illustrates that the electron has a higher energy level than the muon, while both share the exact same spatial probability distribution.`,
+Option C correctly illustrates that the electron has a higher energy level than the muon, while both share the exact same spatial probability distribution.`,
 
     correctAnswers: [2],
   },
@@ -5767,7 +5767,7 @@ are superposed, which of the following statements is correct?
 $y_1 = A_0\sin(kx-\omega t)$
 $y_2 = A_0\sin(\alpha kx-\beta\omega t)$
 
-Let's evaluate Option 2, where $\alpha = \beta = 2$.
+Let's evaluate Option C, where $\alpha = \beta = 2$.
 $y_2 = A_0\sin(2kx-2\omega t)$
 
 The superposition of the two waves is $y = y_1 + y_2$:
@@ -5786,7 +5786,7 @@ This represents a wave packet (beat formation) where:
 - The sine term acts as the rapidly oscillating "carrier" wave.
 
 The carrier wave is $\sin(1.5kx - 1.5\omega t)$, which has an angular frequency of $1.5\omega = \frac{3}{2}\omega$.
-This exactly matches Option 2.`,
+This exactly matches Option C.`,
 
     correctAnswers: [2],
   },
@@ -5915,10 +5915,10 @@ v_{out} \text{ is zero}
     detailedSolution: String.raw`Based on the provided OP-AMP circuit characteristics:
 
 1. **Inverting Amplifier Configuration:** If the input voltage \(v_{in}\) is applied to the inverting terminal (\(-\)) through a resistor \(R_1\), and there is a feedback resistor \(R_2\) connecting the output to the inverting terminal, the output voltage is given by \(v_{out} = -\frac{R_2}{R_1} v_{in}\).
-The negative sign indicates that the output \(v_{out}\) is **out-of-phase** (shifted by \(180^\circ\)) with respect to the input \(v_{in}\). (Option 0 is correct).
+The negative sign indicates that the output \(v_{out}\) is **out-of-phase** (shifted by \(180^\circ\)) with respect to the input \(v_{in}\). (Option A is correct).
 
 2. **Unity Gain:** The magnitude of the voltage gain is \(|A_v| = \frac{R_2}{R_1}\).
-If we set the two resistors to be equal (\(R_1 = R_2\)), the gain becomes \(1\) (unity gain). (Option 1 is correct).
+If we set the two resistors to be equal (\(R_1 = R_2\)), the gain becomes \(1\) (unity gain). (Option B is correct).
 
 Therefore, \(v_{out}\) is out-of-phase with \(v_{in}\), and the gain is unity when \(R_1 = R_2\).`,
 
@@ -5961,7 +5961,7 @@ Substituting the given values (\(m=5\), \(c=40\), \(k=80\)):
 \(5 \ddot{y} + 40 \dot{y} + 80 y = 0 \Rightarrow \ddot{y} + 8 \dot{y} + 16 y = 0\)
 
 The characteristic equation is \(r^2 + 8r + 16 = 0\), which factors to \((r+4)^2 = 0\).
-Since we have real, repeated roots (\(r = -4\)), the system is **critically damped**. (Option 2 is correct).
+Since we have real, repeated roots (\(r = -4\)), the system is **critically damped**. (Option C is correct).
 
 The general solution for a critically damped system is:
 \(y(t) = (A + Bt)e^{-4t}\)
@@ -5973,7 +5973,7 @@ Apply the initial conditions:
 \(\dot{y}(0) = B - 4A = 0 \Rightarrow B = 4A = 4(0.5) = 2\).
 
 Substitute \(A\) and \(B\) back into the general solution:
-\(y(t) = \left(\frac{1}{2} + 2t\right)e^{-4t} = \frac{1}{2}(1 + 4t)e^{-4t}\). (Option 3 is correct).`,
+\(y(t) = \left(\frac{1}{2} + 2t\right)e^{-4t} = \frac{1}{2}(1 + 4t)e^{-4t}\). (Option D is correct).`,
 
     correctAnswers: [2, 3],
   },
@@ -6015,14 +6015,14 @@ Consider two different Compton scattering experiments, in which X-rays and \(\ga
 The Compton wavelength is \(\lambda_C = \frac{h}{m_e c} \approx 0.02426\ \text{\AA}\).
 
 The maximum wavelength shift occurs when the scattering angle is \(\theta = 180^\circ\) (backscattering), where \(1 - \cos(180^\circ) = 2\).
-Therefore, for any incident photon (X-rays or \(\gamma\)-rays), the maximum shift is always at \(\theta = 180^\circ\) (Option 1 is correct) and its value is \((\Delta\lambda)_{max} = 2\lambda_C \approx 0.0485\ \text{\AA}\).
+Therefore, for any incident photon (X-rays or \(\gamma\)-rays), the maximum shift is always at \(\theta = 180^\circ\) (Option B is correct) and its value is \((\Delta\lambda)_{max} = 2\lambda_C \approx 0.0485\ \text{\AA}\).
 
 Let's evaluate the \(\gamma\)-rays (incident \(\lambda = 0.049\ \text{\AA}\)):
 The maximum scattered wavelength is:
-\(\lambda'_{max} = \lambda + (\Delta\lambda)_{max} = 0.049 + 0.0485 = 0.0975\ \text{\AA} \approx 0.098\ \text{\AA}\). (Option 0 is correct).
+\(\lambda'_{max} = \lambda + (\Delta\lambda)_{max} = 0.049 + 0.0485 = 0.0975\ \text{\AA} \approx 0.098\ \text{\AA}\). (Option A is correct).
 
 At \(\theta=90^\circ\), \(1-\cos(90^\circ)=1\), so the shift is \(\Delta\lambda = \lambda_C = 0.024\ \text{\AA}\).
-The scattered wavelength would be \(0.049 + 0.024 = 0.073\ \text{\AA}\). (Option 3 is incorrect).`,
+The scattered wavelength would be \(0.049 + 0.024 = 0.073\ \text{\AA}\). (Option D is incorrect).`,
 
     correctAnswers: [0, 1],
   },
@@ -6059,7 +6059,7 @@ L=\sqrt{2GM^2mr_m}
 
     detailedSolution: String.raw`In classical orbital mechanics, the total energy \(E\) of an orbit defines its shape:
 - \(E < 0\): Elliptical (or circular) orbit
-- \(E = 0\): Parabolic trajectory (Option 1 is correct)
+- \(E = 0\): Parabolic trajectory (Option B is correct)
 - \(E > 0\): Hyperbolic trajectory
 
 At the distance of closest approach (\(r_m\)), the velocity vector is entirely perpendicular to the position vector.
@@ -6070,7 +6070,7 @@ Using the energy equation for \(E = 0\):
 The angular momentum \(L\) at this point is simply the product of mass, velocity, and radius:
 \(L = m v r_m\)
 Substitute the velocity:
-\(L = m \left(\sqrt{\frac{2GM}{r_m}}\right) r_m = m \sqrt{2GM r_m} = \sqrt{2GM m^2 r_m}\). (Option 2 is correct).`,
+\(L = m \left(\sqrt{\frac{2GM}{r_m}}\right) r_m = m \sqrt{2GM r_m} = \sqrt{2GM m^2 r_m}\). (Option C is correct).`,
 
     correctAnswers: [1, 2],
   },
@@ -6117,11 +6117,11 @@ Given the intervals in \(S'\):
 \(\Delta x' = 5\) m, and \(\Delta t' = 0\) (simultaneous events).
 
 1. **Space Interval \(\Delta x\)**:
-\(\Delta x = \gamma (\Delta x' + u \Delta t') = 1.25 (5 + 0) = 6.25\) m. (Option 3 is correct).
+\(\Delta x = \gamma (\Delta x' + u \Delta t') = 1.25 (5 + 0) = 6.25\) m. (Option D is correct).
 
 2. **Time Interval \(\Delta t\)**:
 \(\Delta t = \gamma \left(\Delta t' + \frac{u \Delta x'}{c^2}\right) = 1.25 \left(0 + \frac{0.6c \times 5}{c^2}\right)\)
-\(\Delta t = 1.25 \times \frac{3}{c} = \frac{3.75}{3 \times 10^8} = 1.25 \times 10^{-8}\) s = \(12.5\) ns. (Option 0 is correct).`,
+\(\Delta t = 1.25 \times \frac{3}{c} = \frac{3.75}{3 \times 10^8} = 1.25 \times 10^{-8}\) s = \(12.5\) ns. (Option A is correct).`,
 
     correctAnswers: [0, 3],
   },
@@ -6158,13 +6158,13 @@ For the LCR AC-circuit (resonance frequency \(\omega_0\)) shown in the figure be
 
     detailedSolution: String.raw`For a series LCR AC-circuit:
 
-1. **Resonance Frequency**: The resonance frequency is \(\omega_0 = \frac{1}{\sqrt{LC}}\). It depends only on the inductor and capacitor, completely independent of the resistor \(R\). (Option 0 is false).
+1. **Resonance Frequency**: The resonance frequency is \(\omega_0 = \frac{1}{\sqrt{LC}}\). It depends only on the inductor and capacitor, completely independent of the resistor \(R\). (Option A is false).
 
-2. **Phase at Resonance**: At \(\omega = \omega_0\), the inductive and capacitive reactances cancel out (\(X_L = X_C\)). The circuit acts purely resistively. The voltage across the resistor \(V_R\) is simply \(V_R = I \times R\). Because \(R\) is a real constant, \(V_R\) and \(I\) are always perfectly in-phase for a resistor. (Option 1 is correct).
+2. **Phase at Resonance**: At \(\omega = \omega_0\), the inductive and capacitive reactances cancel out (\(X_L = X_C\)). The circuit acts purely resistively. The voltage across the resistor \(V_R\) is simply \(V_R = I \times R\). Because \(R\) is a real constant, \(V_R\) and \(I\) are always perfectly in-phase for a resistor. (Option B is correct).
 
-3. **Amplitude of \(V_R\) at Resonance**: At \(\omega = \omega_0\), the total impedance is just \(R\). The current is \(I = \frac{V_{in}}{R}\). The amplitude of the voltage across the resistor is \(V_R = I \times R = V_{in}\). This maximum amplitude depends purely on the source voltage and is independent of \(L\) and \(C\). (Option 3 is correct).
+3. **Amplitude of \(V_R\) at Resonance**: At \(\omega = \omega_0\), the total impedance is just \(R\). The current is \(I = \frac{V_{in}}{R}\). The amplitude of the voltage across the resistor is \(V_R = I \times R = V_{in}\). This maximum amplitude depends purely on the source voltage and is independent of \(L\) and \(C\). (Option D is correct).
 
-At \(\omega = \omega_0 / 2\), the circuit is not at resonance, and the current depends on \(R, L,\) and \(C\). Thus, \(V_R\) depends on \(R\). (Option 2 is false).`,
+At \(\omega = \omega_0 / 2\), the circuit is not at resonance, and the current depends on \(R, L,\) and \(C\). Thus, \(V_R\) depends on \(R\). (Option C is false).`,
 
     correctAnswers: [1, 3],
   },
@@ -6210,15 +6210,15 @@ T_1T_2=T_3T_4
 For adiabatic process \(1\to2\): \(T_1 V_1^{\gamma-1} = T_2 V_2^{\gamma-1}\)
 For adiabatic process \(3\to4\): \(T_4 V_4^{\gamma-1} = T_3 V_3^{\gamma-1} \Rightarrow T_4 V_1^{\gamma-1} = T_3 V_2^{\gamma-1}\)
 Dividing the two equations yields:
-\(\frac{T_1}{T_4} = \frac{T_2}{T_3} \Rightarrow T_1 T_3 = T_2 T_4\). (Option 0 is correct).
+\(\frac{T_1}{T_4} = \frac{T_2}{T_3} \Rightarrow T_1 T_3 = T_2 T_4\). (Option A is correct).
 
 2. **Efficiency**:
 The efficiency is \(\eta = 1 - \frac{Q_{out}}{Q_{in}} = 1 - \frac{C_v(T_4 - T_1)}{C_v(T_3 - T_2)} = 1 - \frac{T_1(T_4/T_1 - 1)}{T_2(T_3/T_2 - 1)}\)
 Since \(T_4/T_1 = T_3/T_2\), this simplifies to: \(\eta = 1 - \frac{T_1}{T_2}\).
-Using the adiabatic relation \(T_1 P_1^{\frac{1-\gamma}{\gamma}} = T_2 P_2^{\frac{1-\gamma}{\gamma}}\), we get \(\eta = 1 - \left(\frac{P_1}{P_2}\right)^{\frac{\gamma-1}{\gamma}}\). (Option 1 is correct).
+Using the adiabatic relation \(T_1 P_1^{\frac{1-\gamma}{\gamma}} = T_2 P_2^{\frac{1-\gamma}{\gamma}}\), we get \(\eta = 1 - \left(\frac{P_1}{P_2}\right)^{\frac{\gamma-1}{\gamma}}\). (Option B is correct).
 
 3. **Entropy**:
-Entropy is a state function. For any closed, reversible thermodynamic cycle, the net change in entropy after returning to the initial state is identically zero. (Option 2 is correct).`,
+Entropy is a state function. For any closed, reversible thermodynamic cycle, the net change in entropy after returning to the initial state is identically zero. (Option C is correct).`,
 
     correctAnswers: [0, 1, 2],
   },
@@ -6279,12 +6279,12 @@ The component of the source's velocity along the line of sight is the dot produc
 
 Using the double angle identity \(2\sin\theta\cos\theta = \sin(2\theta)\):
 \(v_{PS}(t) = -\frac{1}{2} \frac{a v_0}{\sqrt{a^2\sin^2(\omega t) + L^2}} \sin(2\omega t)\).
-Ignoring the arbitrary sign direction, its magnitude matches Option 0.
+Ignoring the arbitrary sign direction, its magnitude matches Option A.
 
 By the Doppler effect, the observed frequency shifts from \(f\) only when there is a relative velocity component \(v_{PS} \neq 0\).
 - At \(x=0\), \(t=0\), so \(\sin(2\omega t) = 0 \Rightarrow v_{PS} = 0\). Observed frequency is \(f\).
 - At \(x=\pm a\), the oscillator is at its amplitude extreme, so its instantaneous velocity \(v(t) = 0 \Rightarrow v_{PS} = 0\). Observed frequency is \(f\).
-Therefore, the observed frequency is \(f\) exactly when the source is at \(x=0\) and \(x=\pm a\). (Option 1 is correct).`,
+Therefore, the observed frequency is \(f\) exactly when the source is at \(x=0\) and \(x=\pm a\). (Option B is correct).`,
 
     correctAnswers: [0, 1],
   },
@@ -6345,13 +6345,13 @@ One mole of an ideal monoatomic gas, initially at temperature \(T_0\) is expande
 
 1. **Isothermal Process**:
 In an isothermal process, the temperature remains strictly constant at \(T_0\).
-Because the internal energy of an ideal gas depends only on its temperature (\(U \propto T\)), the change in internal energy is precisely zero: \(\Delta U = 0\). (Option 1 is correct).
+Because the internal energy of an ideal gas depends only on its temperature (\(U \propto T\)), the change in internal energy is precisely zero: \(\Delta U = 0\). (Option B is correct).
 The work done is \(W = \int P dV = RT_0 \ln\left(\frac{V_f}{V_i}\right) = RT_0 \ln(2.5)\), not \(\ln 2\).
 
 2. **Isobaric Process**:
 In an isobaric (constant pressure) process, volume is directly proportional to temperature (\(V \propto T\)).
 Since \(V\) increases by a factor of 2.5, \(T_f = 2.5 T_0\).
-The work done is \(W = P \Delta V = P(2.5V_0 - V_0) = 1.5 PV_0\). By the ideal gas law, \(PV_0 = RT_0\), so \(W = 1.5 RT_0 = \frac{3}{2} RT_0\). (Option 2 is correct).
+The work done is \(W = P \Delta V = P(2.5V_0 - V_0) = 1.5 PV_0\). By the ideal gas law, \(PV_0 = RT_0\), so \(W = 1.5 RT_0 = \frac{3}{2} RT_0\). (Option C is correct).
 
 The change in internal energy is \(\Delta U = n C_v \Delta T = 1 \times \frac{3}{2}R \times (2.5 T_0 - T_0) = \frac{3}{2}R \times 1.5 T_0 = \frac{9}{4} RT_0\), not \(\frac{9}{2} RT_0\).`,
 
