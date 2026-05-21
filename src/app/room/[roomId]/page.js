@@ -237,7 +237,7 @@ export default function RoomPage({ params }) {
           <div className="text-right">
             <div className="inline-block bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2">
               <span className="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</span>
-              <span className="block text-blue-400 font-bold">LOBBY</span>
+              <span className="block text-white font-bold">LOBBY</span>
             </div>
           </div>
         </div>
@@ -249,8 +249,12 @@ export default function RoomPage({ params }) {
             <div className="space-y-3">
               {participants.map(p => (
                 <div key={p.id} className="flex items-center gap-3 bg-zinc-900 p-3 rounded-xl border border-zinc-800">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-white">
-                    {p.name?.[0] || p.username?.[0] || '?'}
+                  <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-white overflow-hidden border border-zinc-700">
+                    {p.image ? (
+                      <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                    ) : (
+                      p.name?.[0] || p.username?.[0] || '?'
+                    )}
                   </div>
                   <div>
                     <div className="font-bold text-white">{p.name || p.username}</div>
@@ -292,7 +296,7 @@ export default function RoomPage({ params }) {
                     placeholder="Enter username"
                     className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2 text-sm text-white"
                   />
-                  <button type="submit" className="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-500">
+                  <button type="submit" className="px-4 py-2 bg-white text-black text-sm font-bold rounded-xl hover:bg-zinc-200">
                     Invite
                   </button>
                 </div>

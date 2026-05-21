@@ -58,8 +58,6 @@ export default function InvitesMenu() {
     }
   };
 
-  if (invites.length === 0) return null;
-
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -69,9 +67,11 @@ export default function InvitesMenu() {
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white">
           <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
         </svg>
-        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-          {invites.length}
-        </span>
+        {invites.length > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+            {invites.length}
+          </span>
+        )}
       </button>
 
       {isOpen && (
@@ -80,27 +80,33 @@ export default function InvitesMenu() {
             <p className="text-sm font-bold text-white uppercase tracking-wider">Pending Invites</p>
           </div>
           <div className="max-h-64 overflow-y-auto p-2">
-            {invites.map(invite => (
-              <div key={invite.id} className="p-3 bg-black/40 rounded-xl mb-2 last:mb-0 border border-zinc-800/50">
-                <p className="text-sm text-zinc-300 mb-3">
-                  <span className="font-bold text-white">{invite.sender?.name || invite.sender?.username}</span> invited you to a Live Room
-                </p>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => handleAction(invite.id, "DECLINE")}
-                    className="flex-1 py-1.5 text-xs font-bold text-zinc-400 bg-zinc-800 rounded-lg hover:bg-zinc-700 hover:text-white transition"
-                  >
-                    Decline
-                  </button>
-                  <button 
-                    onClick={() => handleAction(invite.id, "ACCEPT")}
-                    className="flex-1 py-1.5 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-500 transition"
-                  >
-                    Accept
-                  </button>
-                </div>
+            {invites.length === 0 ? (
+              <div className="p-4 text-center text-sm text-zinc-500">
+                No new notifications
               </div>
-            ))}
+            ) : (
+              invites.map(invite => (
+                <div key={invite.id} className="p-3 bg-black/40 rounded-xl mb-2 last:mb-0 border border-zinc-800/50">
+                  <p className="text-sm text-zinc-300 mb-3">
+                    <span className="font-bold text-white">{invite.sender?.name || invite.sender?.username}</span> invited you to a Live Room
+                  </p>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => handleAction(invite.id, "DECLINE")}
+                      className="flex-1 py-1.5 text-xs font-bold text-zinc-400 bg-zinc-800 rounded-lg hover:bg-zinc-700 hover:text-white transition"
+                    >
+                      Decline
+                    </button>
+                    <button 
+                      onClick={() => handleAction(invite.id, "ACCEPT")}
+                      className="flex-1 py-1.5 text-xs font-bold text-black bg-white rounded-lg hover:bg-zinc-200 transition"
+                    >
+                      Accept
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       )}
