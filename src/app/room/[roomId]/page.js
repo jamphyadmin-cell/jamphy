@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import TestInterface from "@/components/test/TestInterface";
 import TestResult from "@/components/test/TestResult";
+import TestOverview from "@/components/test/TestOverview";
 import { questions as allQuestions } from "@/data/questions";
 
 export default function RoomPage({ params }) {
@@ -25,6 +26,7 @@ export default function RoomPage({ params }) {
   // For the actual test
   const [testQuestions, setTestQuestions] = useState([]);
   const [hasStarted, setHasStarted] = useState(false);
+  const [hasConfirmed, setHasConfirmed] = useState(false);
   const [submittedAnswers, setSubmittedAnswers] = useState(null);
 
   useEffect(() => {
@@ -170,7 +172,7 @@ export default function RoomPage({ params }) {
     return <div className="min-h-screen flex items-center justify-center bg-black text-white">Loading...</div>;
   }
 
-  if (hasStarted) {
+  if (hasStarted && hasConfirmed) {
     if (submittedAnswers) {
       return (
         <TestResult 
@@ -228,6 +230,14 @@ export default function RoomPage({ params }) {
 
   return (
     <div className="min-h-screen bg-black pt-24 px-6">
+      {hasStarted && !hasConfirmed && (
+        <TestOverview
+          config={room.config}
+          questionsCount={testQuestions.length}
+          onStart={() => setHasConfirmed(true)}
+          onCancel={() => router.push('/')}
+        />
+      )}
       <div className="max-w-4xl mx-auto bg-zinc-950 border border-zinc-800 rounded-[32px] p-8 md:p-12 shadow-2xl">
         <div className="flex justify-between items-start mb-10">
           <div>
