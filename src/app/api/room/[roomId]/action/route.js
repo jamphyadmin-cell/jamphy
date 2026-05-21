@@ -9,7 +9,8 @@ export async function POST(req, { params }) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { roomId } = params;
+    const resolvedParams = await params;
+    const { roomId } = resolvedParams;
     const { action, progress, score, isFinished } = await req.json();
 
     const room = await prisma.liveRoom.findUnique({

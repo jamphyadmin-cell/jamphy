@@ -155,6 +155,17 @@ export default function RoomPage({ params }) {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="bg-zinc-900 p-8 rounded-2xl text-center">
+          <h2 className="text-2xl font-black text-red-500 mb-4">Error</h2>
+          <p className="text-zinc-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!room) {
     return <div className="min-h-screen flex items-center justify-center bg-black text-white">Loading...</div>;
   }

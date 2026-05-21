@@ -9,7 +9,8 @@ export async function GET(req, { params }) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { roomId } = params;
+    const resolvedParams = await params;
+    const { roomId } = resolvedParams;
 
     const room = await prisma.liveRoom.findUnique({
       where: { id: roomId },
