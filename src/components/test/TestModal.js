@@ -76,9 +76,9 @@ export default function TestModal({ onClose, onGenerate }) {
               <div className="grid grid-cols-2 gap-2 mt-3 p-4 bg-zinc-900 border border-zinc-800 rounded-2xl max-h-48 overflow-y-auto">
                 {syllabus.map(subject => (
                   <label key={subject.id} className="flex items-center gap-3 p-2 hover:bg-zinc-800 rounded-xl cursor-pointer transition">
-                    <div className={`w-5 h-5 rounded border flex items-center justify-center ${selectedChapters.includes(subject.id) ? "bg-blue-600 border-blue-600" : "bg-zinc-950 border-zinc-700"}`}>
+                    <div className={`w-5 h-5 rounded border flex items-center justify-center ${selectedChapters.includes(subject.id) ? "bg-white border-white" : "bg-zinc-950 border-zinc-700"}`}>
                       {selectedChapters.includes(subject.id) && (
-                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                       )}
                     </div>
                     <span className="text-sm text-zinc-200 select-none">{subject.name}</span>
@@ -147,7 +147,7 @@ export default function TestModal({ onClose, onGenerate }) {
                 <button 
                   key={mode}
                   onClick={() => setYearMode(mode)}
-                  className={`py-2 px-5 rounded-xl border text-sm font-bold transition ${yearMode === mode ? "bg-blue-600 text-white border-blue-600" : "bg-zinc-900 text-zinc-400 border-zinc-800 hover:border-zinc-600"}`}
+                  className={`py-2 px-5 rounded-xl border text-sm font-bold transition ${yearMode === mode ? "bg-white text-black border-white" : "bg-zinc-900 text-zinc-400 border-zinc-800 hover:border-zinc-600"}`}
                 >
                   {mode}
                 </button>

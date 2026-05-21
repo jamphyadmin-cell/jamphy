@@ -62,7 +62,7 @@ export default function TestOverview({ config, questionsCount, onStart, onCancel
           </button>
           <button 
             onClick={() => setCountdown(3)}
-            className="flex-1 py-4 rounded-2xl bg-blue-600 text-white font-black hover:bg-blue-500 transition"
+            className="flex-1 py-4 rounded-2xl bg-white text-black font-black hover:bg-zinc-200 transition"
           >
             Confirm to Proceed
           </button>

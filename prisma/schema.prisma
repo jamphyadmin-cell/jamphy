@@ -48,7 +48,11 @@ model User {
   course        String?
   accounts      Account[]
   sessions      Session[]
-  reports       Report[]
+  reports             Report[]
+  hostedRooms         LiveRoom[]        @relation("RoomHost")
+  roomParticipations  RoomParticipant[]
+  sentInvites         RoomInvite[]      @relation("InviteSender")
+  receivedInvites     RoomInvite[]      @relation("InviteReceiver")
 }
 
 model VerificationToken {
@@ -67,4 +71,43 @@ model Report {
   createdAt   DateTime @default(now())
   userId      String?
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model LiveRoom {
+  id          String   @id @default(cuid())
+  hostId      String
+  host        User     @relation("RoomHost", fields: [hostId], references: [id])
+  status      String   @default("LOBBY") // LOBBY, ACTIVE, FINISHED
+  config      Json
+  questions   Json
+  createdAt   DateTime @default(now())
+  
+  participants RoomParticipant[]
+  invites      RoomInvite[]
+}
+
+model RoomParticipant {
+  id          String   @id @default(cuid())
+  roomId      String
+  room        LiveRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  progress    Int      @default(0)
+  score       Int      @default(0)
+  isFinished  Boolean  @default(false)
+  joinedAt    DateTime @default(now())
+
+  @@unique([roomId, userId])
+}
+
+model RoomInvite {
+  id          String   @id @default(cuid())
+  roomId      String
+  room        LiveRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  senderId    String
+  sender      User     @relation("InviteSender", fields: [senderId], references: [id])
+  receiverId  String
+  receiver    User     @relation("InviteReceiver", fields: [receiverId], references: [id])
+  status      String   @default("PENDING") // PENDING, ACCEPTED, DECLINED
+  createdAt   DateTime @default(now())
 }

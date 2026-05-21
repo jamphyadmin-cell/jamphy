@@ -6,9 +6,11 @@ import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import UserMenu from "../../components/UserMenu";
+import InvitesMenu from "../../components/InvitesMenu";
 import { questions } from "../../data/questions";
 import { syllabus } from "../../data/syllabus";
 import TestManager from "../../components/test/TestManager";
+import TestModal from "../../components/test/TestModal";
 import MathText from "../../components/MathText";
 
 const icons = {
@@ -67,6 +69,7 @@ export default function IITJamPhysicsHub() {
   }, []);
 
   const [testActive, setTestActive] = useState(false);
+  const [liveRoomActive, setLiveRoomActive] = useState(false);
 
   const [selectedSubject, setSelectedSubject] =
     useState(null);
@@ -396,6 +399,12 @@ export default function IITJamPhysicsHub() {
           </div>
           <div className="flex gap-3 items-center">
             <button
+              onClick={() => setLiveRoomActive(true)}
+              className="px-4 py-2 rounded-xl border border-zinc-300 bg-white text-black font-semibold hover:bg-zinc-200 transition hidden sm:block shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+            >
+              Live Room
+            </button>
+            <button
               onClick={() => setTestActive(true)}
               className="px-4 py-2 rounded-xl border border-zinc-700 bg-zinc-900 text-white font-semibold hover:bg-zinc-800 transition hidden sm:block shadow-[0_0_10px_rgba(255,255,255,0.1)]"
             >
@@ -407,6 +416,7 @@ export default function IITJamPhysicsHub() {
             >
               Home
             </Link>
+            {session?.user && <InvitesMenu />}
             <UserMenu session={session} />
           </div>
         </div>
@@ -447,7 +457,7 @@ export default function IITJamPhysicsHub() {
 
       {status === "authenticated" && session?.user?.username && (
         <>
-          {!selectedSubject && !testActive && (
+          {!selectedSubject && !testActive && !liveRoomActive && (
 
             <section className="max-w-7xl mx-auto px-6 py-16">
 
@@ -487,7 +497,7 @@ export default function IITJamPhysicsHub() {
 
           )}
 
-          {selectedSubject && !activeQuestion && !testActive && (
+          {selectedSubject && !activeQuestion && !testActive && !liveRoomActive && (
 
             <section className="max-w-7xl mx-auto px-6 py-16">
 
@@ -646,7 +656,7 @@ export default function IITJamPhysicsHub() {
 
           )}
 
-          {activeQuestion && !testActive && (
+          {activeQuestion && !testActive && !liveRoomActive && (
 
             <section className="max-w-7xl mx-auto px-4 md:px-6 py-6">
 
@@ -995,6 +1005,29 @@ export default function IITJamPhysicsHub() {
             <TestManager
               allQuestions={questions}
               onClose={() => setTestActive(false)}
+            />
+          )}
+
+          {liveRoomActive && (
+            <TestModal 
+              onClose={() => setLiveRoomActive(false)}
+              onGenerate={async (config) => {
+                try {
+                  const res = await fetch('/api/room/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                  });
+                  const data = await res.json();
+                  if (res.ok) {
+                    window.location.href = `/room/${data.roomId}`;
+                  } else {
+                    alert(data.error || "Failed to create Live Room");
+                  }
+                } catch (err) {
+                  alert("An error occurred");
+                }
+              }}
             />
           )}
         </>

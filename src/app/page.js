@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
 import UserMenu from "../components/UserMenu";
+import InvitesMenu from "../components/InvitesMenu";
 
 export default function IITJamPrepPlatform() {
   const { data: session } = useSession();
@@ -84,6 +85,8 @@ export default function IITJamPrepPlatform() {
           </div>
 
           <div className="flex gap-3 items-center">
+
+            {session?.user && <InvitesMenu />}
 
             <UserMenu session={session} />
 
