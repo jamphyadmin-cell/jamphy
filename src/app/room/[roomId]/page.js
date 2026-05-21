@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import TestInterface from "@/components/test/TestInterface";
+import TestResult from "@/components/test/TestResult";
 import { questions as allQuestions } from "@/data/questions";
 
 export default function RoomPage({ params }) {
@@ -24,6 +25,7 @@ export default function RoomPage({ params }) {
   // For the actual test
   const [testQuestions, setTestQuestions] = useState([]);
   const [hasStarted, setHasStarted] = useState(false);
+  const [submittedAnswers, setSubmittedAnswers] = useState(null);
 
   useEffect(() => {
     if (!session) return;
@@ -137,9 +139,7 @@ export default function RoomPage({ params }) {
       }
     });
     handleProgress(testQuestions.length, score, true);
-    // Optionally redirect to a results page or show a modal
-    alert(`Test Finished! You scored ${score}/${testQuestions.length}`);
-    router.push('/');
+    setSubmittedAnswers(answers);
   };
 
   if (error === "Not a participant") {
@@ -171,6 +171,15 @@ export default function RoomPage({ params }) {
   }
 
   if (hasStarted) {
+    if (submittedAnswers) {
+      return (
+        <TestResult 
+          questions={testQuestions} 
+          answers={submittedAnswers} 
+          onClose={() => router.push('/questions')} 
+        />
+      );
+    }
     return (
       <div className="min-h-screen bg-black flex">
         {/* Main Test Area */}
@@ -189,15 +198,17 @@ export default function RoomPage({ params }) {
             {participants.map(p => (
               <div key={p.id} className="bg-zinc-900 rounded-xl p-3 border border-zinc-800">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold text-xs text-white">
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center font-bold text-xs text-black">
                     {p.name?.[0] || p.username?.[0] || '?'}
                   </div>
-                  <div className="font-bold text-white text-sm truncate">{p.username || p.name}</div>
+                  <div className="font-bold text-white text-sm truncate">
+                    {p.username || p.name} {p.id === room?.hostId && <span className="text-zinc-500 font-normal ml-1">(Host)</span>}
+                  </div>
                   {p.isFinished && <span className="ml-auto text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded">Done</span>}
                 </div>
                 <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
                   <div 
-                    className="bg-blue-500 h-full transition-all duration-500" 
+                    className="bg-white h-full transition-all duration-500" 
                     style={{ width: `${(p.progress / testQuestions.length) * 100}%` }}
                   />
                 </div>
