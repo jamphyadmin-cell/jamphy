@@ -123,7 +123,11 @@ export default function ProfilePage() {
       const data = await res.json();
 
       if (res.ok) {
-        await update();
+        await update({
+          name: formData.name,
+          image: formData.image,
+          username: formData.username,
+        });
         setMessage({ type: "success", text: "Profile updated successfully!" });
       } else {
         setMessage({ type: "error", text: data.error || "Failed to update profile." });

@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 export default function ProfileCompletionModal() {
   const { data: session, status, update } = useSession();
+  const pathname = usePathname();
 
   const [profileFormData, setProfileFormData] = useState({
     username: "",
@@ -17,8 +19,14 @@ export default function ProfileCompletionModal() {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileMessage, setProfileMessage] = useState({ type: "", text: "" });
 
-  if (status === "loading" || status === "unauthenticated" || (status === "authenticated" && session?.user?.username)) {
-    return null; // Don't show if loading, not logged in, or already has username
+  if (
+    status === "loading" ||
+    status === "unauthenticated" ||
+    pathname === "/" ||
+    pathname === "/profile" ||
+    (status === "authenticated" && session?.user?.username)
+  ) {
+    return null; // Don't show if loading, not logged in, on landing page, on profile settings page, or already completed
   }
 
   const handleProfileSubmit = async (e) => {
@@ -64,7 +72,9 @@ export default function ProfileCompletionModal() {
       const data = await res.json();
 
       if (res.ok) {
-        await update();
+        await update({
+          username: profileFormData.username,
+        });
       } else {
         setProfileMessage({ type: "error", text: data.error || "Failed to save profile." });
       }

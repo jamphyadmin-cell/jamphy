@@ -26,6 +26,19 @@ export const authOptions = {
         if (session.name !== undefined) token.name = session.name;
         if (session.image !== undefined) token.picture = session.image;
         if (session.username !== undefined) token.username = session.username;
+      } else if (token.id && !token.username) {
+        // Fallback: if username is missing in active token, query DB to see if they've completed it
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id },
+            select: { username: true },
+          });
+          if (dbUser?.username) {
+            token.username = dbUser.username;
+          }
+        } catch (err) {
+          console.error("Database fallback session check failed:", err);
+        }
       }
       return token;
     },
