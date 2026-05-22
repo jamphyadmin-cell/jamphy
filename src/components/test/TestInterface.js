@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import MathText from "../MathText";
 
 export default function TestInterface({ questions, durationMins, onSubmit }) {
@@ -188,13 +187,11 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
             {activeQuestion.question}
           </MathText>
 
-          {activeQuestion.questionImage && (
+          {(activeQuestion.questionImage || activeQuestion.image) && (
             <div className="mb-8">
-              <Image
-                src={activeQuestion.questionImage}
+              <img
+                src={activeQuestion.questionImage || activeQuestion.image}
                 alt="Question diagram"
-                width={500}
-                height={350}
                 className="h-auto max-w-full rounded-2xl border border-zinc-800"
               />
             </div>
@@ -234,11 +231,9 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
                         </div>
                         <div className="flex-1 min-w-0 overflow-hidden">
                           {activeQuestion.optionImages?.[index] && (
-                            <Image
+                            <img
                               src={activeQuestion.optionImages[index]}
                               alt={`Option ${index + 1}`}
-                              width={500}
-                              height={300}
                               className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
                             />
                           )}

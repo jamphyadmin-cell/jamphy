@@ -30,6 +30,14 @@ export default function TestManager({ allQuestions, onClose }) {
     // Actually, let's just do the filtering here.
     const { syllabus } = require("../../data/syllabus");
     
+    let allowedSubtopicsSet = null;
+    if (newConfig.syllabusMode === "specific") {
+      const allowedSubtopics = syllabus
+        .filter(s => newConfig.selectedChapters.includes(s.id))
+        .flatMap(s => s.subtopics);
+      allowedSubtopicsSet = new Set(allowedSubtopics);
+    }
+
     filtered = allQuestions.filter(q => {
       // 1. Types
       if (!newConfig.types.includes(q.type)) return false;
@@ -48,11 +56,8 @@ export default function TestManager({ allQuestions, onClose }) {
       }
 
       // 3. Syllabus
-      if (newConfig.syllabusMode === "specific") {
-        const allowedSubtopics = syllabus
-          .filter(s => newConfig.selectedChapters.includes(s.id))
-          .flatMap(s => s.subtopics);
-        if (!allowedSubtopics.includes(q.subject)) return false;
+      if (newConfig.syllabusMode === "specific" && allowedSubtopicsSet) {
+        if (!allowedSubtopicsSet.has(q.subject)) return false;
       }
 
       return true;

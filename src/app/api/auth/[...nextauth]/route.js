@@ -15,26 +15,26 @@ export const authOptions = {
     strategy: "jwt",
   },
   callbacks: {
+    async jwt({ token, user, trigger, session }) {
+      // On initial login, store DB fields in the token
+      if (user) {
+        token.id = user.id;
+        token.username = user.username;
+      }
+      // Support manual updates from client useSession().update()
+      if (trigger === "update" && session) {
+        if (session.name !== undefined) token.name = session.name;
+        if (session.image !== undefined) token.picture = session.image;
+        if (session.username !== undefined) token.username = session.username;
+      }
+      return token;
+    },
     async session({ session, token }) {
-      // Add the user id to the session for convenience
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-
-        // Fetch latest user data from database so session is always up-to-date
-        try {
-          const dbUser = await prisma.user.findUnique({
-            where: { id: token.sub },
-            select: { name: true, image: true, username: true }
-          });
-          
-          if (dbUser) {
-            session.user.name = dbUser.name;
-            session.user.image = dbUser.image;
-            session.user.username = dbUser.username;
-          }
-        } catch (error) {
-          console.error("Error fetching user session data:", error);
-        }
+      if (session.user && token) {
+        session.user.id = token.sub || token.id;
+        session.user.name = token.name;
+        session.user.image = token.picture;
+        session.user.username = token.username;
       }
       return session;
     },

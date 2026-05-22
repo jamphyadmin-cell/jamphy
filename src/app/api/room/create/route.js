@@ -13,6 +13,14 @@ export async function POST(req) {
 
     const config = await req.json();
 
+    let allowedSubtopicsSet = null;
+    if (config.syllabusMode === "specific") {
+      const allowedSubtopics = syllabus
+        .filter(s => config.selectedChapters.includes(s.id))
+        .flatMap(s => s.subtopics);
+      allowedSubtopicsSet = new Set(allowedSubtopics);
+    }
+
     // Replicate logic from TestManager.js to generate questions on server
     let filtered = questions.filter(q => {
       // 1. Types
@@ -32,11 +40,8 @@ export async function POST(req) {
       }
 
       // 3. Syllabus
-      if (config.syllabusMode === "specific") {
-        const allowedSubtopics = syllabus
-          .filter(s => config.selectedChapters.includes(s.id))
-          .flatMap(s => s.subtopics);
-        if (!allowedSubtopics.includes(q.subject)) return false;
+      if (config.syllabusMode === "specific" && allowedSubtopicsSet) {
+        if (!allowedSubtopicsSet.has(q.subject)) return false;
       }
 
       return true;

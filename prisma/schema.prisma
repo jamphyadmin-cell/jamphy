@@ -98,6 +98,8 @@ model RoomParticipant {
   joinedAt    DateTime @default(now())
 
   @@unique([roomId, userId])
+  @@index([roomId])
+  @@index([userId])
 }
 
 model RoomInvite {
@@ -110,4 +112,8 @@ model RoomInvite {
   receiver    User     @relation("InviteReceiver", fields: [receiverId], references: [id])
   status      String   @default("PENDING") // PENDING, ACCEPTED, DECLINED
   createdAt   DateTime @default(now())
+
+  @@index([roomId])
+  @@index([receiverId])
+  @@index([senderId])
 }
