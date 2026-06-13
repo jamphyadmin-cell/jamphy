@@ -46,11 +46,13 @@ export async function PUT(req) {
     const data = await req.json();
     const { username, name, image, dob, college, year, course } = data;
 
+    const cleanUsername = username ? username.trim().toLowerCase().replace(/[^a-z0-9_.]/g, '') : undefined;
+
     // Check if username is taken by another user
-    if (username) {
+    if (cleanUsername) {
       const existing = await prisma.user.findFirst({
         where: {
-          username,
+          username: cleanUsername,
           id: { not: session.user.id },
         },
       });
@@ -63,7 +65,7 @@ export async function PUT(req) {
       where: { id: session.user.id },
       data: {
         name,
-        username,
+        username: cleanUsername,
         image,
         dob,
         college,

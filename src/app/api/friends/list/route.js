@@ -22,7 +22,6 @@ export async function GET(req) {
             id: true,
             name: true,
             image: true,
-            currentLeague: true,
             userScore: true,
             attempts: {
               where: {
@@ -49,7 +48,7 @@ export async function GET(req) {
         id: u.id,
         name: u.name,
         image: u.image,
-        league: u.currentLeague,
+        league: u.userScore?.currentLeague || "Bronze",
         streak: u.userScore?.currentStreak || 0,
         todayTotal,
         accuracy

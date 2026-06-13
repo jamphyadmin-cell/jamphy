@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import MathText from "@/components/MathText";
 import UserTable from "../../components/UserTable";
 import { updateReportStatus } from "./actions";
@@ -19,6 +20,87 @@ export default function AdminTabs({ reports, users }) {
   const [extractedQuestions, setExtractedQuestions] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
+
+  const [questionsList, setQuestionsList] = useState([]);
+  const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
+  const [expandedQuestionId, setExpandedQuestionId] = useState(null);
+  const [activeComments, setActiveComments] = useState([]);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [questionSearchQuery, setQuestionSearchQuery] = useState("");
+  const [selectedSubjectFilter, setSelectedSubjectFilter] = useState("All");
+
+  const fetchQuestions = async () => {
+    setIsLoadingQuestions(true);
+    try {
+      const res = await fetch(`/api/admin/questions?adminPassword=${password}`);
+      if (res.ok) {
+        const data = await res.json();
+        setQuestionsList(data.questions || []);
+      }
+    } catch (err) {
+      console.error("Error fetching questions:", err);
+    } finally {
+      setIsLoadingQuestions(false);
+    }
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'Manage Questions') {
+      fetchQuestions();
+    }
+  };
+
+  const handleToggleQuestion = async (q) => {
+    if (expandedQuestionId === q.id) {
+      setExpandedQuestionId(null);
+      setActiveComments([]);
+      return;
+    }
+
+    setExpandedQuestionId(q.id);
+    setIsLoadingComments(true);
+    setActiveComments([]);
+    try {
+      const res = await fetch(`/api/comments?questionId=${q.year}-${q.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setActiveComments(data.comments || []);
+      }
+    } catch (err) {
+      console.error("Error fetching comments:", err);
+    } finally {
+      setIsLoadingComments(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("Are you sure you want to delete this comment?")) return;
+
+    try {
+      const res = await fetch(`/api/comments?id=${commentId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setActiveComments(prev => prev.filter(c => c.id !== commentId));
+      } else {
+        const data = await res.json();
+        alert(data.error || "Failed to delete comment");
+      }
+    } catch (err) {
+      console.error("Error deleting comment:", err);
+      alert("Error deleting comment");
+    }
+  };
+
+  const subjects = ["All", ...new Set(questionsList.map(q => q.subject).filter(Boolean))];
+
+  const filteredQuestions = questionsList.filter(q => {
+    const matchesSubject = selectedSubjectFilter === "All" || q.subject === selectedSubjectFilter;
+    const matchesSearch = q.question.toLowerCase().includes(questionSearchQuery.toLowerCase()) || 
+                          (q.id && q.id.toLowerCase().includes(questionSearchQuery.toLowerCase()));
+    return matchesSubject && matchesSearch;
+  });
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -243,7 +325,11 @@ export default function AdminTabs({ reports, users }) {
     }
   };
 
-  if (!isAuthenticated) {
+  const { data: session } = useSession();
+  const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
+  const displayAuthenticated = isAuthenticated || isGoogleAdmin;
+
+  if (!displayAuthenticated) {
     return (
       <div className="flex items-center justify-center p-6 mt-16">
         <form onSubmit={handleLogin} className="bg-zinc-950 border border-zinc-800 p-8 rounded-3xl w-full max-w-md">
@@ -267,10 +353,10 @@ export default function AdminTabs({ reports, users }) {
     <div className="space-y-8">
       {/* Tab Navigation */}
       <div className="flex gap-4 border-b border-zinc-800">
-        {['Dashboard', 'Add Questions', 'Image / PDF Extraction'].map(tab => (
+        {['Dashboard', 'Manage Questions', 'Add Questions', 'Image / PDF Extraction'].map(tab => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => handleTabChange(tab)}
             className={`pb-4 px-4 font-bold ${activeTab === tab ? 'text-white border-b-2 border-white' : 'text-zinc-500 hover:text-zinc-300'}`}
           >
             {tab}
@@ -361,6 +447,183 @@ export default function AdminTabs({ reports, users }) {
 
             <UserTable initialUsers={users} />
           </section>
+        </div>
+      )}
+
+      {activeTab === 'Manage Questions' && (
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+            <h2 className="text-3xl font-black">Manage Questions</h2>
+            <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+              <input
+                type="text"
+                placeholder="Search question content or ID..."
+                value={questionSearchQuery}
+                onChange={e => setQuestionSearchQuery(e.target.value)}
+                className="bg-black border border-zinc-800 rounded-xl px-4 py-2 text-white outline-none focus:border-zinc-500 text-sm flex-1 sm:w-64"
+              />
+              <select
+                value={selectedSubjectFilter}
+                onChange={e => setSelectedSubjectFilter(e.target.value)}
+                className="bg-black border border-zinc-800 rounded-xl px-4 py-2 text-white outline-none focus:border-zinc-500 text-sm"
+              >
+                {subjects.map(sub => (
+                  <option key={sub} value={sub}>{sub}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {isLoadingQuestions ? (
+            <div className="flex justify-center py-12">
+              <div className="w-8 h-8 border-4 border-zinc-800 border-t-white rounded-full animate-spin"></div>
+            </div>
+          ) : filteredQuestions.length === 0 ? (
+            <div className="text-zinc-500 bg-zinc-950 border border-zinc-800 rounded-3xl p-8 text-center">
+              No questions found.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredQuestions.map(q => {
+                const isExpanded = expandedQuestionId === q.id;
+                return (
+                  <div key={q.id} className="bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden transition-all duration-300">
+                    <div 
+                      onClick={() => handleToggleQuestion(q)}
+                      className="p-6 flex justify-between items-center cursor-pointer hover:bg-zinc-900/40 transition select-none"
+                    >
+                      <div className="flex-1 min-w-0 pr-4">
+                        <div className="flex items-center gap-3 mb-2 flex-wrap">
+                          <span className="px-2.5 py-0.5 bg-zinc-800 text-zinc-300 rounded-md text-xs font-bold font-mono">
+                            {q.id.slice(-6).toUpperCase()}
+                          </span>
+                          <span className="px-2 py-0.5 bg-cyan-900/30 text-cyan-400 rounded-md text-xs font-bold">
+                            {q.subject}
+                          </span>
+                          <span className="px-2 py-0.5 bg-zinc-800 text-zinc-400 rounded-md text-xs font-bold font-mono">
+                            {q.year}
+                          </span>
+                          <span className="px-2 py-0.5 bg-purple-900/30 text-purple-400 rounded-md text-xs font-bold">
+                            {q.type}
+                          </span>
+                        </div>
+                        <div className="text-sm text-zinc-300 truncate font-medium">
+                          {q.question.replace(/[\\#*`[\]]/g, '')}
+                        </div>
+                      </div>
+                      <div className="text-zinc-500 shrink-0">
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          className={`h-5 w-5 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {isExpanded && (
+                      <div className="p-6 border-t border-zinc-900 bg-zinc-900/10 space-y-6">
+                        <div className="space-y-4">
+                          <div className="text-zinc-100 text-base leading-relaxed bg-black/40 p-4 rounded-2xl border border-zinc-900">
+                            <MathText>{q.question}</MathText>
+                          </div>
+                          
+                          {q.options && q.options.length > 0 && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-2">
+                              {q.options.map((opt, oIdx) => {
+                                const isCorrect = q.type === 'MCQ' ? q.correctAnswer === oIdx : q.correctAnswers?.includes(oIdx);
+                                return (
+                                  <div 
+                                    key={oIdx} 
+                                    className={`p-3 rounded-xl border flex gap-3 text-sm transition ${
+                                      isCorrect 
+                                        ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-400' 
+                                        : 'bg-black/20 border-zinc-850 text-zinc-400'
+                                    }`}
+                                  >
+                                    <span className="font-bold">{String.fromCharCode(65 + oIdx)}.</span>
+                                    <div><MathText>{opt}</MathText></div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          {q.type === 'NAT' && q.natAnswer && (
+                            <div className="p-3 bg-emerald-950/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-sm font-bold inline-block">
+                              Correct NAT Answer: {q.natAnswer}
+                            </div>
+                          )}
+
+                          {q.solution && (
+                            <div className="p-4 bg-zinc-900/60 border border-zinc-850 rounded-2xl">
+                              <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Solution</h4>
+                              <div className="text-sm text-zinc-300 leading-relaxed">
+                                <MathText>{q.solution}</MathText>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="pt-6 border-t border-zinc-900">
+                          <h3 className="text-lg font-bold text-white mb-4">Comments</h3>
+
+                          {isLoadingComments ? (
+                            <div className="flex justify-center py-6">
+                              <div className="w-6 h-6 border-2 border-zinc-800 border-t-white rounded-full animate-spin"></div>
+                            </div>
+                          ) : activeComments.length === 0 ? (
+                            <p className="text-zinc-500 text-sm">No comments on this question yet.</p>
+                          ) : (
+                            <div className="space-y-3">
+                              {activeComments.map(comment => (
+                                <div key={comment.id} className="bg-zinc-900/60 border border-zinc-850/80 rounded-2xl p-4 flex gap-3 items-start relative group">
+                                  <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center font-bold text-xs overflow-hidden shrink-0">
+                                    {comment.user.image ? (
+                                      <Image src={comment.user.image} alt={comment.user.name} width={32} height={32} className="object-cover" />
+                                    ) : (
+                                      comment.user.name?.[0].toUpperCase() || "U"
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0 pr-8">
+                                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                      <span className="font-bold text-zinc-200 text-sm truncate">{comment.user.name || "Anonymous"}</span>
+                                      {comment.user.username && (
+                                        <span className="text-xs text-zinc-500">@{comment.user.username}</span>
+                                      )}
+                                      <span className="text-xs text-zinc-500 font-mono">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                    <p className="text-zinc-300 text-sm whitespace-pre-wrap leading-relaxed">
+                                      {comment.text}
+                                    </p>
+                                  </div>
+
+                                  <div className="absolute top-4 right-4">
+                                    <button 
+                                      onClick={() => handleDeleteComment(comment.id)}
+                                      className="text-zinc-500 hover:text-red-400 p-1 rounded-md hover:bg-zinc-800 transition-colors"
+                                      title="Delete Comment"
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 

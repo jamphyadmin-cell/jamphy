@@ -92,9 +92,9 @@ export default function ProfileCompletionModal() {
           <Image
             src="/logo.png"
             alt="Jamphy Logo"
-            width={140}
-            height={140}
-            className="rounded-3xl"
+            width={180}
+            height={49}
+            className="rounded-2xl object-contain"
           />
         </div>
 
@@ -120,7 +120,7 @@ export default function ProfileCompletionModal() {
                 type="text"
                 placeholder="username"
                 value={profileFormData.username}
-                onChange={(e) => setProfileFormData(p => ({ ...p, username: e.target.value.replace(/[^a-zA-Z0-9_]/g, '') }))}
+                onChange={(e) => setProfileFormData(p => ({ ...p, username: e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, '') }))}
                 className="w-full bg-transparent px-3 py-3 text-white outline-none text-sm"
               />
             </div>

@@ -107,7 +107,7 @@ export default function PublicProfilePage() {
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/">
-            <Image src="/logo.png" alt="Logo" width={160} height={160} className="rounded-2xl" />
+            <Image src="/logo.png" alt="Logo" width={148} height={40} className="rounded-xl object-contain" priority />
           </Link>
           <UserMenu session={session} />
         </div>

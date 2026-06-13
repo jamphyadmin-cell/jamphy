@@ -5,6 +5,10 @@ import Image from "next/image";
 
 export default function UserTable({ initialUsers }) {
   const [sortOrder, setSortOrder] = useState("recent"); // "recent" or "oldest"
+  const [warningUser, setWarningUser] = useState(null);
+  const [warningMessage, setWarningMessage] = useState("");
+  const [isSendingWarning, setIsSendingWarning] = useState(false);
+  const [feedback, setFeedback] = useState({ type: "", text: "" });
 
   const sortedUsers = useMemo(() => {
     // initialUsers are already sorted descending (recent) by ID from Prisma
@@ -14,6 +18,42 @@ export default function UserTable({ initialUsers }) {
       return [...initialUsers].reverse();
     }
   }, [initialUsers, sortOrder]);
+
+  const handleSendWarning = async (e) => {
+    e.preventDefault();
+    if (!warningUser || !warningMessage.trim()) return;
+
+    setIsSendingWarning(true);
+    setFeedback({ type: "", text: "" });
+
+    try {
+      const res = await fetch("/api/admin/warn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: warningUser.id,
+          message: warningMessage.trim()
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setFeedback({ type: "success", text: `Warning sent to ${warningUser.name || warningUser.email}!` });
+        setWarningMessage("");
+        setTimeout(() => {
+          setWarningUser(null);
+          setFeedback({ type: "", text: "" });
+        }, 1500);
+      } else {
+        setFeedback({ type: "error", text: data.error || "Failed to send warning." });
+      }
+    } catch (err) {
+      setFeedback({ type: "error", text: "An error occurred." });
+    } finally {
+      setIsSendingWarning(false);
+    }
+  };
 
   const handleExportCSV = () => {
     if (!sortedUsers || sortedUsers.length === 0) return;
@@ -86,12 +126,13 @@ export default function UserTable({ initialUsers }) {
               <th className="p-4 text-xs font-bold text-zinc-500 uppercase tracking-wider">College</th>
               <th className="p-4 text-xs font-bold text-zinc-500 uppercase tracking-wider">Year/Course</th>
               <th className="p-4 text-xs font-bold text-zinc-500 uppercase tracking-wider">DOB</th>
+              <th className="p-4 text-xs font-bold text-zinc-500 uppercase tracking-wider text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-800">
             {sortedUsers.length === 0 ? (
               <tr>
-                <td colSpan="5" className="p-8 text-center text-zinc-500">No users found.</td>
+                <td colSpan="6" className="p-8 text-center text-zinc-500">No users found.</td>
               </tr>
             ) : (
               sortedUsers.map(user => (
@@ -125,12 +166,93 @@ export default function UserTable({ initialUsers }) {
                   <td className="p-4">
                     <span className="text-sm text-zinc-400">{user.dob || '-'}</span>
                   </td>
+                  <td className="p-4 text-center">
+                    <button 
+                      onClick={() => setWarningUser(user)}
+                      className="px-3 py-1.5 text-xs font-bold text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 rounded-lg hover:bg-yellow-500/20 transition"
+                    >
+                      Warn
+                    </button>
+                  </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Warn User Modal */}
+      {warningUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-zinc-950 border border-zinc-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-zinc-800">
+              <h2 className="text-xl font-bold text-white">Warn User</h2>
+              <button 
+                onClick={() => { setWarningUser(null); setFeedback({ type: "", text: "" }); }} 
+                className="text-zinc-500 hover:text-white transition p-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleSendWarning} className="p-6 space-y-4">
+              {feedback.text && (
+                <div className={`p-4 rounded-xl border text-sm ${feedback.type === "success" ? "bg-green-500/10 border-green-500/30 text-green-400" : "bg-red-500/10 border-red-500/30 text-red-400"}`}>
+                  {feedback.text}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1">Target User</label>
+                <div className="p-3 bg-zinc-900 rounded-xl border border-zinc-800 flex items-center gap-3">
+                  {warningUser.image ? (
+                    <Image src={warningUser.image} alt={warningUser.name || "User"} width={32} height={32} className="w-8 h-8 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-8 h-8 bg-zinc-850 rounded-full flex items-center justify-center text-xs font-bold text-zinc-400">
+                      {warningUser.name ? warningUser.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                  )}
+                  <div>
+                    <div className="font-bold text-sm text-white">{warningUser.name || 'Unknown'}</div>
+                    <div className="text-xs text-zinc-500">{warningUser.username ? `@${warningUser.username}` : warningUser.email}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-400 mb-1">Warning Message</label>
+                <textarea
+                  required
+                  rows={4}
+                  value={warningMessage}
+                  onChange={e => setWarningMessage(e.target.value)}
+                  placeholder="Explain why you are warning this user (e.g., inappropriate comment, spamming)..."
+                  className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 text-sm"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <button 
+                  type="button" 
+                  onClick={() => { setWarningUser(null); setFeedback({ type: "", text: "" }); }} 
+                  className="px-4 py-2 rounded-xl text-zinc-400 font-medium hover:text-white transition text-sm"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={isSendingWarning || !warningMessage.trim()} 
+                  className="px-5 py-2 rounded-xl bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition text-sm disabled:opacity-50"
+                >
+                  {isSendingWarning ? "Sending..." : "Send Warning"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

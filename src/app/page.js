@@ -105,9 +105,10 @@ export default function IITJamPrepPlatform() {
             <Image
               src="/logo.png"
               alt="Logo"
-              width={200}
-              height={200}
-              className="rounded-2xl"
+              width={148}
+              height={40}
+              className="rounded-xl object-contain"
+              priority
             />
 
           </div>

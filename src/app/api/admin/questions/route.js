@@ -1,11 +1,17 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from '@/lib/prisma';
 
 export async function POST(req) {
   try {
     const { questions, adminPassword } = await req.json();
 
-    if (adminPassword !== process.env.ADMIN_PASSWORD) {
+    const session = await getServerSession(authOptions);
+    const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
+    const isPasswordAdmin = adminPassword === process.env.ADMIN_PASSWORD;
+
+    if (!isGoogleAdmin && !isPasswordAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -42,7 +48,11 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const adminPassword = searchParams.get('adminPassword');
 
-    if (adminPassword !== process.env.ADMIN_PASSWORD) {
+    const session = await getServerSession(authOptions);
+    const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
+    const isPasswordAdmin = adminPassword === process.env.ADMIN_PASSWORD;
+
+    if (!isGoogleAdmin && !isPasswordAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

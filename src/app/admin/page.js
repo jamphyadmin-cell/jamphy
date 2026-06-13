@@ -39,9 +39,10 @@ export default async function AdminDashboard() {
             <Image
               src="/logo.png"
               alt="Jamphy Admin Logo"
-              width={160}
-              height={160}
-              className="rounded-2xl"
+              width={148}
+              height={40}
+              className="rounded-xl object-contain"
+              priority
             />
             <span className="font-bold text-xl tracking-tight text-zinc-500 hidden sm:block">Admin</span>
           </div>

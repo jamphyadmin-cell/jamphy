@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // Initialize Gemini
 const apiKey = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
@@ -9,7 +11,11 @@ export async function POST(req) {
   try {
     const { base64Data, mimeType, adminPassword } = await req.json();
 
-    if (adminPassword !== process.env.ADMIN_PASSWORD) {
+    const session = await getServerSession(authOptions);
+    const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
+    const isPasswordAdmin = adminPassword === process.env.ADMIN_PASSWORD;
+
+    if (!isGoogleAdmin && !isPasswordAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

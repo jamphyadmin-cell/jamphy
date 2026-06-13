@@ -116,10 +116,13 @@ export default function IITJamPhysicsHub() {
   const [showDiscussion, setShowDiscussion] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingCommentText, setEditingCommentText] = useState("");
+  const [isUpdatingComment, setIsUpdatingComment] = useState(false);
 
   const fetcher = (url) => fetch(url).then(r => r.json());
   const { data: commentsData, mutate: mutateComments } = useSWR(
-    activeQuestion && showDiscussion ? `/api/comments?questionId=${activeQuestion.year}-${activeQuestion.id}` : null,
+    activeQuestion ? `/api/comments?questionId=${activeQuestion.year}-${activeQuestion.id}` : null,
     fetcher
   );
 
@@ -143,6 +146,50 @@ export default function IITJamPhysicsHub() {
       console.error(e);
     } finally {
       setIsSubmittingComment(false);
+    }
+  };
+
+  const handleUpdateComment = async (commentId) => {
+    if (!editingCommentText.trim()) return;
+    setIsUpdatingComment(true);
+    try {
+      const res = await fetch("/api/comments", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          commentId,
+          text: editingCommentText
+        })
+      });
+      if (res.ok) {
+        setEditingCommentId(null);
+        setEditingCommentText("");
+        mutateComments();
+      } else {
+        const errData = await res.json();
+        alert(errData.error || "Failed to update comment");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsUpdatingComment(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("Are you sure you want to delete this comment?")) return;
+    try {
+      const res = await fetch(`/api/comments?id=${commentId}`, {
+        method: "DELETE"
+      });
+      if (res.ok) {
+        mutateComments();
+      } else {
+        const errData = await res.json();
+        alert(errData.error || "Failed to delete comment");
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -537,9 +584,10 @@ export default function IITJamPhysicsHub() {
               <Image
                 src="/logo.png"
                 alt="Logo"
-                width={200}
-                height={200}
-                className="rounded-2xl"
+                width={148}
+                height={40}
+                className="rounded-xl object-contain"
+                priority
               />
             </Link>
           </div>
@@ -580,9 +628,9 @@ export default function IITJamPhysicsHub() {
               <Image
                 src="/logo.png"
                 alt="Jamphy Logo"
-                width={140}
-                height={140}
-                className="rounded-3xl"
+                width={180}
+                height={49}
+                className="rounded-2xl object-contain"
               />
             </div>
 
@@ -1178,62 +1226,63 @@ export default function IITJamPhysicsHub() {
                   </div>
                 )}
 
-                {/* Discussion Section */}
+                {/* Comments Section */}
                 <div className="mt-12 border-t border-zinc-800 pt-8">
-                  <button
-                    onClick={() => setShowDiscussion(!showDiscussion)}
-                    className="flex items-center gap-3 text-xl font-bold text-white hover:text-cyan-400 transition"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-6 h-6 transition-transform ${showDiscussion ? 'rotate-180' : ''}`}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                    Discussion {commentsData?.comments ? `(${commentsData.comments.length})` : ""}
-                  </button>
+                  <div className="text-xl font-bold text-white mb-6">
+                    Comments {commentsData?.comments ? `(${commentsData.comments.length})` : ""}
+                  </div>
                   
-                  {showDiscussion && (
-                    <div className="mt-6 space-y-6">
-                      {status === "authenticated" ? (
-                        <div className="flex gap-4 items-start">
-                          <div className="w-10 h-10 shrink-0 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center font-bold text-sm overflow-hidden">
-                            {session.user.image ? (
-                              <Image src={session.user.image} alt="User" width={40} height={40} className="object-cover" />
-                            ) : (
-                              session.user.name?.[0].toUpperCase() || "U"
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <textarea
-                              value={newComment}
-                              onChange={(e) => setNewComment(e.target.value)}
-                              placeholder="Add a comment or ask a question..."
-                              className="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-4 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 resize-none h-24"
-                            />
-                            <div className="flex justify-end mt-2">
-                              <button
-                                onClick={handlePostComment}
-                                disabled={isSubmittingComment || !newComment.trim()}
-                                className="px-6 py-2 bg-white text-black font-bold rounded-xl disabled:opacity-50 transition"
-                              >
-                                {isSubmittingComment ? "Posting..." : "Post"}
-                              </button>
-                            </div>
+                  <div className="space-y-6">
+                    {status === "authenticated" ? (
+                      <div className="flex gap-4 items-start">
+                        <div className="w-10 h-10 shrink-0 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center font-bold text-sm overflow-hidden">
+                          {session.user.image ? (
+                            <Image src={session.user.image} alt="User" width={40} height={40} className="object-cover" />
+                          ) : (
+                            session.user.name?.[0].toUpperCase() || "U"
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <textarea
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            placeholder="Add a comment or ask a question..."
+                            className="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-4 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 resize-none h-24"
+                          />
+                          <div className="flex justify-end mt-2">
+                            <button
+                              onClick={handlePostComment}
+                              disabled={isSubmittingComment || !newComment.trim()}
+                              className="px-6 py-2 bg-white text-black font-bold rounded-xl disabled:opacity-50 transition"
+                            >
+                              {isSubmittingComment ? "Posting..." : "Post"}
+                            </button>
                           </div>
                         </div>
+                      </div>
+                    ) : (
+                      <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-xl text-center text-zinc-400">
+                        Please <button onClick={() => signIn()} className="text-cyan-400 font-bold hover:underline">sign in</button> to join the discussion.
+                      </div>
+                    )}
+                    
+                    <div className="space-y-4">
+                      {!commentsData ? (
+                        <div className="text-center py-4 text-zinc-500">Loading comments...</div>
+                      ) : commentsData.error ? (
+                        <div className="text-center py-4 text-red-500">Failed to load comments: {commentsData.error}</div>
+                      ) : !commentsData.comments || commentsData.comments.length === 0 ? (
+                        <div className="text-center py-8 text-zinc-500">No comments yet. Be the first!</div>
                       ) : (
-                        <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-xl text-center text-zinc-400">
-                          Please <button onClick={() => signIn()} className="text-cyan-400 font-bold hover:underline">sign in</button> to join the discussion.
-                        </div>
-                      )}
-                      
-                      <div className="space-y-4">
-                        {!commentsData ? (
-                          <div className="text-center py-4 text-zinc-500">Loading comments...</div>
-                        ) : commentsData.error ? (
-                          <div className="text-center py-4 text-red-500">Failed to load comments: {commentsData.error}</div>
-                        ) : !commentsData.comments || commentsData.comments.length === 0 ? (
-                          <div className="text-center py-8 text-zinc-500">No comments yet. Be the first!</div>
-                        ) : (
-                          commentsData.comments.map(comment => (
+                        commentsData.comments.map(comment => {
+                          const isOwner = comment.userId === session?.user?.id;
+                          const isWithin5Mins = (new Date() - new Date(comment.createdAt)) / 1000 / 60 <= 5;
+                          const isAdmin = session?.user?.email === "jamphy.admin@gmail.com";
+                          const canEdit = isOwner && isWithin5Mins;
+                          const canDelete = (isOwner && isWithin5Mins) || isAdmin;
+                          const isEditing = editingCommentId === comment.id;
+
+                          return (
                             <div key={comment.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex gap-4">
                               <div className="w-10 h-10 shrink-0 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center font-bold text-sm overflow-hidden">
                                 {comment.user.image ? (
@@ -1242,19 +1291,72 @@ export default function IITJamPhysicsHub() {
                                   comment.user.name?.[0].toUpperCase() || "U"
                                 )}
                               </div>
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <span className="font-bold text-white">{comment.user.name || "Anonymous"}</span>
-                                  <span className="text-xs text-zinc-500">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                              {isEditing ? (
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <span className="font-bold text-white">{comment.user.name || "Anonymous"}</span>
+                                    <span className="text-xs text-zinc-500">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                  </div>
+                                  <textarea
+                                    value={editingCommentText}
+                                    onChange={e => setEditingCommentText(e.target.value)}
+                                    className="w-full bg-black border border-zinc-750 rounded-xl px-4 py-3 text-white outline-none focus:border-cyan-500 text-sm mt-1"
+                                    rows={3}
+                                  />
+                                  <div className="flex gap-2 mt-2">
+                                    <button
+                                      onClick={() => handleUpdateComment(comment.id)}
+                                      disabled={isUpdatingComment || !editingCommentText.trim()}
+                                      className="px-3 py-1.5 text-xs font-bold text-black bg-white rounded-lg hover:bg-zinc-200 transition disabled:opacity-50"
+                                    >
+                                      Save
+                                    </button>
+                                    <button
+                                      onClick={() => { setEditingCommentId(null); setEditingCommentText(""); }}
+                                      className="px-3 py-1.5 text-xs font-bold text-zinc-400 bg-zinc-800 rounded-lg hover:bg-zinc-750 transition"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
                                 </div>
-                                <p className="text-zinc-300 whitespace-pre-wrap text-sm leading-relaxed">{comment.text}</p>
-                              </div>
+                              ) : (
+                                <div className="flex-1">
+                                  <div className="flex justify-between items-start">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <span className="font-bold text-white">{comment.user.name || "Anonymous"}</span>
+                                      {comment.user.username && (
+                                        <span className="text-xs text-zinc-500">@{comment.user.username}</span>
+                                      )}
+                                      <span className="text-xs text-zinc-500">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                    <div className="flex gap-2">
+                                      {canEdit && (
+                                        <button
+                                          onClick={() => { setEditingCommentId(comment.id); setEditingCommentText(comment.text); }}
+                                          className="text-xs text-zinc-500 hover:text-cyan-400 transition"
+                                        >
+                                          Edit
+                                        </button>
+                                      )}
+                                      {canDelete && (
+                                        <button
+                                          onClick={() => handleDeleteComment(comment.id)}
+                                          className="text-xs text-zinc-500 hover:text-red-400 transition"
+                                        >
+                                          Delete
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <p className="text-zinc-300 whitespace-pre-wrap text-sm leading-relaxed mt-1">{comment.text}</p>
+                                </div>
+                              )}
                             </div>
-                          ))
-                        )}
-                      </div>
+                          );
+                        })
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
 
               </div>

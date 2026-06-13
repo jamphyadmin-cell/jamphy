@@ -18,7 +18,6 @@ export async function GET(req, { params }) {
         id: true,
         name: true,
         image: true,
-        currentLeague: true,
         userScore: true,
         _count: {
           select: {
@@ -28,6 +27,10 @@ export async function GET(req, { params }) {
         }
       }
     });
+
+    if (user) {
+      user.currentLeague = user.userScore?.currentLeague || "Bronze";
+    }
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

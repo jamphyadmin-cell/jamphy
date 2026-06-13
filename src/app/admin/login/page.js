@@ -44,9 +44,9 @@ export default function AdminLogin() {
           <Image
             src="/logo.png"
             alt="Jamphy Logo"
-            width={160}
-            height={160}
-            className="rounded-2xl"
+            width={180}
+            height={49}
+            className="rounded-2xl object-contain"
           />
         </div>
         <h1 className="text-3xl font-black mb-2 text-center">Admin Login</h1>

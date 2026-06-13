@@ -43,7 +43,7 @@ export default function ProfilePage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Image src="/logo.png" alt="Logo" width={160} height={160} className="rounded-2xl" />
+              <Image src="/logo.png" alt="Logo" width={148} height={40} className="rounded-xl object-contain" priority />
             </Link>
             <span className="font-bold text-xl tracking-tight text-zinc-500 hidden sm:block">
               Profile

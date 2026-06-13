@@ -198,7 +198,7 @@ export default function EditProfileModal({ onClose }) {
                   <label className="block text-sm font-medium text-zinc-400 mb-1">Username</label>
                   <div className="flex bg-black border border-zinc-800 rounded-xl overflow-hidden focus-within:border-zinc-500">
                     <span className="flex items-center justify-center pl-4 pr-2 text-zinc-500 bg-zinc-900 border-r border-zinc-800">@</span>
-                    <input type="text" name="username" value={formData.username} onChange={(e) => setFormData(p => ({ ...p, username: e.target.value.replace(/[^a-zA-Z0-9_]/g, '') }))} required className="w-full bg-transparent px-3 py-2 text-white outline-none" />
+                    <input type="text" name="username" value={formData.username} onChange={(e) => setFormData(p => ({ ...p, username: e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, '') }))} required className="w-full bg-transparent px-3 py-2 text-white outline-none" />
                   </div>
                 </div>
                 <div>
