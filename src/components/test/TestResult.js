@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import MathText from "../MathText";
 
 export default function TestResult({ questions, answers, onClose }) {
@@ -85,6 +85,41 @@ export default function TestResult({ questions, answers, onClose }) {
     if (filter === "all") return processedQuestions;
     return processedQuestions.filter(pq => pq.qStatus === filter);
   }, [processedQuestions, filter]);
+
+  useEffect(() => {
+    const updateVault = async () => {
+      for (let i = 0; i < processedQuestions.length; i++) {
+        const pq = processedQuestions[i];
+        if (!pq.isAttempted) continue;
+        
+        await fetch('/api/vault', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ questionId: `${pq.year}-${pq.id}`, isCorrect: pq.isCorrect })
+        }).catch(err => console.error(err));
+        
+        const selectedAnsStr = Array.isArray(pq.userAns) 
+          ? pq.userAns.map(a => a + 1).sort().join(',') 
+          : (pq.type === 'MCQ' ? String(Number(pq.userAns) + 1) : String(pq.userAns));
+        
+        await fetch('/api/attempts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            questionId: `${pq.year}-${pq.id}`, 
+            isCorrect: pq.isCorrect, 
+            timeTaken: 0, 
+            subject: pq.subject, 
+            selectedAnswer: selectedAnsStr 
+          })
+        }).catch(err => console.error(err));
+      }
+    };
+    updateVault();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const score = results.correct;
 
   return (
     <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center p-6 overflow-y-auto">

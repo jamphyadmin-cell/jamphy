@@ -1,30 +1,24 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import useSWR from "swr";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import UserMenu from "../../components/UserMenu";
+import UserMenu from "@/components/UserMenu";
+import EditProfileModal from "@/components/EditProfileModal";
 
 export default function ProfilePage() {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const fileInputRef = useRef(null);
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
-
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    image: "",
-    dob: "",
-    college: "",
-    year: "",
-    course: "",
-  });
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data: profileData, error, isLoading } = useSWR(
+    status === "authenticated" ? "/api/profile/stats" : null,
+    fetcher,
+    { revalidateOnFocus: true }
+  );
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -32,114 +26,7 @@ export default function ProfilePage() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      fetchProfile();
-    }
-  }, [status]);
-
-  const fetchProfile = async () => {
-    try {
-      const res = await fetch("/api/user/profile");
-      if (res.ok) {
-        const data = await res.json();
-        if (data.user) {
-          setFormData({
-            name: data.user.name || "",
-            username: data.user.username || "",
-            image: data.user.image || "",
-            dob: data.user.dob || "",
-            college: data.user.college || "",
-            year: data.user.year || "",
-            course: data.user.course || "",
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new window.Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const MAX_WIDTH = 256;
-        const MAX_HEIGHT = 256;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height = Math.round((height * MAX_WIDTH) / width);
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width = Math.round((width * MAX_HEIGHT) / height);
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, width, height);
-
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
-        setFormData((prev) => ({ ...prev, image: dataUrl }));
-      };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSaving(true);
-    setMessage({ type: "", text: "" });
-
-    try {
-      const res = await fetch("/api/user/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        await update({
-          name: formData.name,
-          image: formData.image,
-          username: formData.username,
-        });
-        setMessage({ type: "success", text: "Profile updated successfully!" });
-      } else {
-        setMessage({ type: "error", text: data.error || "Failed to update profile." });
-      }
-    } catch (error) {
-      setMessage({ type: "error", text: "An unexpected error occurred." });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  if (status === "loading" || isLoading) {
+  if (status === "loading" || (status === "authenticated" && isLoading)) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-zinc-800 border-t-white rounded-full animate-spin"></div>
@@ -147,236 +34,189 @@ export default function ProfilePage() {
     );
   }
 
-  if (status === "unauthenticated") {
-    return null; // Will redirect in useEffect
-  }
+  if (status === "unauthenticated" || !session) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white pb-24">
       {/* Navbar */}
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Image
-                src="/logo.png"
-                alt="Logo"
-                width={160}
-                height={160}
-                className="rounded-2xl"
-              />
+              <Image src="/logo.png" alt="Logo" width={160} height={160} className="rounded-2xl" />
             </Link>
             <span className="font-bold text-xl tracking-tight text-zinc-500 hidden sm:block">
               Profile
             </span>
           </div>
-          <div className="flex items-center gap-4">
-            {session?.user?.username && (
-              <Link
-                href="/questions"
-                className="px-4 py-2 text-sm rounded-xl text-zinc-400 hover:text-white transition hidden sm:block"
-              >
-                Questions
-              </Link>
-            )}
-            <UserMenu session={session} />
-          </div>
+          <UserMenu session={session} />
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="max-w-3xl mx-auto px-6 py-12">
-        <div className="mb-10">
-          <h1 className="text-4xl font-black mb-2">Your Profile</h1>
-          <p className="text-zinc-400">Update your personal details and academic information.</p>
-        </div>
-
-        {!session?.user?.username && (
-          <div className="mb-8 p-4 rounded-2xl border bg-blue-500/10 border-blue-500/30 text-blue-400 font-medium">
-            Please complete your profile (Username, College, and Year) to start practicing questions!
-          </div>
-        )}
-
-        {message.text && (
-          <div
-            className={`mb-8 p-4 rounded-2xl border ${
-              message.type === "success"
-                ? "bg-green-500/10 border-green-500/30 text-green-400"
-                : "bg-red-500/10 border-red-500/30 text-red-400"
-            }`}
-          >
-            {message.text}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-8 bg-zinc-950 border border-zinc-800 p-8 rounded-[32px]">
+      <main className="max-w-5xl mx-auto px-6 py-12 space-y-8">
+        
+        {/* HERO CARD */}
+        <div className="bg-zinc-950 border border-white/10 rounded-3xl p-10 flex flex-col md:flex-row items-center gap-8 md:gap-10 relative overflow-hidden break-words">
+          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-blue-900/20 to-cyan-900/20" />
           
-          {/* Profile Picture */}
-          <div className="flex items-center gap-6 pb-8 border-b border-zinc-800">
-            {formData.image ? (
-              <Image
-                src={formData.image}
-                alt="Profile Preview"
-                width={80}
-                height={80}
-                className="rounded-full object-cover border border-zinc-800"
-              />
+          <div className="relative z-10 w-32 h-32 rounded-full overflow-hidden border-4 border-zinc-900 bg-zinc-800 flex items-center justify-center text-4xl font-bold shrink-0">
+            {session.user.image ? (
+              <Image src={session.user.image} alt={session.user.name} fill className="object-cover" sizes="96px" />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-zinc-800 flex items-center justify-center text-2xl font-bold">
-                {formData.name ? formData.name.charAt(0).toUpperCase() : "U"}
+              session.user.name ? session.user.name[0].toUpperCase() : "U"
+            )}
+          </div>
+          
+          <div className="relative z-10 flex-1 flex flex-col items-center md:items-start text-center md:text-left gap-3 w-full">
+            <h1 className="text-3xl font-black truncate w-full max-w-full">{session.user.name}</h1>
+            <p className="text-zinc-400 truncate w-full max-w-full">{session.user.email}</p>
+            {profileData?.stats && (
+              <div className="flex items-center gap-4 text-sm font-bold mt-2">
+                <span className="text-zinc-300">
+                  <span className="text-white text-lg">{profileData.stats.followersCount}</span> Followers
+                </span>
+                <span className="text-zinc-300">
+                  <span className="text-white text-lg">{profileData.stats.followingCount}</span> Following
+                </span>
               </div>
             )}
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Profile Picture
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef}
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-              <div className="flex gap-3 items-center">
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2 rounded-xl bg-zinc-800 text-white font-medium hover:bg-zinc-700 transition"
-                >
-                  Upload New Picture
-                </button>
-                {formData.image && (
-                  <button
-                    type="button"
-                    onClick={() => setFormData((prev) => ({ ...prev, image: "" }))}
-                    className="px-4 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Full Name */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors"
-              />
-            </div>
-
-            {/* Username */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Username
-              </label>
-              <div className="flex bg-black border border-zinc-800 rounded-xl overflow-hidden focus-within:border-zinc-500 transition-colors">
-                <span className="flex items-center justify-center pl-4 pr-3 text-zinc-500 bg-zinc-900 border-r border-zinc-800">
-                  @
-                </span>
-                <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/[^a-zA-Z0-9_]/g, '');
-                    setFormData((prev) => ({ ...prev, username: val }));
-                  }}
-                  placeholder="username"
-                  required
-                  className="w-full bg-transparent px-4 py-3 text-white outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Date of Birth */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Date of Birth
-              </label>
-              <input
-                type="date"
-                name="dob"
-                value={formData.dob}
-                onChange={handleChange}
-                className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors [color-scheme:dark]"
-              />
-            </div>
-
-            {/* College/University */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
-                College / University
-              </label>
-              <input
-                type="text"
-                name="college"
-                value={formData.college}
-                onChange={handleChange}
-                placeholder="E.g. IIT Delhi"
-                required
-                className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors"
-              />
-            </div>
-
-            {/* Year */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Current Year
-              </label>
-              <select
-                name="year"
-                value={formData.year}
-                onChange={handleChange}
-                required
-                className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors"
-              >
-                <option value="">Select Year</option>
-                <option value="1st Year">1st Year</option>
-                <option value="2nd Year">2nd Year</option>
-                <option value="3rd Year">3rd Year</option>
-                <option value="4th Year">4th Year</option>
-                <option value="Graduated">Graduated</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            {/* Course */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Course Pursuing
-              </label>
-              <input
-                type="text"
-                name="course"
-                value={formData.course}
-                onChange={handleChange}
-                placeholder="E.g. B.Sc Physics"
-                className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white outline-none focus:border-zinc-500 transition-colors"
-              />
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-zinc-800 flex justify-end">
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="px-8 py-3 rounded-2xl bg-white text-black font-bold hover:bg-zinc-200 transition-colors disabled:opacity-50"
+          
+          <div className="relative z-10 mt-6 md:mt-0 shrink-0">
+            <button 
+              onClick={() => setIsEditModalOpen(true)}
+              className="px-6 py-3 rounded-2xl bg-white text-black font-bold hover:scale-105 transition"
             >
-              {isSaving ? "Saving..." : "Save Changes"}
+              Edit Profile
             </button>
           </div>
-        </form>
+        </div>
+
+        {profileData && (
+          <>
+            {/* STATS ROW */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 flex flex-col items-center justify-center">
+                <div className="text-zinc-500 text-sm font-bold uppercase tracking-wider mb-2">Total Questions</div>
+                <div className="text-4xl font-mono text-white font-black">{profileData.stats.totalQuestions}</div>
+              </div>
+              <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 flex flex-col items-center justify-center">
+                <div className="text-zinc-500 text-sm font-bold uppercase tracking-wider mb-2">Correct</div>
+                <div className="text-4xl font-mono text-emerald-400 font-black">{profileData.stats.totalCorrect}</div>
+              </div>
+              <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 flex flex-col items-center justify-center">
+                <div className="text-zinc-500 text-sm font-bold uppercase tracking-wider mb-2">Accuracy</div>
+                <div className="text-4xl font-mono text-cyan-400 font-black">{profileData.stats.accuracy}%</div>
+              </div>
+              <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 flex flex-col items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-orange-500/5" />
+                <div className="relative z-10 text-zinc-500 text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <span className="text-orange-500">🔥</span> Streak
+                </div>
+                <div className="relative z-10 text-4xl font-mono text-orange-400 font-black">{profileData.stats.currentStreak} d</div>
+              </div>
+            </div>
+
+            {/* TWO COLUMNS: Heatmap + Subjects on Left, Recent Activity on Right */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              
+              <div className="lg:col-span-2 space-y-8">
+                {/* CALENDAR HEATMAP */}
+                <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+                  <h3 className="text-xl font-bold mb-6">Activity Calendar (Last 90 Days)</h3>
+                  <div className="grid grid-rows-7 grid-flow-col gap-1.5 w-fit">
+                    {/* Render a simple grid of squares for the last 91 days (13 weeks) */}
+                    {Array.from({ length: 91 }).map((_, i) => {
+                      const d = new Date();
+                      d.setDate(d.getDate() - (90 - i));
+                      const dStr = d.toISOString().split('T')[0];
+                      const entry = profileData.heatmap.find(h => h.date === dStr);
+                      const count = entry ? entry.count : 0;
+                      
+                      let bgClass = "bg-zinc-900 border border-zinc-800/50";
+                      if (count > 0 && count <= 5) bgClass = "bg-[#0e4429] border border-[#006d32]/50";
+                      else if (count > 5 && count <= 15) bgClass = "bg-[#006d32] border border-[#26a641]/50";
+                      else if (count > 15) bgClass = "bg-[#39d353] border border-[#39d353] shadow-[0_0_8px_rgba(57,211,83,0.3)]";
+
+                      return (
+                        <div 
+                          key={i} 
+                          title={`${dStr}: ${count} questions`}
+                          className={`w-[11px] h-[11px] rounded-[2px] ${bgClass}`}
+                        />
+                      );
+                    })}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-4 text-xs text-zinc-500 justify-end">
+                    <span>Less</span>
+                    <div className="w-[11px] h-[11px] rounded-[2px] bg-zinc-900 border border-zinc-800/50" />
+                    <div className="w-[11px] h-[11px] rounded-[2px] bg-[#0e4429] border border-[#006d32]/50" />
+                    <div className="w-[11px] h-[11px] rounded-[2px] bg-[#006d32] border border-[#26a641]/50" />
+                    <div className="w-[11px] h-[11px] rounded-[2px] bg-[#39d353] border border-[#39d353]" />
+                    <span>More</span>
+                  </div>
+                </div>
+
+                {/* SUBJECT BREAKDOWN */}
+                <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+                  <h3 className="text-xl font-bold mb-6">Subject Accuracy</h3>
+                  <div className="space-y-4">
+                    {profileData.breakdown.length === 0 ? (
+                      <p className="text-zinc-500 italic">No subject data yet.</p>
+                    ) : (
+                      profileData.breakdown.map((subject, idx) => (
+                        <div key={idx}>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span className="font-bold text-zinc-300">{subject.subject || "Mixed"}</span>
+                            <span className="text-zinc-500">{subject.accuracy}% ({subject.correct}/{subject.total})</span>
+                          </div>
+                          <div className="h-2 bg-zinc-900 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-cyan-400"
+                              style={{ width: `${subject.accuracy}%` }}
+                            />
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* RECENT ACTIVITY */}
+              <div className="lg:col-span-1">
+                <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 h-full">
+                  <h3 className="text-xl font-bold mb-6">Recent Activity</h3>
+                  <div className="space-y-4">
+                    {profileData.recentActivity.length === 0 ? (
+                      <p className="text-zinc-500 italic">No recent activity.</p>
+                    ) : (
+                      profileData.recentActivity.map((attempt) => (
+                        <div key={attempt.id} className="flex items-start gap-4 p-3 rounded-2xl bg-zinc-900/50 border border-zinc-800/50">
+                          <div className={`mt-1 flex-shrink-0 w-2.5 h-2.5 rounded-full ${attempt.isCorrect ? "bg-emerald-400" : "bg-red-400"}`} />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-bold text-zinc-200 truncate">
+                              {attempt.subject || "Question Practice"}
+                            </div>
+                            <div className="text-xs text-zinc-500 mt-1">
+                              {new Date(attempt.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' })}
+                            </div>
+                          </div>
+                          <div className="text-xs font-mono text-zinc-600 bg-zinc-950 px-2 py-1 rounded">
+                            {attempt.timeTaken}s
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </main>
+
+      {isEditModalOpen && <EditProfileModal onClose={() => setIsEditModalOpen(false)} />}
     </div>
   );
 }

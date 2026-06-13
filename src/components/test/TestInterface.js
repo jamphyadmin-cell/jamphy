@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import MathText from "../MathText";
 
 export default function TestInterface({ questions, durationMins, onSubmit }) {
@@ -18,10 +19,12 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
 
   const [currentValue, setCurrentValue] = useState(null);
 
+  const handleFinalSubmitRef = useRef();
+
   // Timer logic
   useEffect(() => {
     if (timeRemaining <= 0) {
-      handleFinalSubmit();
+      handleFinalSubmitRef.current?.();
       return;
     }
     const timer = setInterval(() => {
@@ -32,6 +35,7 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
 
   // Sync currentValue when currentIndex changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentValue(answers[currentIndex]?.value ?? null);
     
     // Mark as visited if unvisited
@@ -41,6 +45,7 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
         [currentIndex]: { ...prev[currentIndex], status: 'visited' }
       }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
   const activeQuestion = questions[currentIndex];
@@ -119,6 +124,10 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
     
     onSubmit(finalAnswers);
   };
+  
+  useEffect(() => {
+    handleFinalSubmitRef.current = handleFinalSubmit;
+  });
 
   // Stats for legend
   const stats = {
@@ -127,6 +136,24 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
     visited: Object.values(answers).filter(a => a.status === 'visited' && (a.value === null || a.value === "" || (Array.isArray(a.value) && a.value.length === 0))).length, // Visited but not answered or reviewed
     unvisited: Object.values(answers).filter(a => a.status === 'unvisited').length,
   };
+
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center h-screen text-white">
+        <p className="text-zinc-400">No questions available to display.</p>
+        <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 bg-zinc-800 rounded-lg hover:bg-zinc-700">Go Back</button>
+      </div>
+    );
+  }
+
+  if (!activeQuestion) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center h-screen text-white">
+        <div className="w-8 h-8 border-4 border-zinc-800 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
+        <p className="text-zinc-400">Loading question...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[100] bg-black flex flex-col h-screen text-white overflow-hidden">
@@ -166,12 +193,13 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col overflow-y-auto border-r border-zinc-800 p-6 relative">
+        <div className="flex-1 flex flex-col overflow-y-auto border-r-0 md:border-r border-zinc-800 relative">
           
-          <div className="flex items-center gap-3 mb-6">
+          <div className="p-4 md:p-6 flex-1">
+            <div className="flex items-center gap-3 mb-6">
             <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm font-bold text-zinc-300">
               Question {currentIndex + 1}
             </span>
@@ -251,8 +279,9 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
             )}
           </div>
 
+          </div>
           {/* Action Buttons Fixed at Bottom of Main Area */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black to-transparent flex flex-wrap gap-4 items-center justify-between">
+          <div className="sticky bottom-0 left-0 right-0 p-4 md:p-6 bg-zinc-950/90 backdrop-blur border-t border-zinc-800 flex flex-wrap gap-4 items-center justify-between mt-auto z-10">
             <button 
               onClick={handleClearResponse}
               className="px-6 py-3 rounded-2xl border border-zinc-700 text-zinc-300 font-bold hover:bg-zinc-900 transition"
@@ -277,7 +306,7 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
         </div>
 
         {/* Side Panel Question Tracker */}
-        <div className="w-72 bg-zinc-950 flex flex-col shrink-0">
+        <div className="w-full md:w-72 h-64 md:h-auto bg-zinc-950 flex flex-col shrink-0 border-t md:border-t-0 border-zinc-800">
           <div className="p-4 border-b border-zinc-800 font-black text-center tracking-wider text-sm">
             QUESTION PALETTE
           </div>
