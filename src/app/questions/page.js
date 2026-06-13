@@ -14,7 +14,7 @@ import TestManager from "../../components/test/TestManager";
 import TestModal from "../../components/test/TestModal";
 import MathText from "../../components/MathText";
 import { useTransitionContext } from "../../components/TransitionProvider";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const icons = {
   math: "∫",
