@@ -4,7 +4,7 @@ import { TransitionProvider } from "../components/TransitionProvider";
 import AdminShortcut from "../components/AdminShortcut";
 
 export const metadata = {
-  title: "IIT JAM Physics Hub",
+  title: "jamphy",
   description: "Practice IIT JAM Physics questions with math-ready explanations.",
 };
 
