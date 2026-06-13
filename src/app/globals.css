@@ -101,3 +101,23 @@ body {
 .math-copy p {
   width: 100%;
 }
+
+/* Orbiting loading ball animation */
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(36px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(36px) rotate(-360deg);
+  }
+}
+
+.orbit-ball {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 12px 3px rgba(255, 255, 255, 0.8), 0 0 4px 1px rgba(255, 255, 255, 0.5);
+  animation: orbit 0.7s linear infinite;
+}

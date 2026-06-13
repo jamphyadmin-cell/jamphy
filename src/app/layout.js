@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Providers } from "../components/Providers";
+import { TransitionProvider } from "../components/TransitionProvider";
 import AdminShortcut from "../components/AdminShortcut";
 
 export const metadata = {
@@ -15,8 +16,10 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
         <Providers>
-          {children}
-          <AdminShortcut />
+          <TransitionProvider>
+            {children}
+            <AdminShortcut />
+          </TransitionProvider>
         </Providers>
       </body>
     </html>

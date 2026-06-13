@@ -8,9 +8,11 @@ import UserMenu from "../components/UserMenu";
 import InvitesMenu from "../components/InvitesMenu";
 import ActivityRing from "@/components/ActivityRing";
 import GoalSettingsModal from "@/components/GoalSettingsModal";
+import { useTransitionContext } from "../components/TransitionProvider";
 
 export default function IITJamPrepPlatform() {
   const { data: session, status } = useSession();
+  const { navigateWithTransition } = useTransitionContext();
   const cursorRef = useRef(null);
   const [goalData, setGoalData] = useState({ target: 50, completed: 0, percentage: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -118,6 +120,10 @@ export default function IITJamPrepPlatform() {
 
             <Link
               href="/questions"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateWithTransition("/questions");
+              }}
               className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition"
             >
               Start Practicing
@@ -159,6 +165,10 @@ export default function IITJamPrepPlatform() {
 
             <Link
               href="/questions"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateWithTransition("/questions");
+              }}
               className="px-8 py-4 rounded-3xl bg-white text-black text-xl font-bold hover:scale-105 transition"
             >
               Explore Questions

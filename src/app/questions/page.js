@@ -13,6 +13,7 @@ import { syllabus } from "../../data/syllabus";
 import TestManager from "../../components/test/TestManager";
 import TestModal from "../../components/test/TestModal";
 import MathText from "../../components/MathText";
+import { useTransitionContext } from "../../components/TransitionProvider";
 
 const icons = {
   math: "∫",
@@ -25,7 +26,7 @@ const icons = {
 };
 
 export default function IITJamPhysicsHub() {
-
+  const { triggerStateTransition } = useTransitionContext();
   const cursorRef = useRef(null);
 
   useEffect(() => {
@@ -608,13 +609,11 @@ export default function IITJamPhysicsHub() {
                   <button
                     key={subject.id}
                     onClick={() => {
-
-                      setSelectedSubject(subject);
-
-                      setSelectedYear("All");
-
-                      setSelectedSubtopic("All");
-
+                      triggerStateTransition(() => {
+                        setSelectedSubject(subject);
+                        setSelectedYear("All");
+                        setSelectedSubtopic("All");
+                      });
                     }}
                     className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 text-left hover:bg-zinc-900 transition h-full flex flex-col items-start"
                   >
@@ -757,11 +756,10 @@ export default function IITJamPhysicsHub() {
                   <button
                     key={`${question.year}-${question.id}`}
                     onClick={() => {
-
-                      setActiveQuestion(question);
-
-                      resetQuestionState();
-
+                      triggerStateTransition(() => {
+                        setActiveQuestion(question);
+                        resetQuestionState();
+                      });
                     }}
                     className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-left hover:bg-zinc-900 transition"
                   >
