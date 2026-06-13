@@ -7,7 +7,23 @@ import { signIn, signOut } from "next-auth/react";
 
 export default function UserMenu({ session }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [dueCount, setDueCount] = useState(0);
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (session?.user) {
+      fetch('/api/vault')
+        .then(res => res.json())
+        .then(data => {
+          if (data.vaultItems) {
+            const now = new Date();
+            const count = data.vaultItems.filter(item => new Date(item.nextReviewDate) <= now).length;
+            setDueCount(count);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [session]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -56,6 +72,13 @@ export default function UserMenu({ session }) {
           </div>
         )}
       </button>
+      
+      {dueCount > 0 && (
+        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+        </span>
+      )}
 
       {isOpen && (
         <div className="absolute right-0 mt-3 w-56 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-xl overflow-hidden z-50 transform origin-top-right transition-all">
@@ -69,11 +92,44 @@ export default function UserMenu({ session }) {
           </div>
           <div className="py-2">
             <Link
+              href="/vault"
+              onClick={() => setIsOpen(false)}
+              className="flex justify-between items-center px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              <span>Mistakes Vault</span>
+              {dueCount > 0 && (
+                <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  {dueCount}
+                </span>
+              )}
+            </Link>
+            <Link
               href="/profile"
               onClick={() => setIsOpen(false)}
               className="block px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
             >
               Profile
+            </Link>
+            <Link
+              href="/sprint"
+              onClick={() => setIsOpen(false)}
+              className="block px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              Sprint Mode
+            </Link>
+            <Link
+              href="/leaderboard"
+              onClick={() => setIsOpen(false)}
+              className="block px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              Leaderboard
+            </Link>
+            <Link
+              href="/analytics"
+              onClick={() => setIsOpen(false)}
+              className="block px-4 py-2.5 text-sm text-cyan-400 hover:bg-zinc-800 hover:text-cyan-300 transition-colors"
+            >
+              Analytics
             </Link>
             <button
               onClick={() => {

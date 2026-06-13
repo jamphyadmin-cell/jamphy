@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import useSWR from "swr";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -42,6 +43,8 @@ export default function IITJamPhysicsHub() {
 
     window.addEventListener("mousemove", moveCursor);
 
+    let animationFrameId;
+
     const animate = () => {
 
       currentX += (mouseX - currentX) * 0.35;
@@ -50,11 +53,11 @@ export default function IITJamPhysicsHub() {
       if (cursorRef.current) {
 
         cursorRef.current.style.transform =
-          `translate3d(calc(${currentX}px - 50%), calc(${currentY}px - 50%), 0)`;
+          `translate3d(${currentX}px, ${currentY}px, 0)`;
 
       }
 
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
 
     };
 
@@ -62,6 +65,7 @@ export default function IITJamPhysicsHub() {
 
     return () => {
       window.removeEventListener("mousemove", moveCursor);
+      cancelAnimationFrame(animationFrameId);
     };
 
   }, []);
@@ -101,6 +105,90 @@ export default function IITJamPhysicsHub() {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportDescription, setReportDescription] = useState("");
   const [isReporting, setIsReporting] = useState(false);
+  const [vaultItems, setVaultItems] = useState(new Set());
+  const [toastMessage, setToastMessage] = useState("");
+  
+  const [showDiscussion, setShowDiscussion] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+
+  const fetcher = (url) => fetch(url).then(r => r.json());
+  const { data: commentsData, mutate: mutateComments } = useSWR(
+    activeQuestion && showDiscussion ? `/api/comments?questionId=${activeQuestion.year}-${activeQuestion.id}` : null,
+    fetcher
+  );
+
+  const handlePostComment = async () => {
+    if (!newComment.trim()) return;
+    setIsSubmittingComment(true);
+    try {
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questionId: `${activeQuestion.year}-${activeQuestion.id}`,
+          text: newComment
+        })
+      });
+      if (res.ok) {
+        setNewComment("");
+        mutateComments();
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSubmittingComment(false);
+    }
+  };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetch("/api/vault")
+        .then(res => res.json())
+        .then(data => {
+          if (data.vaultItems) {
+            setVaultItems(new Set(data.vaultItems.map(v => v.questionId)));
+          }
+        })
+        .catch(console.error);
+    }
+  }, [status]);
+
+  const toggleVault = async () => {
+    if (status !== "authenticated") return alert("Please sign in to save to vault.");
+    const qid = String(activeQuestion.id);
+    const currentlyInVault = vaultItems.has(qid);
+
+    if (currentlyInVault) {
+      if (!confirm("Remove this question from the Mistakes Vault?")) return;
+      try {
+        await fetch(`/api/vault?questionId=${qid}`, { method: "DELETE" });
+        setVaultItems(prev => {
+          const next = new Set(prev);
+          next.delete(qid);
+          return next;
+        });
+        setToastMessage("Removed from Mistakes Vault");
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      try {
+        await fetch("/api/vault", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionId: qid, isCorrect: false })
+        });
+        setVaultItems(prev => new Set(prev).add(qid));
+        setToastMessage("Added to Mistakes Vault");
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    setTimeout(() => setToastMessage(""), 3000);
+  };
+
+  const questionLoadTime = useRef(0);
 
   const handleReportQuestion = async () => {
     if (!reportDescription.trim()) return;
@@ -177,6 +265,10 @@ export default function IITJamPhysicsHub() {
       )
       : -1;
 
+  useEffect(() => {
+    questionLoadTime.current = Date.now();
+  }, [currentQuestionIndex]);
+
   const hasPreviousQuestion =
     currentQuestionIndex > 0;
 
@@ -194,6 +286,7 @@ export default function IITJamPhysicsHub() {
 
     setShowSolution(false);
 
+    questionLoadTime.current = Date.now();
   };
 
   const goToQuestion = (index) => {
@@ -278,7 +371,25 @@ export default function IITJamPhysicsHub() {
   const submitSingleAnswer = () => {
     if (selectedAnswer === null) return;
     const [correctOptionIndex] = getCorrectOptions(activeQuestion);
-    setIsCorrect(selectedAnswer === correctOptionIndex);
+    const correct = selectedAnswer === correctOptionIndex;
+    setIsCorrect(correct);
+    
+    const timeTaken = Math.floor((Date.now() - questionLoadTime.current) / 1000);
+    
+    if (session?.user) {
+      const questionId = `${activeQuestion.year}-${activeQuestion.id}`;
+      fetch('/api/vault', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId, isCorrect: correct })
+      }).catch(err => console.error(err));
+      
+      fetch('/api/attempts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId, isCorrect: correct, timeTaken, subject: activeQuestion.subject, selectedAnswer: String(selectedAnswer + 1) })
+      }).catch(err => console.error(err));
+    }
   };
 
   const handleMultipleAnswer = (index) => {
@@ -321,13 +432,28 @@ export default function IITJamPhysicsHub() {
 
     }
 
-    setIsCorrect(
-      arraysMatch(
-        answers,
-        getCorrectOptions(activeQuestion)
-      )
+    const correct = arraysMatch(
+      answers,
+      getCorrectOptions(activeQuestion)
     );
-
+    setIsCorrect(correct);
+    
+    const timeTaken = Math.floor((Date.now() - questionLoadTime.current) / 1000);
+    
+    if (session?.user) {
+      const questionId = `${activeQuestion.year}-${activeQuestion.id}`;
+      fetch('/api/vault', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId, isCorrect: correct })
+      }).catch(err => console.error(err));
+      
+      fetch('/api/attempts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId, isCorrect: correct, timeTaken, subject: activeQuestion.subject, selectedAnswer: answers.map(a => a + 1).sort().join(',') })
+      }).catch(err => console.error(err));
+    }
   };
 
   const submitNATAnswer = () => {
@@ -339,27 +465,42 @@ export default function IITJamPhysicsHub() {
     if (isNaN(enteredAnswer)) {
       return;
     }
+    
+    let correct = false;
 
     if (
       activeQuestion.correctAnswerMin !== undefined &&
       activeQuestion.correctAnswerMax !== undefined
     ) {
 
-      setIsCorrect(
-        enteredAnswer >= activeQuestion.correctAnswerMin &&
-        enteredAnswer <= activeQuestion.correctAnswerMax
+      correct = enteredAnswer >= activeQuestion.correctAnswerMin &&
+        enteredAnswer <= activeQuestion.correctAnswerMax;
+
+    } else {
+      const correctAnswer = Number(
+        activeQuestion.correctAnswer
       );
-
-      return;
+      correct = enteredAnswer === correctAnswer;
     }
-
-    const correctAnswer = Number(
-      activeQuestion.correctAnswer
-    );
-
-    setIsCorrect(
-      enteredAnswer === correctAnswer
-    );
+    
+    setIsCorrect(correct);
+    
+    const timeTaken = Math.floor((Date.now() - questionLoadTime.current) / 1000);
+    
+    if (session?.user) {
+      const questionId = `${activeQuestion.year}-${activeQuestion.id}`;
+      fetch('/api/vault', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId, isCorrect: correct })
+      }).catch(err => console.error(err));
+      
+      fetch('/api/attempts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId, isCorrect: correct, timeTaken, subject: activeQuestion.subject, selectedAnswer: String(enteredAnswer) })
+      }).catch(err => console.error(err));
+    }
   };
 
   if (status === "loading") {
@@ -371,14 +512,11 @@ export default function IITJamPhysicsHub() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden cursor-none">
+    <div className="min-h-screen bg-black text-white overflow-hidden">
 
       <div
         ref={cursorRef}
-        className="fixed top-0 left-0 w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference"
-        style={{
-          transform: "translate(-50%, -50%)",
-        }}
+        className="fixed top-0 left-0 w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference -translate-x-1/2 -translate-y-1/2"
       />
 
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
@@ -435,9 +573,11 @@ export default function IITJamPhysicsHub() {
               className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 hover:border-zinc-500 transition-all text-white font-bold text-lg group"
             >
               Sign in with
-              <img
+              <Image
                 src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
                 alt="Google"
+                width={24}
+                height={24}
                 className="h-6 w-auto object-contain mt-0.5 group-hover:scale-105 transition-transform"
               />
             </button>
@@ -683,15 +823,13 @@ export default function IITJamPhysicsHub() {
                   {activeQuestion.question}
                 </MathText>
 
-                {activeQuestion.questionImage && (
+                {activeQuestion.imageUrl && (
 
                   <div className="flex justify-center mt-6">
 
-                    <Image
-                      src={activeQuestion.questionImage}
+                    <img
+                      src={activeQuestion.imageUrl}
                       alt="Question diagram"
-                      width={500}
-                      height={350}
                       className="h-auto max-w-full rounded-2xl border border-zinc-800"
                     />
 
@@ -878,15 +1016,37 @@ export default function IITJamPhysicsHub() {
 
                 <div className="mt-8 flex items-center justify-between gap-4 flex-wrap">
 
-                  <button
-                    onClick={() =>
-                      goToQuestion(currentQuestionIndex - 1)
-                    }
-                    disabled={!hasPreviousQuestion}
-                    className="rounded-2xl border border-zinc-700 px-6 py-4 text-lg font-bold text-white hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    ← Previous Question
-                  </button>
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() =>
+                        goToQuestion(currentQuestionIndex - 1)
+                      }
+                      disabled={!hasPreviousQuestion}
+                      className="rounded-2xl border border-zinc-700 px-6 py-4 text-lg font-bold text-white hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      ← Previous Question
+                    </button>
+
+                    <button
+                      onClick={toggleVault}
+                      className={`flex items-center justify-center w-16 h-[60px] rounded-2xl border transition-all ${
+                        vaultItems.has(String(activeQuestion.id))
+                          ? "bg-amber-500/20 border-amber-500 text-amber-500 hover:bg-amber-500/30"
+                          : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                      }`}
+                      title="Toggle Mistakes Vault"
+                    >
+                      {vaultItems.has(String(activeQuestion.id)) ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                          <path fillRule="evenodd" d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z" clipRule="evenodd" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
 
                   <button
                     onClick={() =>
@@ -965,7 +1125,7 @@ export default function IITJamPhysicsHub() {
 
                 )}
 
-                {isCorrect === false && activeQuestion.detailedSolution && (
+                {(isCorrect === false || isCorrect === true) && (activeQuestion.solution || activeQuestion.detailedSolution) && (
                   <div className="mt-6 flex flex-col items-center">
                     {!showSolution ? (
                       <button
@@ -978,12 +1138,91 @@ export default function IITJamPhysicsHub() {
                       <div className="w-full mt-4 p-6 rounded-2xl border border-zinc-700 bg-zinc-900">
                         <h4 className="text-xl font-bold text-white mb-4">Detailed Solution</h4>
                         <MathText className="text-zinc-300 leading-relaxed text-sm md:text-base break-words">
-                          {activeQuestion.detailedSolution}
+                          {activeQuestion.solution || activeQuestion.detailedSolution}
                         </MathText>
                       </div>
                     )}
                   </div>
                 )}
+
+                {/* Discussion Section */}
+                <div className="mt-12 border-t border-zinc-800 pt-8">
+                  <button
+                    onClick={() => setShowDiscussion(!showDiscussion)}
+                    className="flex items-center gap-3 text-xl font-bold text-white hover:text-cyan-400 transition"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-6 h-6 transition-transform ${showDiscussion ? 'rotate-180' : ''}`}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                    Discussion {commentsData?.comments ? `(${commentsData.comments.length})` : ""}
+                  </button>
+                  
+                  {showDiscussion && (
+                    <div className="mt-6 space-y-6">
+                      {status === "authenticated" ? (
+                        <div className="flex gap-4 items-start">
+                          <div className="w-10 h-10 shrink-0 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center font-bold text-sm overflow-hidden">
+                            {session.user.image ? (
+                              <Image src={session.user.image} alt="User" width={40} height={40} className="object-cover" />
+                            ) : (
+                              session.user.name?.[0].toUpperCase() || "U"
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <textarea
+                              value={newComment}
+                              onChange={(e) => setNewComment(e.target.value)}
+                              placeholder="Add a comment or ask a question..."
+                              className="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-4 text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 resize-none h-24"
+                            />
+                            <div className="flex justify-end mt-2">
+                              <button
+                                onClick={handlePostComment}
+                                disabled={isSubmittingComment || !newComment.trim()}
+                                className="px-6 py-2 bg-white text-black font-bold rounded-xl disabled:opacity-50 transition"
+                              >
+                                {isSubmittingComment ? "Posting..." : "Post"}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-xl text-center text-zinc-400">
+                          Please <button onClick={() => signIn()} className="text-cyan-400 font-bold hover:underline">sign in</button> to join the discussion.
+                        </div>
+                      )}
+                      
+                      <div className="space-y-4">
+                        {!commentsData ? (
+                          <div className="text-center py-4 text-zinc-500">Loading comments...</div>
+                        ) : commentsData.error ? (
+                          <div className="text-center py-4 text-red-500">Failed to load comments: {commentsData.error}</div>
+                        ) : !commentsData.comments || commentsData.comments.length === 0 ? (
+                          <div className="text-center py-8 text-zinc-500">No comments yet. Be the first!</div>
+                        ) : (
+                          commentsData.comments.map(comment => (
+                            <div key={comment.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex gap-4">
+                              <div className="w-10 h-10 shrink-0 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center font-bold text-sm overflow-hidden">
+                                {comment.user.image ? (
+                                  <Image src={comment.user.image} alt={comment.user.name} width={40} height={40} className="object-cover" />
+                                ) : (
+                                  comment.user.name?.[0].toUpperCase() || "U"
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-bold text-white">{comment.user.name || "Anonymous"}</span>
+                                  <span className="text-xs text-zinc-500">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <p className="text-zinc-300 whitespace-pre-wrap text-sm leading-relaxed">{comment.text}</p>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
               </div>
 
@@ -1005,7 +1244,7 @@ export default function IITJamPhysicsHub() {
           <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 max-w-lg w-full">
             <h3 className="text-2xl font-bold text-white mb-4">Report Question Error</h3>
             <p className="text-zinc-400 mb-6">
-              Found a mistake in the question, options, or answer? Let us know and we'll fix it.
+              Found a mistake in the question, options, or answer? Let us know and we&apos;ll fix it.
             </p>
             <textarea
               value={reportDescription}
@@ -1023,7 +1262,7 @@ export default function IITJamPhysicsHub() {
               <button
                 onClick={handleReportQuestion}
                 disabled={isReporting || !reportDescription.trim()}
-                className="px-6 py-3 rounded-2xl bg-white text-black font-bold disabled:opacity-50 transition"
+                className="px-6 py-2 bg-red-600/20 text-red-400 font-bold rounded-xl border border-red-500/30 hover:bg-red-600/40 transition disabled:opacity-50"
               >
                 {isReporting ? "Submitting..." : "Submit Report"}
               </button>
@@ -1032,6 +1271,12 @@ export default function IITJamPhysicsHub() {
         </div>
       )}
 
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-700 text-white px-6 py-3 rounded-full font-medium shadow-2xl z-[99999] animate-in fade-in slide-in-from-bottom-4">
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,30 +1,31 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import MathText from "../MathText";
 
 export default function TestResult({ questions, answers, onClose }) {
   
+  const arraysMatch = (first, second) => {
+    if (!first || !second) return false;
+    if (first.length !== second.length) return false;
+    const firstSet = new Set(first);
+    return second.every(val => firstSet.has(val));
+  };
+
+  const getCorrectOptions = (question) => {
+    if (question.type === "NAT") return [String(question.correctAnswer)];
+    if (Array.isArray(question.correctAnswers)) {
+      return question.correctAnswers;
+    }
+    if (typeof question.correctAnswer === "number") {
+      return [question.correctAnswer];
+    }
+    return [];
+  };
+
   const results = useMemo(() => {
     let correct = 0;
     let wrong = 0;
     let unattempted = 0;
 
-    const arraysMatch = (first, second) => {
-      if (!first || !second) return false;
-      if (first.length !== second.length) return false;
-      const firstSet = new Set(first);
-      return second.every(val => firstSet.has(val));
-    };
-
-    const getCorrectOptions = (question) => {
-      if (question.type === "NAT") return [String(question.correctAnswer)];
-      if (Array.isArray(question.correctAnswers)) {
-        return question.correctAnswers;
-      }
-      if (typeof question.correctAnswer === "number") {
-        return [question.correctAnswer];
-      }
-      return [];
-    };
 
     questions.forEach((q, i) => {
       const userAns = answers[i]?.value;
@@ -63,6 +64,59 @@ export default function TestResult({ questions, answers, onClose }) {
 
     return { correct, wrong, unattempted, total: questions.length };
   }, [questions, answers]);
+
+  useEffect(() => {
+    const updateVault = async () => {
+      for (let i = 0; i < questions.length; i++) {
+        const q = questions[i];
+        const userAns = answers[i]?.value;
+        const status = answers[i]?.status;
+        const isEmpty = userAns === null || userAns === "" || (Array.isArray(userAns) && userAns.length === 0);
+        
+        if (isEmpty || status === 'unvisited') continue;
+        
+        let isCorrect = false;
+        if (q.type === "NAT") {
+          const entered = Number(String(userAns).trim());
+          if (!isNaN(entered)) {
+            if (q.correctAnswerMin !== undefined && q.correctAnswerMax !== undefined) {
+              isCorrect = (entered >= q.correctAnswerMin && entered <= q.correctAnswerMax);
+            } else {
+              isCorrect = (entered === Number(q.correctAnswer));
+            }
+          }
+        } else if (q.type === "MSQ") {
+          const correctOpts = getCorrectOptions(q);
+          isCorrect = arraysMatch(Array.isArray(userAns) ? userAns : [], correctOpts);
+        } else {
+          const correctOpts = getCorrectOptions(q);
+          isCorrect = (userAns === correctOpts[0]);
+        }
+        
+        await fetch('/api/vault', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ questionId: `${q.year}-${q.id}`, isCorrect })
+        }).catch(err => console.error(err));
+        
+        const selectedAnsStr = Array.isArray(userAns) ? userAns.map(a => a + 1).sort().join(',') : (q.type === 'MCQ' ? String(Number(userAns) + 1) : String(userAns));
+        
+        await fetch('/api/attempts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            questionId: `${q.year}-${q.id}`, 
+            isCorrect, 
+            timeTaken: 0, 
+            subject: q.subject, 
+            selectedAnswer: selectedAnsStr 
+          })
+        }).catch(err => console.error(err));
+      }
+    };
+    updateVault();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const score = results.correct; // Simple +1 for correct. In actual JAM, there's negative marking, but let's keep it simple or implement JAM marking (+1/-0.33 or +2/-0.66) if needed. I will stick to simple marks right now, or just show counts.
 

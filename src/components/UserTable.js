@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 
 export default function UserTable({ initialUsers }) {
   const [sortOrder, setSortOrder] = useState("recent"); // "recent" or "oldest"
@@ -98,7 +99,7 @@ export default function UserTable({ initialUsers }) {
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       {user.image ? (
-                        <img src={user.image} alt={user.name} className="w-10 h-10 rounded-full" />
+                        <Image src={user.image} alt={user.name || "User"} width={40} height={40} className="w-10 h-10 rounded-full" />
                       ) : (
                         <div className="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center text-sm font-bold text-zinc-400">
                           {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
