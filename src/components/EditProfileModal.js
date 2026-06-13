@@ -20,6 +20,11 @@ export default function EditProfileModal({ onClose }) {
     college: "",
     year: "",
     course: "",
+    showStreakPublicly: true,
+    showStatsPublicly: true,
+    showHeatmapPublicly: true,
+    showActivityPublicly: true,
+    showSubjectsPublicly: true,
   });
 
   useEffect(() => {
@@ -37,6 +42,11 @@ export default function EditProfileModal({ onClose }) {
               college: data.user.college || "",
               year: data.user.year || "",
               course: data.user.course || "",
+              showStreakPublicly: data.user.showStreakPublicly !== false,
+              showStatsPublicly: data.user.showStatsPublicly !== false,
+              showHeatmapPublicly: data.user.showHeatmapPublicly !== false,
+              showActivityPublicly: data.user.showActivityPublicly !== false,
+              showSubjectsPublicly: data.user.showSubjectsPublicly !== false,
             });
           }
         }
@@ -224,6 +234,84 @@ export default function EditProfileModal({ onClose }) {
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1">Course Pursuing</label>
                   <input type="text" name="course" value={formData.course} onChange={handleChange} className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-2 text-white outline-none focus:border-zinc-500" />
+                </div>
+              </div>
+
+              {/* Privacy Settings */}
+              <div className="pt-6 border-t border-zinc-800/50 space-y-4">
+                <h3 className="text-lg font-bold text-white mb-2">Public Profile Privacy</h3>
+                <p className="text-xs text-zinc-500 mb-4">Choose what information is visible to other users on your public profile page.</p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      name="showStreakPublicly" 
+                      checked={formData.showStreakPublicly} 
+                      onChange={(e) => setFormData(p => ({ ...p, showStreakPublicly: e.target.checked }))}
+                      className="w-4 h-4 rounded border-zinc-800 bg-black text-cyan-400 focus:ring-0 focus:ring-offset-0" 
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition">Show Streak</span>
+                      <span className="text-[10px] text-zinc-500">Show your daily practice streak</span>
+                    </div>
+                  </label>
+
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      name="showStatsPublicly" 
+                      checked={formData.showStatsPublicly} 
+                      onChange={(e) => setFormData(p => ({ ...p, showStatsPublicly: e.target.checked }))}
+                      className="w-4 h-4 rounded border-zinc-800 bg-black text-cyan-400 focus:ring-0 focus:ring-offset-0" 
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition">Show Stats</span>
+                      <span className="text-[10px] text-zinc-500">Show total questions and accuracy</span>
+                    </div>
+                  </label>
+
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      name="showHeatmapPublicly" 
+                      checked={formData.showHeatmapPublicly} 
+                      onChange={(e) => setFormData(p => ({ ...p, showHeatmapPublicly: e.target.checked }))}
+                      className="w-4 h-4 rounded border-zinc-800 bg-black text-cyan-400 focus:ring-0 focus:ring-offset-0" 
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition">Show Activity Calendar</span>
+                      <span className="text-[10px] text-zinc-500">Show the 90-day activity heatmap</span>
+                    </div>
+                  </label>
+
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      name="showActivityPublicly" 
+                      checked={formData.showActivityPublicly} 
+                      onChange={(e) => setFormData(p => ({ ...p, showActivityPublicly: e.target.checked }))}
+                      className="w-4 h-4 rounded border-zinc-800 bg-black text-cyan-400 focus:ring-0 focus:ring-offset-0" 
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition">Show Recent Activity</span>
+                      <span className="text-[10px] text-zinc-500">Show recent question attempts list</span>
+                    </div>
+                  </label>
+
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      name="showSubjectsPublicly" 
+                      checked={formData.showSubjectsPublicly} 
+                      onChange={(e) => setFormData(p => ({ ...p, showSubjectsPublicly: e.target.checked }))}
+                      className="w-4 h-4 rounded border-zinc-800 bg-black text-cyan-400 focus:ring-0 focus:ring-offset-0" 
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition">Show Subject Accuracy</span>
+                      <span className="text-[10px] text-zinc-500">Show subject-wise correctness stats</span>
+                    </div>
+                  </label>
                 </div>
               </div>
             </form>

@@ -64,6 +64,11 @@ model User {
   following           Follow[]          @relation("Following")
   comments            Comment[]
   notifications       Notification[]
+  showStreakPublicly    Boolean   @default(true)
+  showStatsPublicly     Boolean   @default(true)
+  showHeatmapPublicly   Boolean   @default(true)
+  showActivityPublicly  Boolean   @default(true)
+  showSubjectsPublicly  Boolean   @default(true)
 
   @@index([email])
 }

@@ -9,38 +9,27 @@ import InvitesMenu from "../components/InvitesMenu";
 import ActivityRing from "@/components/ActivityRing";
 import GoalSettingsModal from "@/components/GoalSettingsModal";
 import { useTransitionContext } from "../components/TransitionProvider";
+import { motion, AnimatePresence } from "framer-motion";
+
+let hasLoadedSplash = false;
 
 export default function IITJamPrepPlatform() {
   const { data: session, status } = useSession();
   const { navigateWithTransition } = useTransitionContext();
   const cursorRef = useRef(null);
-  const [goalData, setGoalData] = useState({ target: 50, completed: 0, percentage: 0 });
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [friendsActivity, setFriendsActivity] = useState([]);
+  const [showSplash, setShowSplash] = useState(!hasLoadedSplash);
 
   useEffect(() => {
-    if (status === "authenticated") {
-      fetch("/api/goals/today")
-        .then(res => res.json())
-        .then(data => {
-          if (!data.error) {
-            setGoalData(data);
-          }
-        })
-        .catch(console.error);
-
-      fetch("/api/friends/activity")
-        .then(res => res.json())
-        .then(data => {
-          if (data.activities) {
-            setFriendsActivity(data.activities);
-          }
-        }).catch(console.error);
+    if (!hasLoadedSplash) {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+        hasLoadedSplash = true;
+      }, 1200);
+      return () => clearTimeout(timer);
     }
-  }, [status]);
+  }, []);
 
   useEffect(() => {
-
     let mouseX = -100;
     let mouseY = -100;
 
@@ -84,8 +73,43 @@ export default function IITJamPrepPlatform() {
   }, []);
 
   return (
+    <>
+      <AnimatePresence>
+        {showSplash && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="fixed inset-0 z-[99999] bg-black flex flex-col items-center justify-center pointer-events-auto"
+          >
+            <div className="flex flex-col items-center gap-10">
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              >
+                <Image
+                  src="/logo.png"
+                  alt="Jamphy Logo"
+                  width={240}
+                  height={65}
+                  className="object-contain"
+                  priority
+                />
+              </motion.div>
+              
+              <div className="relative w-24 h-24 flex items-center justify-center">
+                {/* Central subtle orbit path */}
+                <div className="absolute w-20 h-20 rounded-full border border-white/5 bg-transparent"></div>
+                {/* Orbiting glowing ball */}
+                <div className="orbit-ball"></div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-    <div className="min-h-screen bg-black text-white overflow-hidden">
+      <div className="min-h-screen bg-black text-white overflow-hidden">
 
       {/* SMOOTH CURSOR */}
 
@@ -175,109 +199,15 @@ export default function IITJamPrepPlatform() {
               Explore Questions
             </Link>
 
-            <Link
-              href="/sprint"
-              className="px-8 py-4 rounded-3xl bg-zinc-900 border border-zinc-700 text-white text-xl font-bold hover:bg-zinc-800 hover:border-zinc-500 hover:scale-105 transition"
-            >
-              Sprint Mode
-            </Link>
-
-            <Link
-              href="/analytics"
-              className="px-8 py-4 rounded-3xl bg-zinc-900 border border-zinc-700 text-cyan-400 text-xl font-bold hover:bg-zinc-800 hover:border-zinc-500 hover:scale-105 transition"
-            >
-              Analytics
-            </Link>
-
           </div>
 
         </div>
 
       </section>
 
-      {/* DASHBOARD WIDGETS */}
-      {status === "authenticated" && (
-        <section className="pb-24 px-6 flex flex-col md:flex-row justify-center gap-8 max-w-6xl mx-auto">
-          {/* YOUR PROGRESS TODAY */}
-          <div className="bg-zinc-950 border border-white/10 rounded-[2rem] p-10 flex flex-col items-center flex-1 w-full max-w-md">
-            <h3 className="text-2xl font-bold mb-6 text-white text-center">Your Progress Today</h3>
-            <div className="mb-4">
-              <ActivityRing 
-                percentage={goalData.percentage} 
-                size={160} 
-                onClick={() => setIsModalOpen(true)} 
-              />
-            </div>
-            <p className="text-zinc-400 text-center mt-4 mb-2 text-sm">
-              You've completed <strong className="text-white">{goalData.completed}</strong> out of <strong className="text-white">{goalData.target}</strong> questions.
-            </p>
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              className="text-xs font-bold text-zinc-500 hover:text-white uppercase tracking-wider transition-colors"
-            >
-              Edit Daily Goal
-            </button>
-          </div>
-          
-          {/* FRIENDS ACTIVITY */}
-          <div className="bg-zinc-950 border border-white/10 rounded-[2rem] p-10 flex flex-col flex-1 w-full max-w-md">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-white">Friends Activity</h3>
-              <Link href="/friends" className="text-cyan-400 text-sm font-bold hover:underline">View All</Link>
-            </div>
-            
-            {friendsActivity.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
-                <div className="text-4xl mb-4">👥</div>
-                <p className="text-zinc-500 text-sm mb-4">No friends have practiced today yet, or you aren't following anyone.</p>
-                <Link href="/leaderboard" className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm font-bold hover:bg-zinc-800 transition">
-                  Find Friends
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-4 flex-1">
-                {friendsActivity.map(friend => (
-                  <div key={friend.id} className="flex items-center gap-4 bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800/50">
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-zinc-800 relative flex-shrink-0">
-                      {friend.image ? (
-                        <Image src={friend.image} alt={friend.name} fill className="object-cover" sizes="48px" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center font-bold bg-gradient-to-br from-indigo-500 to-purple-500 text-sm">
-                          {friend.name?.[0]?.toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-bold text-white line-clamp-1">{friend.name}</div>
-                      <div className="text-xs text-zinc-400 mt-0.5">Practiced {Math.round((Date.now() - new Date(friend.lastActive).getTime()) / 60000)}m ago</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-lg font-black text-white">{friend.todayTotal}</div>
-                      <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Qs</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
 
-      {isModalOpen && (
-        <GoalSettingsModal
-          currentTarget={goalData.target}
-          onClose={() => setIsModalOpen(false)}
-          onSave={(newTarget) => {
-            setIsModalOpen(false);
-            setGoalData(prev => ({
-              ...prev,
-              target: newTarget,
-              percentage: (prev.completed / newTarget) * 100
-            }));
-          }}
-        />
-      )}
 
     </div>
+  </>
   );
 }

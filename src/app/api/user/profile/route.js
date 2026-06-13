@@ -22,6 +22,11 @@ export async function GET(req) {
         college: true,
         year: true,
         course: true,
+        showStreakPublicly: true,
+        showStatsPublicly: true,
+        showHeatmapPublicly: true,
+        showActivityPublicly: true,
+        showSubjectsPublicly: true,
       },
     });
 
@@ -44,7 +49,10 @@ export async function PUT(req) {
     }
 
     const data = await req.json();
-    const { username, name, image, dob, college, year, course } = data;
+    const { 
+      username, name, image, dob, college, year, course,
+      showStreakPublicly, showStatsPublicly, showHeatmapPublicly, showActivityPublicly, showSubjectsPublicly
+    } = data;
 
     const cleanUsername = username ? username.trim().toLowerCase().replace(/[^a-z0-9_.]/g, '') : undefined;
 
@@ -71,6 +79,11 @@ export async function PUT(req) {
         college,
         year,
         course,
+        showStreakPublicly,
+        showStatsPublicly,
+        showHeatmapPublicly,
+        showActivityPublicly,
+        showSubjectsPublicly,
       },
     });
 

@@ -8,10 +8,12 @@ import Image from "next/image";
 import Link from "next/link";
 import UserMenu from "@/components/UserMenu";
 import EditProfileModal from "@/components/EditProfileModal";
+import { useTransitionContext } from "@/components/TransitionProvider";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { navigateWithTransition } = useTransitionContext();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const { data: profileData, error, isLoading } = useSWR(
@@ -42,7 +44,13 @@ export default function ProfilePage() {
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/">
+            <Link 
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateWithTransition("/");
+              }}
+            >
               <Image src="/logo.png" alt="Logo" width={148} height={40} className="rounded-xl object-contain" priority />
             </Link>
             <span className="font-bold text-xl tracking-tight text-zinc-500 hidden sm:block">

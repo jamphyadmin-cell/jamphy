@@ -6,9 +6,11 @@ import Link from "next/link";
 import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
 import { LEAGUE_COLORS } from "@/lib/constants";
+import { useTransitionContext } from "@/components/TransitionProvider";
 
 export default function FriendsPage() {
   const { data: session, status } = useSession();
+  const { navigateWithTransition } = useTransitionContext();
   const [friends, setFriends] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,7 +44,16 @@ export default function FriendsPage() {
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold mb-4">Friends</h1>
         <p className="text-zinc-400 mb-8">Sign in to see what your friends are doing.</p>
-        <Link href="/" className="px-6 py-3 bg-cyan-600 text-white rounded-xl font-bold">Go Home</Link>
+        <Link 
+          href="/" 
+          onClick={(e) => {
+            e.preventDefault();
+            navigateWithTransition("/");
+          }}
+          className="px-6 py-3 bg-cyan-600 text-white rounded-xl font-bold"
+        >
+          Go Home
+        </Link>
       </div>
     );
   }
@@ -52,7 +63,13 @@ export default function FriendsPage() {
       {/* Navbar */}
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/">
+          <Link 
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              navigateWithTransition("/");
+            }}
+          >
             <Image src="/logo.png" alt="Logo" width={148} height={40} className="rounded-xl object-contain" priority />
           </Link>
           <UserMenu session={session} />

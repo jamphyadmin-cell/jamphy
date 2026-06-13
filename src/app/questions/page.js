@@ -14,7 +14,16 @@ import TestManager from "../../components/test/TestManager";
 import TestModal from "../../components/test/TestModal";
 import MathText from "../../components/MathText";
 import { useTransitionContext } from "../../components/TransitionProvider";
+import GoalSettingsModal from "../../components/GoalSettingsModal";
 import { motion, AnimatePresence } from "framer-motion";
+
+const LEAGUE_COLORS = {
+  Bronze: "#cd7f32",
+  Silver: "#c0c0c0",
+  Gold: "#ffd700",
+  Platinum: "#e5e4e2",
+  Diamond: "#b9f2ff",
+};
 
 const icons = {
   math: "∫",
@@ -27,8 +36,100 @@ const icons = {
 };
 
 export default function IITJamPhysicsHub() {
+  const { data: session, status, update } = useSession();
   const { navigateWithTransition } = useTransitionContext();
   const cursorRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+  const [goalData, setGoalData] = useState({ target: 20, completed: 0, percentage: 0 });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [myFollows, setMyFollows] = useState(new Set());
+  const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
+
+  const handleSaveGoal = (newTarget) => {
+    setIsGoalModalOpen(false);
+    setGoalData(prev => ({
+      ...prev,
+      target: newTarget,
+      percentage: prev.completed > 0 ? (prev.completed / newTarget) * 100 : 0
+    }));
+  };
+
+  const fetchGoalData = () => {
+    if (status === "authenticated") {
+      fetch("/api/goals/today")
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) {
+            setGoalData(data);
+          }
+        })
+        .catch(console.error);
+    }
+  };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchGoalData();
+      fetch("/api/friends/list")
+        .then(res => res.json())
+        .then(data => {
+          if (data.friends) {
+            setMyFollows(new Set(data.friends.map(f => f.id)));
+          }
+        })
+        .catch(console.error);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (searchQuery.length >= 1) {
+      setIsSearching(true);
+      const timer = setTimeout(async () => {
+        try {
+          const res = await fetch(`/api/users/search?q=${searchQuery}`);
+          const data = await res.json();
+          setSearchResults(data.users || []);
+          setShowSearchDropdown(true);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsSearching(false);
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setSearchResults([]);
+      setShowSearchDropdown(false);
+    }
+  }, [searchQuery]);
+
+  const toggleFollow = async (targetUserId) => {
+    const isFollowing = myFollows.has(targetUserId);
+    try {
+      const res = await fetch("/api/friends/follow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetUserId, action: isFollowing ? "unfollow" : "follow" })
+      });
+      if (res.ok) {
+        setMyFollows(prev => {
+          const next = new Set(prev);
+          if (isFollowing) next.delete(targetUserId);
+          else next.add(targetUserId);
+          return next;
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
 
@@ -89,7 +190,7 @@ export default function IITJamPhysicsHub() {
   const [selectedType, setSelectedType] =
     useState("All");
 
-  const { data: session, status, update } = useSession();
+
 
 
   const [activeQuestion, setActiveQuestion] =
@@ -551,11 +652,13 @@ export default function IITJamPhysicsHub() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ questionId, isCorrect: correct, timeTaken, subject: activeQuestion.subject, selectedAnswer: String(enteredAnswer) })
-      }).catch(err => console.error(err));
+      })
+      .then(() => fetchGoalData())
+      .catch(err => console.error(err));
     }
   };
 
-  if (status === "loading") {
+  if (status === "loading" || !mounted) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-zinc-800 border-t-white rounded-full animate-spin"></div>
@@ -591,31 +694,136 @@ export default function IITJamPhysicsHub() {
               />
             </Link>
           </div>
-          <div className="flex gap-3 items-center">
-            <button
-              onClick={() => setLiveRoomActive(true)}
-              className="px-4 py-2 rounded-xl border border-zinc-300 bg-white text-black font-semibold hover:bg-zinc-200 transition hidden sm:block shadow-[0_0_15px_rgba(255,255,255,0.2)]"
-            >
-              Live Room
-            </button>
-            <button
-              onClick={() => setTestActive(true)}
-              className="px-4 py-2 rounded-xl border border-zinc-700 bg-zinc-900 text-white font-semibold hover:bg-zinc-800 transition hidden sm:block shadow-[0_0_10px_rgba(255,255,255,0.1)]"
-            >
-              Create Test
-            </button>
-            <Link
-              href="/"
-              onClick={(e) => {
-                e.preventDefault();
-                navigateWithTransition("/");
-              }}
-              className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition hidden sm:block"
-            >
-              Home
-            </Link>
+          <div className="flex gap-4 items-center">
+            {session?.user && (
+              <div className="relative group cursor-pointer flex flex-col items-center">
+                {/* Loading bar container */}
+                <div className="flex items-center gap-2 py-2">
+                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider hidden md:inline">Goal</span>
+                  <div className="w-20 sm:w-36 h-2 rounded-full bg-zinc-800 overflow-hidden relative border border-zinc-700/30">
+                    <div 
+                      className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min(goalData.percentage, 100)}%` }}
+                    />
+                  </div>
+                </div>
+                
+                {/* Tooltip/Popover below the bar, visible only when group-hovered */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto transition-all duration-200 z-50 transform origin-top">
+                  <div className="bg-zinc-900 border border-zinc-800 text-white text-xs px-4 py-3 rounded-2xl shadow-2xl whitespace-nowrap flex flex-col items-center gap-2">
+                    <div className="font-medium text-zinc-300">
+                      {goalData.completed} out of {goalData.target} questions done ({Math.round(goalData.percentage)}%)
+                    </div>
+                    <button 
+                      onClick={() => setIsGoalModalOpen(true)}
+                      className="text-cyan-400 font-bold hover:text-cyan-300 transition-colors uppercase tracking-wider text-[10px]"
+                    >
+                      Edit Goal
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {session?.user && (
+              <div className="relative w-32 sm:w-48 z-[60]">
+                <input 
+                  type="text" 
+                  placeholder="Search friends..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => { if (searchQuery.length >= 1) setShowSearchDropdown(true); }}
+                  onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white outline-none focus:border-cyan-500/50 transition-colors"
+                />
+                {isSearching && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-zinc-500 border-t-white rounded-full animate-spin"></div>
+                )}
+                
+                {showSearchDropdown && searchResults.length > 0 && (
+                  <div className="absolute top-full mt-2 w-64 bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-64 overflow-y-auto text-left right-0">
+                    {searchResults.map(user => (
+                      <div key={user.id} className="flex items-center justify-between p-3 border-b border-zinc-800/50 hover:bg-zinc-900 transition">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-8 h-8 rounded-full overflow-hidden bg-zinc-800 relative flex-shrink-0">
+                            {user.image ? (
+                              <Image src={user.image} alt={user.name} fill className="object-cover" sizes="32px" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-xs font-bold bg-gradient-to-br from-indigo-500 to-purple-500">
+                                {user.name?.[0]?.toUpperCase()}
+                              </div>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <Link href={`/profile/${user.id}`} className="block font-bold text-xs text-white hover:text-cyan-400 transition truncate w-24">{user.name}</Link>
+                            <div className="text-[10px] text-zinc-500" style={{color: LEAGUE_COLORS[user.currentLeague]}}>{user.currentLeague}</div>
+                          </div>
+                        </div>
+                        {!user.isSelf && (
+                          <button 
+                            onClick={() => toggleFollow(user.id)}
+                            className={`text-[10px] px-2.5 py-1 rounded-lg font-bold border transition ${
+                              myFollows.has(user.id) 
+                              ? "border-zinc-700 bg-zinc-800 text-white hover:bg-zinc-700" 
+                              : "border-cyan-500/50 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20"
+                            }`}
+                          >
+                            {myFollows.has(user.id) ? "Following" : "Follow"}
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {showSearchDropdown && searchQuery.length >= 1 && searchResults.length === 0 && !isSearching && (
+                  <div className="absolute top-full mt-2 w-64 bg-zinc-950 border border-zinc-800 rounded-2xl p-3 text-center text-xs text-zinc-500 shadow-2xl right-0">
+                    No users found
+                  </div>
+                )}
+              </div>
+            )}
+
             {session?.user && <InvitesMenu />}
             <UserMenu session={session} />
+
+            {/* Three-line Options Dropdown Menu */}
+            {session?.user && (
+              <div className="relative shrink-0 group/menu">
+                <button 
+                  className="w-[38px] h-[38px] rounded-full bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 flex items-center justify-center transition-all cursor-pointer focus:outline-none"
+                >
+                  <div className="flex flex-col justify-between w-4 h-3.5 cursor-pointer transition-transform duration-300 group-hover/menu:rotate-90 py-[2px] px-[0.5px]">
+                    <span className="w-full h-[1.5px] bg-zinc-300 group-hover/menu:bg-white rounded-full transition-colors"></span>
+                    <span className="w-full h-[1.5px] bg-zinc-300 group-hover/menu:bg-white rounded-full transition-colors"></span>
+                    <span className="w-full h-[1.5px] bg-zinc-300 group-hover/menu:bg-white rounded-full transition-colors"></span>
+                  </div>
+                </button>
+                
+                <div className="absolute right-0 mt-3 w-56 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-xl overflow-hidden opacity-0 scale-95 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:scale-100 group-hover/menu:pointer-events-auto transition-all duration-200 z-50 transform origin-top-right">
+                  <div className="py-2">
+                    <button
+                      onClick={() => setTestActive(true)}
+                      className="block w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                    >
+                      Create Test
+                    </button>
+                    <button
+                      onClick={() => setLiveRoomActive(true)}
+                      className="block w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                    >
+                      Live Room
+                    </button>
+                    <Link
+                      href="/sprint"
+                      className="block w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                    >
+                      Sprint Mode
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </nav>
@@ -1428,7 +1636,13 @@ export default function IITJamPhysicsHub() {
           </div>
         </div>
       )}
-
+      {isGoalModalOpen && (
+        <GoalSettingsModal
+          currentTarget={goalData.target}
+          onClose={() => setIsGoalModalOpen(false)}
+          onSave={handleSaveGoal}
+        />
+      )}
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-700 text-white px-6 py-3 rounded-full font-medium shadow-2xl z-[99999] animate-in fade-in slide-in-from-bottom-4">

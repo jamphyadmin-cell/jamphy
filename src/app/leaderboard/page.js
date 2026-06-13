@@ -6,6 +6,7 @@ import Link from "next/link";
 import UserMenu from "@/components/UserMenu";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTransitionContext } from "@/components/TransitionProvider";
 
 const LEAGUE_COLORS = {
   Bronze: "#cd7f32",
@@ -27,6 +28,7 @@ const LEAGUES = ["All", "Following", "Bronze", "Silver", "Gold", "Platinum", "Di
 
 export default function LeaderboardPage() {
   const { data: session, status } = useSession();
+  const { navigateWithTransition } = useTransitionContext();
   const [timeTab, setTimeTab] = useState("weekly");
   const [selectedLeague, setSelectedLeague] = useState("All");
   const [leaderboard, setLeaderboard] = useState([]);
@@ -41,7 +43,7 @@ export default function LeaderboardPage() {
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   
   useEffect(() => {
-    if (searchQuery.length >= 3) {
+    if (searchQuery.length >= 1) {
       setIsSearching(true);
       const timer = setTimeout(async () => {
         try {
@@ -153,7 +155,13 @@ export default function LeaderboardPage() {
       {/* Navbar */}
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/">
+          <Link 
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              navigateWithTransition("/");
+            }}
+          >
             <Image src="/logo.png" alt="Logo" width={148} height={40} className="rounded-xl object-contain" priority />
           </Link>
           <UserMenu session={session} />
@@ -172,7 +180,7 @@ export default function LeaderboardPage() {
               placeholder="Search users to follow..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => { if (searchQuery.length >= 3) setShowSearchDropdown(true); }}
+              onFocus={() => { if (searchQuery.length >= 1) setShowSearchDropdown(true); }}
               onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-4 text-white outline-none focus:border-cyan-500/50 transition-colors"
             />
@@ -216,7 +224,7 @@ export default function LeaderboardPage() {
               </div>
             )}
             
-            {showSearchDropdown && searchQuery.length >= 3 && searchResults.length === 0 && !isSearching && (
+            {showSearchDropdown && searchQuery.length >= 1 && searchResults.length === 0 && !isSearching && (
               <div className="absolute top-full mt-2 w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-center text-zinc-500 shadow-2xl">
                 No users found
               </div>
