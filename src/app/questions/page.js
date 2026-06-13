@@ -608,13 +608,15 @@ export default function IITJamPhysicsHub() {
       )}
 
       {status === "authenticated" && session?.user?.username && (
-        <>
+        <AnimatePresence mode="wait">
           {!selectedSubject && !testActive && !liveRoomActive && (
 
             <motion.section
-              initial={{ opacity: 0, y: 6 }}
+              key="categories"
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.22, ease: "easeInOut" }}
               className="max-w-7xl mx-auto px-6 py-16"
             >
 
@@ -653,9 +655,11 @@ export default function IITJamPhysicsHub() {
           {selectedSubject && !activeQuestion && !testActive && !liveRoomActive && (
 
             <motion.section
-              initial={{ opacity: 0, y: 6 }}
+              key="questions"
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.22, ease: "easeInOut" }}
               className="max-w-7xl mx-auto px-6 py-16"
             >
 
@@ -814,9 +818,11 @@ export default function IITJamPhysicsHub() {
           {activeQuestion && !testActive && !liveRoomActive && (
 
             <motion.section
-              initial={{ opacity: 0, y: 6 }}
+              key="active-question"
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.22, ease: "easeInOut" }}
               className="max-w-7xl mx-auto px-4 md:px-6 py-6"
             >
 
@@ -1287,7 +1293,7 @@ export default function IITJamPhysicsHub() {
               }}
             />
           )}
-        </>
+        </AnimatePresence>
       )}
 
       {isReportModalOpen && (
