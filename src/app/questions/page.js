@@ -26,7 +26,7 @@ const icons = {
 };
 
 export default function IITJamPhysicsHub() {
-  const { triggerStateTransition } = useTransitionContext();
+  const { navigateWithTransition } = useTransitionContext();
   const cursorRef = useRef(null);
 
   useEffect(() => {
@@ -526,7 +526,13 @@ export default function IITJamPhysicsHub() {
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateWithTransition("/");
+              }}
+            >
               <Image
                 src="/logo.png"
                 alt="Logo"
@@ -551,6 +557,10 @@ export default function IITJamPhysicsHub() {
             </button>
             <Link
               href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateWithTransition("/");
+              }}
               className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition hidden sm:block"
             >
               Home
@@ -609,11 +619,9 @@ export default function IITJamPhysicsHub() {
                   <button
                     key={subject.id}
                     onClick={() => {
-                      triggerStateTransition(() => {
-                        setSelectedSubject(subject);
-                        setSelectedYear("All");
-                        setSelectedSubtopic("All");
-                      });
+                      setSelectedSubject(subject);
+                      setSelectedYear("All");
+                      setSelectedSubtopic("All");
                     }}
                     className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 text-left hover:bg-zinc-900 transition h-full flex flex-col items-start"
                   >
@@ -756,10 +764,8 @@ export default function IITJamPhysicsHub() {
                   <button
                     key={`${question.year}-${question.id}`}
                     onClick={() => {
-                      triggerStateTransition(() => {
-                        setActiveQuestion(question);
-                        resetQuestionState();
-                      });
+                      setActiveQuestion(question);
+                      resetQuestionState();
                     }}
                     className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-left hover:bg-zinc-900 transition"
                   >

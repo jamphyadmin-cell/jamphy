@@ -20,7 +20,7 @@ export function TransitionProvider({ children }) {
     setIsPending(true);
     setTimeout(() => {
       router.push(href);
-    }, 350); // Give 350ms for fade-in animation to complete
+    }, 600); // Give 600ms for fade-in animation to complete
   };
 
   const triggerStateTransition = (callback) => {
@@ -30,7 +30,7 @@ export function TransitionProvider({ children }) {
       setTimeout(() => {
         setIsPending(false);
       }, 150); // Smooth out the finish state
-    }, 350); // Give 350ms for fade-in animation to complete
+    }, 600); // Give 600ms for fade-in animation to complete
   };
 
   return (
@@ -42,7 +42,7 @@ export function TransitionProvider({ children }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
             className="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center pointer-events-auto"
           >
             <div className="relative w-24 h-24 flex items-center justify-center">
