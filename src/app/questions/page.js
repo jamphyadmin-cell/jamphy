@@ -14,6 +14,7 @@ import TestManager from "../../components/test/TestManager";
 import TestModal from "../../components/test/TestModal";
 import MathText from "../../components/MathText";
 import { useTransitionContext } from "../../components/TransitionProvider";
+import { motion } from "framer-motion";
 
 const icons = {
   math: "∫",
@@ -610,7 +611,12 @@ export default function IITJamPhysicsHub() {
         <>
           {!selectedSubject && !testActive && !liveRoomActive && (
 
-            <section className="max-w-7xl mx-auto px-6 py-16">
+            <motion.section
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="max-w-7xl mx-auto px-6 py-16"
+            >
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
@@ -640,13 +646,18 @@ export default function IITJamPhysicsHub() {
 
               </div>
 
-            </section>
+            </motion.section>
 
           )}
 
           {selectedSubject && !activeQuestion && !testActive && !liveRoomActive && (
 
-            <section className="max-w-7xl mx-auto px-6 py-16">
+            <motion.section
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="max-w-7xl mx-auto px-6 py-16"
+            >
 
               <button
                 onClick={() => setSelectedSubject(null)}
@@ -796,13 +807,18 @@ export default function IITJamPhysicsHub() {
 
               </div>
 
-            </section>
+            </motion.section>
 
           )}
 
           {activeQuestion && !testActive && !liveRoomActive && (
 
-            <section className="max-w-7xl mx-auto px-4 md:px-6 py-6">
+            <motion.section
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="max-w-7xl mx-auto px-4 md:px-6 py-6"
+            >
 
               <button
                 onClick={() => setActiveQuestion(null)}
@@ -1238,7 +1254,7 @@ export default function IITJamPhysicsHub() {
 
               </div>
 
-            </section>
+            </motion.section>
 
           )}
 
