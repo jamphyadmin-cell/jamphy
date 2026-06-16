@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import UserMenu from "../../components/UserMenu";
+import Navbar from "../../components/Navbar";
 import { questions } from "../../data/questions";
 import { syllabus } from "../../data/syllabus";
 import TestManager from "../../components/test/TestManager";
@@ -519,36 +520,17 @@ export default function IITJamPhysicsHub() {
         className="fixed top-0 left-0 w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference -translate-x-1/2 -translate-y-1/2"
       />
 
-      <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Image
-                src="/logo.png"
-                alt="Logo"
-                width={200}
-                height={200}
-                className="rounded-2xl"
-              />
-            </Link>
-          </div>
-          <div className="flex gap-3 items-center">
-            <button
-              onClick={() => setTestActive(true)}
-              className="px-4 py-2 rounded-xl border border-zinc-700 bg-zinc-900 text-white font-semibold hover:bg-zinc-800 transition hidden sm:block shadow-[0_0_10px_rgba(255,255,255,0.1)]"
-            >
-              Create Test
-            </button>
-            <Link
-              href="/"
-              className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition hidden sm:block"
-            >
-              Home
-            </Link>
-            <UserMenu session={session} />
-          </div>
-        </div>
-      </nav>
+      <Navbar 
+        session={session} 
+        actionButton={
+          <button
+            onClick={() => setTestActive(true)}
+            className="w-full md:w-auto px-4 py-2 rounded-xl border border-zinc-700 bg-zinc-900 text-white font-semibold hover:bg-zinc-800 transition shadow-[0_0_10px_rgba(255,255,255,0.1)] block text-center"
+          >
+            Create Test
+          </button>
+        }
+      />
 
       {/* Auth Overlay */}
       {status !== "loading" && status === "unauthenticated" && (
@@ -588,9 +570,9 @@ export default function IITJamPhysicsHub() {
         <>
           {!selectedSubject && !testActive && (
 
-            <section className="max-w-7xl mx-auto px-6 py-16">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
                 {syllabus.map((subject) => (
 
@@ -628,27 +610,27 @@ export default function IITJamPhysicsHub() {
 
           {selectedSubject && !activeQuestion && !testActive && (
 
-            <section className="max-w-7xl mx-auto px-6 py-16">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
 
               <button
                 onClick={() => setSelectedSubject(null)}
-                className="text-zinc-500 hover:text-white mb-8"
+                className="text-zinc-500 hover:text-white mb-6 sm:mb-8 flex items-center gap-2"
               >
                 ← Back to Subjects
               </button>
 
-              <h2 className="text-6xl font-black tracking-tight mb-10">
+              <h2 className="text-4xl sm:text-6xl font-black tracking-tight mb-8 sm:mb-10 break-words">
                 {selectedSubject.name}
               </h2>
 
-              <div className="flex flex-wrap gap-4 mb-10">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8 sm:mb-10 w-full">
 
                 <select
                   value={selectedYear}
                   onChange={(e) =>
                     setSelectedYear(e.target.value)
                   }
-                  className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
+                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
                 >
 
                   <option value="All">
@@ -677,7 +659,7 @@ export default function IITJamPhysicsHub() {
                   onChange={(e) =>
                     setSelectedSubtopic(e.target.value)
                   }
-                  className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
+                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
                 >
 
                   <option value="All">
@@ -704,7 +686,7 @@ export default function IITJamPhysicsHub() {
                   onChange={(e) =>
                     setSelectedType(e.target.value)
                   }
-                  className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
+                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
                 >
                   <option value="All">All Types</option>
                   <option value="MCQ">MCQ</option>
@@ -722,7 +704,7 @@ export default function IITJamPhysicsHub() {
                     setSelectedType("All");
 
                   }}
-                  className="rounded-2xl border border-zinc-700 px-5 py-4 text-white hover:bg-zinc-900"
+                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 px-5 py-4 text-white hover:bg-zinc-900 transition"
                 >
                   Reset Filters
                 </button>
@@ -818,9 +800,11 @@ export default function IITJamPhysicsHub() {
 
                 </div>
 
-                <MathText className="question-copy text-[18px] md:text-[20px] leading-[1.8] text-zinc-100 font-normal overflow-x-auto">
-                  {activeQuestion.question}
-                </MathText>
+                <div className="overflow-hidden w-full">
+                  <MathText className="question-copy text-[16px] sm:text-[18px] md:text-[20px] leading-[1.8] text-zinc-100 font-normal break-words whitespace-pre-wrap">
+                    {activeQuestion.question}
+                  </MathText>
+                </div>
 
                 {activeQuestion.imageUrl && (
 
@@ -860,7 +844,7 @@ export default function IITJamPhysicsHub() {
                           isCorrect !== null ||
                           natAnswer.trim() === ""
                         }
-                        className="mt-5 rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40"
+                        className="mt-5 w-full sm:w-auto rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 min-h-[56px]"
                       >
                         Submit Answer
                       </button>
@@ -1003,7 +987,7 @@ export default function IITJamPhysicsHub() {
                           isCorrect !== null ||
                           (isMSQ ? (!Array.isArray(selectedAnswer) || selectedAnswer.length === 0) : selectedAnswer === null)
                         }
-                        className="mt-6 rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40"
+                        className="mt-6 w-full sm:w-auto rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 min-h-[56px]"
                       >
                         Submit Answer
                       </button>
@@ -1053,7 +1037,7 @@ export default function IITJamPhysicsHub() {
                       goToQuestion(currentQuestionIndex + 1)
                     }
                     disabled={!hasNextQuestion}
-                    className="rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed text-center"
                   >
                     Next Question →
                   </button>

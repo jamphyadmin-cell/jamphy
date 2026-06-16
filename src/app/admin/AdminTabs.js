@@ -259,7 +259,7 @@ export default function AdminTabs({ reports, users }) {
   return (
     <div className="space-y-8">
       {/* Tab Navigation */}
-      <div className="flex gap-4 border-b border-zinc-800">
+      <div className="flex gap-4 border-b border-zinc-800 overflow-x-auto whitespace-nowrap custom-scrollbar">
         {['Dashboard', 'Add Questions', 'Image / PDF Extraction'].map(tab => (
           <button
             key={tab}

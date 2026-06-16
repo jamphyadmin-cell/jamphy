@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
 import UserMenu from "../components/UserMenu";
+import Navbar from "../components/Navbar";
 import ActivityRing from "@/components/ActivityRing";
 import GoalSettingsModal from "@/components/GoalSettingsModal";
 
@@ -96,38 +97,17 @@ export default function IITJamPrepPlatform() {
 
       {/* NAVBAR */}
 
-      <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
-
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-
-          <div className="flex items-center gap-4">
-
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={200}
-              height={200}
-              className="rounded-2xl"
-            />
-
-          </div>
-
-          <div className="flex gap-3 items-center">
-
-            <UserMenu session={session} />
-
-            <Link
-              href="/questions"
-              className="px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition"
-            >
-              Start Practicing
-            </Link>
-
-          </div>
-
-        </div>
-
-      </nav>
+      <Navbar 
+        session={session} 
+        actionButton={
+          <Link
+            href="/questions"
+            className="w-full md:w-auto px-4 py-2 rounded-xl bg-white text-black font-semibold hover:opacity-90 transition block text-center"
+          >
+            Start Practicing
+          </Link>
+        }
+      />
 
       {/* HERO SECTION */}
 
@@ -139,41 +119,41 @@ export default function IITJamPrepPlatform() {
             Built for IIT JAM Physics Aspirants
           </div>
 
-          <h2 className="text-6xl lg:text-8xl font-black leading-tight">
+          <h2 className="text-4xl sm:text-6xl lg:text-8xl font-black leading-tight break-words">
 
             Practice IIT JAM Physics
 
-            <span className="block bg-gradient-to-r from-blue-400 to-cyan-300 text-transparent bg-clip-text">
+            <span className="block bg-gradient-to-r from-blue-400 to-cyan-300 text-transparent bg-clip-text mt-2 sm:mt-0">
               smarter.
             </span>
 
           </h2>
 
-          <p className="mt-8 text-zinc-400 text-xl leading-relaxed max-w-3xl mx-auto">
+          <p className="mt-6 sm:mt-8 text-zinc-400 text-lg sm:text-xl leading-relaxed max-w-3xl mx-auto px-2">
             Solve chapter-wise previous year questions,
             practice MCQ/MSQ/NAT formats,
             and prepare with a modern IIT JAM experience.
           </p>
 
-          <div className="mt-12 flex justify-center gap-4 flex-wrap">
+          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row justify-center gap-4 flex-wrap w-full">
 
             <Link
               href="/questions"
-              className="px-8 py-4 rounded-3xl bg-white text-black text-xl font-bold hover:scale-105 transition"
+              className="w-full sm:w-auto px-8 py-4 rounded-3xl bg-white text-black text-lg sm:text-xl font-bold hover:scale-105 transition text-center"
             >
               Explore Questions
             </Link>
 
             <Link
               href="/sprint"
-              className="px-8 py-4 rounded-3xl bg-zinc-900 border border-zinc-700 text-white text-xl font-bold hover:bg-zinc-800 hover:border-zinc-500 hover:scale-105 transition"
+              className="w-full sm:w-auto px-8 py-4 rounded-3xl bg-zinc-900 border border-zinc-700 text-white text-lg sm:text-xl font-bold hover:bg-zinc-800 hover:border-zinc-500 hover:scale-105 transition text-center"
             >
               Sprint Mode
             </Link>
 
             <Link
               href="/analytics"
-              className="px-8 py-4 rounded-3xl bg-zinc-900 border border-zinc-700 text-cyan-400 text-xl font-bold hover:bg-zinc-800 hover:border-zinc-500 hover:scale-105 transition"
+              className="w-full sm:w-auto px-8 py-4 rounded-3xl bg-zinc-900 border border-zinc-700 text-cyan-400 text-lg sm:text-xl font-bold hover:bg-zinc-800 hover:border-zinc-500 hover:scale-105 transition text-center"
             >
               Analytics
             </Link>
@@ -186,9 +166,9 @@ export default function IITJamPrepPlatform() {
 
       {/* DASHBOARD WIDGETS */}
       {status === "authenticated" && (
-        <section className="pb-24 px-6 flex flex-col md:flex-row justify-center gap-8 max-w-6xl mx-auto">
+        <section className="pb-24 px-4 sm:px-6 flex flex-col md:flex-row justify-center gap-6 sm:gap-8 max-w-6xl mx-auto w-full">
           {/* YOUR PROGRESS TODAY */}
-          <div className="bg-zinc-950 border border-white/10 rounded-[2rem] p-10 flex flex-col items-center flex-1 w-full max-w-md">
+          <div className="bg-zinc-950 border border-white/10 rounded-[2rem] p-6 sm:p-10 flex flex-col items-center flex-1 w-full md:max-w-md">
             <h3 className="text-2xl font-bold mb-6 text-white text-center">Your Progress Today</h3>
             <div className="mb-4">
               <ActivityRing 
@@ -209,7 +189,7 @@ export default function IITJamPrepPlatform() {
           </div>
           
           {/* FRIENDS ACTIVITY */}
-          <div className="bg-zinc-950 border border-white/10 rounded-[2rem] p-10 flex flex-col flex-1 w-full max-w-md">
+          <div className="bg-zinc-950 border border-white/10 rounded-[2rem] p-6 sm:p-10 flex flex-col flex-1 w-full md:max-w-md">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-white">Friends Activity</h3>
               <Link href="/friends" className="text-cyan-400 text-sm font-bold hover:underline">View All</Link>

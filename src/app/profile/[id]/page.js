@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import UserMenu from "@/components/UserMenu";
+import Navbar from "@/components/Navbar";
 import FollowListModal from "@/components/FollowListModal";
 
 export default function PublicProfilePage() {
@@ -105,14 +106,7 @@ export default function PublicProfilePage() {
   return (
     <div className="min-h-screen bg-black text-white pb-24">
       {/* Navbar */}
-      <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/">
-            <Image src="/logo.png" alt="Logo" width={160} height={160} className="rounded-2xl" />
-          </Link>
-          <UserMenu session={session} />
-        </div>
-      </nav>
+      <Navbar session={session} />
 
       <main className="max-w-3xl mx-auto px-6 py-12">
         <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">

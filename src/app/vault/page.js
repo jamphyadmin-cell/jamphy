@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import TestInterface from "@/components/test/TestInterface";
 import TestResult from "@/components/test/TestResult";
+import Navbar from "@/components/Navbar";
 
 export default function VaultPage() {
   const { data: session, status } = useSession();
@@ -139,8 +140,9 @@ export default function VaultPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black p-6 md:p-12">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-black flex flex-col pb-24">
+      <Navbar session={session} title="Vault" />
+      <main className="flex-1 w-full max-w-4xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-12">
           <div>
             <h1 className="text-4xl font-black text-white mb-2">Mistakes Vault</h1>
@@ -195,7 +197,7 @@ export default function VaultPage() {
             </p>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }
