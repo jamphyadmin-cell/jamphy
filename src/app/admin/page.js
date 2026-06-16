@@ -1,17 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import Image from "next/image";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { adminLogout, updateReportStatus } from "./actions";
+import { adminLogout } from "./actions";
 import AdminTabs from "./AdminTabs";
 import AdminLogoLink from "@/components/AdminLogoLink";
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  // We already have middleware, but we can do an extra check here if we want
-
   // Fetch users
   const users = await prisma.user.findMany({
     orderBy: {
@@ -31,6 +26,10 @@ export default async function AdminDashboard() {
       user: true,
     }
   });
+
+  // Serialize data to prevent Server Component serialization errors with Date objects
+  const serializedUsers = JSON.parse(JSON.stringify(users));
+  const serializedReports = JSON.parse(JSON.stringify(reports));
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -54,7 +53,7 @@ export default async function AdminDashboard() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 py-12">
-        <AdminTabs reports={reports} users={users} />
+        <AdminTabs reports={serializedReports} users={serializedUsers} />
       </main>
     </div>
   );

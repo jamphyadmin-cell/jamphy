@@ -6,7 +6,8 @@ import { prisma } from "@/lib/prisma";
 export async function GET(req, { params }) {
   try {
     const session = await getServerSession(authOptions);
-    const targetUserId = params.id;
+    const resolvedParams = await params;
+    const targetUserId = resolvedParams.id;
 
     if (!targetUserId) {
       return NextResponse.json({ error: "Missing user ID" }, { status: 400 });
