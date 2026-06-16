@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import MathText from "@/components/MathText";
 import UserTable from "../../components/UserTable";
@@ -19,6 +19,17 @@ export default function AdminTabs({ reports, users }) {
   const [extractedQuestions, setExtractedQuestions] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [extractionElapsed, setExtractionElapsed] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (isExtracting) {
+      timer = setInterval(() => {
+        setExtractionElapsed(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isExtracting]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -35,6 +46,9 @@ export default function AdminTabs({ reports, users }) {
     if (!file) return;
     setIsExtracting(true);
     setMessage("");
+    setExtractionElapsed(0);
+
+    const startTime = Date.now();
 
     const formData = new FormData();
     formData.append("file", file);
@@ -47,9 +61,11 @@ export default function AdminTabs({ reports, users }) {
       });
 
       const data = await res.json();
+      const finalTime = Math.floor((Date.now() - startTime) / 1000);
+
       if (res.ok && data.questions && !data.error) {
         setExtractedQuestions(data.questions.map(q => ({...q, status: 'PENDING'})));
-        setMessage(`Successfully extracted ${data.questions.length} questions.`);
+        setMessage(`Extracted ${data.questions.length} questions in ${finalTime}s.`);
       } else {
         setMessage(data.error || "Extraction failed");
       }
@@ -411,10 +427,32 @@ export default function AdminTabs({ reports, users }) {
             <button 
               onClick={handleExtract}
               disabled={!file || isExtracting}
-              className="w-full bg-cyan-600 text-white font-bold py-3 rounded-xl hover:bg-cyan-500 transition disabled:opacity-50"
+              className="w-full bg-cyan-600 text-white font-bold py-3 rounded-xl hover:bg-cyan-500 transition disabled:opacity-50 flex items-center justify-center gap-3"
             >
-              {isExtracting ? "Extracting..." : "Extract via Gemini"}
+              {isExtracting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  Extracting... {extractionElapsed}s
+                </>
+              ) : "Extract via Gemini"}
             </button>
+
+            {isExtracting && (
+              <div className="mt-4 p-4 rounded-xl bg-cyan-900/20 border border-cyan-800/50 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-top-2">
+                <p className="text-cyan-400 font-bold mb-1">
+                  {extractionElapsed < 5 && "Sending to Gemini..."}
+                  {extractionElapsed >= 5 && extractionElapsed < 15 && "Analysing questions..."}
+                  {extractionElapsed >= 15 && extractionElapsed <= 45 && "This is taking longer than usual, please wait..."}
+                  {extractionElapsed > 45 && "Still working — complex papers take up to 60 seconds"}
+                </p>
+                <div className="w-full bg-zinc-900 rounded-full h-1.5 mt-2 overflow-hidden">
+                  <div 
+                    className="bg-cyan-400 h-1.5 rounded-full transition-all duration-1000 ease-linear" 
+                    style={{ width: `${Math.min((extractionElapsed / 60) * 100, 95)}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Review Table */}
