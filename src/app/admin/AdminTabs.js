@@ -50,26 +50,80 @@ export default function AdminTabs({ reports, users }) {
 
     const startTime = Date.now();
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("adminPassword", password);
-
     try {
-      const res = await fetch("/api/admin/extract", {
-        method: "POST",
-        body: formData
-      });
+      let allExtracted = [];
 
-      const data = await res.json();
-      const finalTime = Math.floor((Date.now() - startTime) / 1000);
+      if (file.type === "application/pdf") {
+        const arrayBuffer = await file.arrayBuffer();
+        const { PDFDocument } = await import('pdf-lib');
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
+        const pageCount = pdfDoc.getPageCount();
+        
+        const CHUNK_SIZE = 4; // 4 pages per chunk to avoid 4.5MB limit and 60s Vercel timeout
+        
+        for (let i = 0; i < pageCount; i += CHUNK_SIZE) {
+          const end = Math.min(i + CHUNK_SIZE, pageCount);
+          setMessage(`Extracting pages ${i + 1} to ${end} of ${pageCount}...`);
+          
+          const newPdf = await PDFDocument.create();
+          const pageIndices = Array.from({length: end - i}, (_, idx) => i + idx);
+          const pages = await newPdf.copyPages(pdfDoc, pageIndices);
+          pages.forEach(p => newPdf.addPage(p));
+          const pdfBytes = await newPdf.save();
+          
+          const blob = new Blob([pdfBytes], { type: "application/pdf" });
+          const formData = new FormData();
+          formData.append("file", blob, `chunk_${i}.pdf`);
+          formData.append("adminPassword", password);
 
-      if (res.ok && data.questions && !data.error) {
-        setExtractedQuestions(data.questions.map(q => ({...q, status: 'PENDING'})));
-        setMessage(`Extracted ${data.questions.length} questions in ${finalTime}s.`);
+          const res = await fetch("/api/admin/extract", {
+            method: "POST",
+            body: formData
+          });
+
+          if (!res.ok) {
+            console.error(`Chunk failed with status ${res.status}`);
+            continue;
+          }
+
+          const data = await res.json();
+          if (data.questions) {
+            allExtracted = [...allExtracted, ...data.questions.map(q => ({...q, status: 'PENDING'}))];
+            setExtractedQuestions(allExtracted); // Update UI progressively
+          }
+
+          // Small delay between chunks to avoid free-tier rate limits
+          if (end < pageCount) {
+            await new Promise(r => setTimeout(r, 2000));
+          }
+        }
+        
+        const finalTime = Math.floor((Date.now() - startTime) / 1000);
+        setMessage(`Success! Extracted ${allExtracted.length} total questions in ${finalTime}s.`);
       } else {
-        setMessage(data.error || "Extraction failed");
+        // Image extraction - just send the whole thing
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("adminPassword", password);
+
+        const res = await fetch("/api/admin/extract", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+        const finalTime = Math.floor((Date.now() - startTime) / 1000);
+
+        if (res.ok && data.questions && !data.error) {
+          allExtracted = data.questions.map(q => ({...q, status: 'PENDING'}));
+          setExtractedQuestions(allExtracted);
+          setMessage(`Extracted ${data.questions.length} questions in ${finalTime}s.`);
+        } else {
+          setMessage(data.error || "Extraction failed");
+        }
       }
     } catch (err) {
+      console.error(err);
       setMessage("Network error during extraction");
     } finally {
       setIsExtracting(false);
