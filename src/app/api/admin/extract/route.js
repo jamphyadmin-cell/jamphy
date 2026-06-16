@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
-import { PDFDocument } from 'pdf-lib';
 
 // Initialize Gemini
 const apiKey = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
+
+export const maxDuration = 60; // Set max duration for Vercel just in case
 
 export async function POST(req) {
   try {
@@ -28,30 +29,7 @@ export async function POST(req) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const mimeType = file.type || "application/pdf";
-
-    let base64Files = [];
-
-    // Split PDF into individual pages so we don't hit token truncation limits
-    if (mimeType === 'application/pdf') {
-      try {
-        const pdfDoc = await PDFDocument.load(buffer);
-        const pageCount = pdfDoc.getPageCount();
-        console.log(`PDF has ${pageCount} pages. Splitting into individual pages...`);
-        
-        for (let i = 0; i < pageCount; i++) {
-          const newPdf = await PDFDocument.create();
-          const [page] = await newPdf.copyPages(pdfDoc, [i]);
-          newPdf.addPage(page);
-          const newPdfBytes = await newPdf.save();
-          base64Files.push(Buffer.from(newPdfBytes).toString("base64"));
-        }
-      } catch (pdfError) {
-        console.error("Error splitting PDF:", pdfError);
-        base64Files.push(buffer.toString("base64"));
-      }
-    } else {
-      base64Files.push(buffer.toString("base64"));
-    }
+    const base64Data = buffer.toString("base64");
 
     // Using gemini-1.5-pro for much smarter/better reasoning on complex physics
     const model = genAI.getGenerativeModel({
@@ -67,12 +45,12 @@ export async function POST(req) {
               year: { type: SchemaType.STRING, description: "e.g. 2024" },
               subject: { type: SchemaType.STRING, description: "e.g., Mechanics, Electromagnetism, Mathematical Methods, etc." },
               type: { type: SchemaType.STRING, enum: ["MCQ", "MSQ", "NAT"] },
-              question: { type: SchemaType.STRING, description: "The question text, preserving all LaTeX perfectly using \\( ... \\) for inline and \\[ ... \\] for block math" },
-              options: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING }, nullable: true, description: "Array of 4 strings, or null if type is NAT. Preserve LaTeX in options." },
-              correctAnswer: { type: SchemaType.INTEGER, nullable: true, description: "0-3 for MCQ, or null" },
-              correctAnswers: { type: SchemaType.ARRAY, items: { type: SchemaType.INTEGER }, nullable: true, description: "Array of integers for MSQ, or null" },
-              natAnswer: { type: SchemaType.STRING, nullable: true, description: "NAT answer, or null" },
-              hasImage: { type: SchemaType.BOOLEAN, description: "true if the question refers to a diagram or figure" },
+              question: { type: SchemaType.STRING, description: "The question text, preserving all LaTeX perfectly using \\( ... \\) for inline and \\[ ... \\] for block math. ALWAYS wrap math variables in \\( \\)." },
+              options: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING }, nullable: true, description: "Array of exactly 4 strings for MCQ/MSQ, or null if type is NAT. Preserve LaTeX in options." },
+              correctAnswer: { type: SchemaType.INTEGER, nullable: true, description: "0-3 for MCQ representing option A,B,C,D. Or null" },
+              correctAnswers: { type: SchemaType.ARRAY, items: { type: SchemaType.INTEGER }, nullable: true, description: "Array of integers (0-3) for MSQ, or null" },
+              natAnswer: { type: SchemaType.STRING, nullable: true, description: "NAT numerical answer as string, or null" },
+              hasImage: { type: SchemaType.BOOLEAN, description: "true if the question refers to a diagram, figure, or graph" },
               solution: { type: SchemaType.STRING, nullable: true, description: "detailed step-by-step solution if provided in the document" },
             },
             required: ["year", "subject", "type", "question", "hasImage"]
@@ -83,121 +61,66 @@ export async function POST(req) {
 
     const prompt = `
 You are an expert at extracting physics and math questions from exam papers.
-The attached document is ONE PAGE of an exam paper.
-Carefully scan the ENTIRE image from top to bottom and extract EVERY SINGLE QUESTION you see into the JSON array.
-If there are 10 questions on the page, extract all 10.
+The attached document is an exam paper containing multiple questions.
+Carefully scan the ENTIRE document from start to finish and extract EVERY SINGLE QUESTION you see into the JSON array.
+If there are 60 questions in the document, extract all 60. DO NOT SKIP ANY QUESTIONS.
 
 CRITICAL INSTRUCTIONS:
-1. Extract ALL questions from this page. 
-2. For the "question" and "options" fields, preserve all LaTeX perfectly using \\( ... \\) for inline and \\[ ... \\] for block math.
+1. Extract ALL questions from the document.
+2. For the "question" and "options" fields, preserve all LaTeX perfectly. Use \\( ... \\) for inline math and \\[ ... \\] for block math. Do NOT use $ or $$.
 3. For the "solution" field, extract it from the document ONLY if it is already provided. Do NOT generate new solutions from scratch (leave as null).
 4. For "type", use "MCQ" for single choice, "MSQ" for multiple choice, and "NAT" for numerical answer type.
-5. Extract the correct answer if available, or try to solve it if simple. Otherwise leave null.
+5. If the correct answer is marked or obvious, extract it. Otherwise leave null.
 `;
 
+    console.log(`Sending ${mimeType} file to Gemini for extraction...`);
+    
     let allQuestions = [];
     let isPartial = false;
 
-    // Process all pages concurrently
-    const extractionPromises = base64Files.map(async (base64Data, index) => {
-      try {
-        const result = await model.generateContent([
-          prompt,
-          {
-            inlineData: {
-              data: base64Data,
-              mimeType
-            }
-          }
-        ]);
-
-        let text = result.response.text().trim();
-        let pageQuestions = [];
-
-        try {
-          pageQuestions = JSON.parse(text);
-        } catch (parseError) {
-          console.log(`Page ${index + 1} JSON parse failed, attempting fallback repair...`);
-          isPartial = true;
-          try {
-            const firstBracket = text.indexOf('[');
-            const lastBracket = text.lastIndexOf(']');
-            if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
-              pageQuestions = JSON.parse(text.substring(firstBracket, lastBracket + 1));
-            } else {
-               throw new Error("No array brackets found");
-            }
-          } catch (fallbackError) {
-             console.log(`Page ${index + 1} Fallback failed. Regex extraction...`);
-             let bracketDepth = 0;
-             let currentObj = "";
-             let inString = false;
-             let escapeNext = false;
-             
-             for (let i = 0; i < text.length; i++) {
-               const char = text[i];
-               if (escapeNext) {
-                 currentObj += char;
-                 escapeNext = false;
-                 continue;
-               }
-               if (char === '"' && !escapeNext) {
-                 inString = !inString;
-               }
-               if (char === '\\') {
-                 escapeNext = true;
-               }
-               
-               if (!inString) {
-                 if (char === '{') bracketDepth++;
-                 else if (char === '}') bracketDepth--;
-               }
-               
-               if (bracketDepth > 0 || (char === '}' && bracketDepth === 0 && currentObj.length > 0)) {
-                 currentObj += char;
-                 if (bracketDepth === 0) {
-                   try {
-                     const parsed = JSON.parse(currentObj);
-                     if (parsed && typeof parsed === 'object') {
-                       pageQuestions.push(parsed);
-                     }
-                   } catch(e) {}
-                   currentObj = "";
-                 }
-               }
-             }
+    try {
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: base64Data,
+            mimeType
           }
         }
-        return pageQuestions;
-      } catch (err) {
-        console.error(`Page ${index + 1} extraction failed:`, err.message);
+      ]);
+
+      const text = result.response.text().trim();
+      
+      try {
+        allQuestions = JSON.parse(text);
+      } catch (parseError) {
+        console.log("JSON parse failed, attempting fallback repair...");
         isPartial = true;
-        return [];
+        const firstBracket = text.indexOf('[');
+        const lastBracket = text.lastIndexOf(']');
+        if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+          allQuestions = JSON.parse(text.substring(firstBracket, lastBracket + 1));
+        } else {
+          throw new Error("Failed to parse JSON array from response.");
+        }
       }
-    });
+    } catch (err) {
+      console.error(`Gemini generation failed:`, err.message);
+      return NextResponse.json({ error: "Extraction failed: " + err.message }, { status: 500 });
+    }
 
-    const results = await Promise.all(extractionPromises);
-    results.forEach(pageQuestions => {
-       allQuestions.push(...pageQuestions);
-    });
-
-    if (allQuestions.length === 0) {
+    if (!Array.isArray(allQuestions) || allQuestions.length === 0) {
       return NextResponse.json({ 
         questions: [], 
         partial: true, 
-        error: "0 questions extracted across all pages. Please verify the document content." 
+        error: "0 questions extracted. Please verify the document content." 
       }, { status: 200 });
     }
 
-    console.log(`Successfully extracted ${allQuestions.length} questions from ${base64Files.length} pages.`);
+    console.log(`Successfully extracted ${allQuestions.length} questions.`);
     return NextResponse.json({ questions: allQuestions, partial: isPartial });
   } catch (error) {
-    console.error("Gemini Extraction Error:");
-    console.error("  Message:", error.message);
-    console.error("  Stack:", error.stack);
-    console.error("  GEMINI_API_KEY defined:", !!process.env.GEMINI_API_KEY);
-    console.error("  VITE_GEMINI_API_KEY defined:", !!process.env.VITE_GEMINI_API_KEY);
-    
+    console.error("Extraction API Error:", error.message);
     return NextResponse.json({ error: "Failed to extract questions: " + error.message }, { status: 500 });
   }
 }
