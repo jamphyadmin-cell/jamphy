@@ -25,7 +25,8 @@ export default function FriendsPage() {
           setIsLoading(false);
         });
     } else if (status === "unauthenticated") {
-      setIsLoading(false);
+      const timer = setTimeout(() => setIsLoading(false), 0);
+      return () => clearTimeout(timer);
     }
   }, [status]);
 
@@ -73,7 +74,7 @@ export default function FriendsPage() {
         {friends.length === 0 ? (
           <div className="text-center py-20 bg-zinc-900/50 border border-zinc-800/50 rounded-3xl">
             <div className="w-20 h-20 bg-zinc-800 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl">👋</div>
-            <h3 className="text-2xl font-bold mb-2">It's quiet here</h3>
+            <h3 className="text-2xl font-bold mb-2">It&apos;s quiet here</h3>
             <p className="text-zinc-400 mb-8 max-w-sm mx-auto">Follow users from the leaderboard to track their daily progress and streaks.</p>
             <Link href="/leaderboard" className="px-8 py-4 bg-cyan-600 text-white rounded-2xl font-bold text-lg hover:bg-cyan-500 transition">
               Find people to follow

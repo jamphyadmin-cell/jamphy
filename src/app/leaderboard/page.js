@@ -6,14 +6,7 @@ import Link from "next/link";
 import UserMenu from "@/components/UserMenu";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const LEAGUE_COLORS = {
-  Bronze: "#cd7f32",
-  Silver: "#c0c0c0",
-  Gold: "#ffd700",
-  Platinum: "#e5e4e2",
-  Diamond: "#b9f2ff",
-};
+import { LEAGUE_COLORS } from "@/lib/constants";
 
 const LEAGUE_THRESHOLDS = {
   Bronze: 0,
@@ -42,7 +35,7 @@ export default function LeaderboardPage() {
   
   useEffect(() => {
     if (searchQuery.length >= 3) {
-      setIsSearching(true);
+      const searchingTimer = setTimeout(() => setIsSearching(true), 0);
       const timer = setTimeout(async () => {
         try {
           const res = await fetch(`/api/users/search?q=${searchQuery}`);
@@ -55,7 +48,10 @@ export default function LeaderboardPage() {
           setIsSearching(false);
         }
       }, 300);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(searchingTimer);
+      };
     } else {
       setSearchResults([]);
       setShowSearchDropdown(false);
@@ -85,7 +81,8 @@ export default function LeaderboardPage() {
   };
 
   useEffect(() => {
-    fetchLeaderboard();
+    const fetchTimer = setTimeout(() => fetchLeaderboard(), 0);
+    return () => clearTimeout(fetchTimer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeTab, selectedLeague, status]);
 

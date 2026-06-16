@@ -827,6 +827,7 @@ export default function IITJamPhysicsHub() {
 
                   <div className="flex justify-center mt-6">
 
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={activeQuestion.imageUrl}
                       alt="Question diagram"

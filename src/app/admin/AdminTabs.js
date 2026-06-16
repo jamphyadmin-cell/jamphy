@@ -486,6 +486,7 @@ export default function AdminTabs({ reports, users }) {
                             {q.imageUrl && (
                               <div className="mt-3">
                                 <div className="text-xs text-emerald-400 font-bold mb-2">✓ Image attached</div>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={q.imageUrl} alt="Pasted preview" className="max-h-32 object-contain rounded border border-zinc-800" />
                               </div>
                             )}

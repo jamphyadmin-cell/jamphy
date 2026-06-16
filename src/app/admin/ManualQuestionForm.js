@@ -179,6 +179,7 @@ export default function ManualQuestionForm({ adminPassword, onSuccess }) {
           <div className="bg-black border border-zinc-800 rounded-xl p-4 overflow-y-auto max-h-[250px]">
             <label className="block text-xs font-bold text-zinc-600 uppercase tracking-wider mb-2">Live Preview</label>
             <MathText className="text-white text-base">{questionText || "Preview will appear here..."}</MathText>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             {imageUrl && <img src={imageUrl} alt="Preview" className="mt-4 max-w-full rounded-xl border border-zinc-800" />}
           </div>
         </div>

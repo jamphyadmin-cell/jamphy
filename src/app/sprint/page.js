@@ -109,8 +109,8 @@ export default function SprintMode() {
   useEffect(() => {
     if (isLoading || isFinished) return;
     if (timeLeft <= 0) {
-      finishSprint();
-      return;
+      const finishTimer = setTimeout(() => finishSprint(), 0);
+      return () => clearTimeout(finishTimer);
     }
     const timer = setInterval(() => {
       setTimeLeft(prev => prev - 1);
@@ -122,6 +122,7 @@ export default function SprintMode() {
   const handleOptionClick = (optionIndex) => {
     if (showAnswer) return;
     
+    // eslint-disable-next-line react-hooks/purity
     const timeTaken = Math.floor((Date.now() - questionLoadTime.current) / 1000);
     const question = questions[currentIndex];
     
@@ -264,6 +265,7 @@ export default function SprintMode() {
           <MathText>{question.question}</MathText>
           {question.imageUrl && (
             <div className="flex justify-center mt-6">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={question.imageUrl}
                 alt="Question diagram"

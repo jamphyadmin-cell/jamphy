@@ -14,6 +14,7 @@ export default function IITJamPrepPlatform() {
   const [goalData, setGoalData] = useState({ target: 50, completed: 0, percentage: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [friendsActivity, setFriendsActivity] = useState([]);
+  const [currentTime, setCurrentTime] = useState(null);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -34,6 +35,8 @@ export default function IITJamPrepPlatform() {
           }
         }).catch(console.error);
     }
+    const timer = setTimeout(() => setCurrentTime(Date.now()), 0);
+    return () => clearTimeout(timer);
   }, [status]);
 
   useEffect(() => {
@@ -195,7 +198,7 @@ export default function IITJamPrepPlatform() {
               />
             </div>
             <p className="text-zinc-400 text-center mt-4 mb-2 text-sm">
-              You've completed <strong className="text-white">{goalData.completed}</strong> out of <strong className="text-white">{goalData.target}</strong> questions.
+              You&apos;ve completed <strong className="text-white">{goalData.completed}</strong> out of <strong className="text-white">{goalData.target}</strong> questions.
             </p>
             <button 
               onClick={() => setIsModalOpen(true)}
@@ -215,7 +218,7 @@ export default function IITJamPrepPlatform() {
             {friendsActivity.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
                 <div className="text-4xl mb-4">👥</div>
-                <p className="text-zinc-500 text-sm mb-4">No friends have practiced today yet, or you aren't following anyone.</p>
+                <p className="text-zinc-500 text-sm mb-4">No friends have practiced today yet, or you aren&apos;t following anyone.</p>
                 <Link href="/leaderboard" className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm font-bold hover:bg-zinc-800 transition">
                   Find Friends
                 </Link>
@@ -235,7 +238,7 @@ export default function IITJamPrepPlatform() {
                     </div>
                     <div className="flex-1">
                       <div className="font-bold text-white line-clamp-1">{friend.name}</div>
-                      <div className="text-xs text-zinc-400 mt-0.5">Practiced {Math.round((Date.now() - new Date(friend.lastActive).getTime()) / 60000)}m ago</div>
+                      <div className="text-xs text-zinc-400 mt-0.5">Practiced {currentTime ? Math.round((currentTime - new Date(friend.lastActive).getTime()) / 60000) : 0}m ago</div>
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-black text-white">{friend.todayTotal}</div>
