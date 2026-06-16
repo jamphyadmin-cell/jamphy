@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { adminLogout, updateReportStatus } from "./actions";
 import AdminTabs from "./AdminTabs";
+import AdminLogoLink from "@/components/AdminLogoLink";
 
 export const dynamic = 'force-dynamic';
 
@@ -36,13 +37,7 @@ export default async function AdminDashboard() {
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Image
-              src="/logo.png"
-              alt="Jamphy Admin Logo"
-              width={160}
-              height={160}
-              className="rounded-2xl"
-            />
+            <AdminLogoLink />
             <span className="font-bold text-xl tracking-tight text-zinc-500 hidden sm:block">Admin</span>
           </div>
           <div className="flex items-center gap-4">

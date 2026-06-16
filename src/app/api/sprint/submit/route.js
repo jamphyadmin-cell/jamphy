@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from '@/lib/prisma';
-import { updateUserScore } from '@/lib/score';
 
 export async function POST(req) {
   try {
@@ -70,8 +69,6 @@ export async function POST(req) {
         });
       }
     }
-
-    await updateUserScore(userId, attemptsData);
 
     return NextResponse.json({ success: true, count: attemptsData.length });
   } catch (error) {

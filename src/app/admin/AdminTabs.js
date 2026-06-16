@@ -36,35 +36,28 @@ export default function AdminTabs({ reports, users }) {
     setIsExtracting(true);
     setMessage("");
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64Data = e.target.result;
-      
-      try {
-        const res = await fetch("/api/admin/extract", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            base64Data,
-            mimeType: file.type,
-            adminPassword: password
-          })
-        });
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("adminPassword", password);
 
-        const data = await res.json();
-        if (res.ok && data.questions && !data.error) {
-          setExtractedQuestions(data.questions.map(q => ({...q, status: 'PENDING'})));
-          setMessage(`Successfully extracted ${data.questions.length} questions.`);
-        } else {
-          setMessage(data.error || "Extraction failed");
-        }
-      } catch (err) {
-        setMessage("Network error during extraction");
-      } finally {
-        setIsExtracting(false);
+    try {
+      const res = await fetch("/api/admin/extract", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      if (res.ok && data.questions && !data.error) {
+        setExtractedQuestions(data.questions.map(q => ({...q, status: 'PENDING'})));
+        setMessage(`Successfully extracted ${data.questions.length} questions.`);
+      } else {
+        setMessage(data.error || "Extraction failed");
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      setMessage("Network error during extraction");
+    } finally {
+      setIsExtracting(false);
+    }
   };
 
   const handleSubjectChange = (index, newSubject) => {
@@ -399,12 +392,18 @@ export default function AdminTabs({ reports, users }) {
               </div>
               <div>
                 <label className="block text-sm font-bold text-zinc-500 mb-2">Year</label>
-                <select value={year} onChange={e => setYear(e.target.value)} className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-zinc-500">
+                <select value={year} onChange={e => setYear(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-700">
                   <option value="2024">2024</option>
                   <option value="2023">2023</option>
                   <option value="2022">2022</option>
                   <option value="2021">2021</option>
                   <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
                 </select>
               </div>
             </div>

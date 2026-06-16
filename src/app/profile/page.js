@@ -8,11 +8,13 @@ import Image from "next/image";
 import Link from "next/link";
 import UserMenu from "@/components/UserMenu";
 import EditProfileModal from "@/components/EditProfileModal";
+import FollowListModal from "@/components/FollowListModal";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [followModal, setFollowModal] = useState({ isOpen: false, tab: "followers" });
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const { data: profileData, error, isLoading } = useSWR(
     status === "authenticated" ? "/api/profile/stats" : null,
@@ -66,12 +68,18 @@ export default function ProfilePage() {
             <p className="text-zinc-400 truncate w-full max-w-full">{session.user.email}</p>
             {profileData?.stats && (
               <div className="flex items-center gap-4 text-sm font-bold mt-2">
-                <span className="text-zinc-300">
+                <button 
+                  onClick={() => setFollowModal({ isOpen: true, tab: "followers" })}
+                  className="text-zinc-300 hover:text-white transition"
+                >
                   <span className="text-white text-lg">{profileData.stats.followersCount}</span> Followers
-                </span>
-                <span className="text-zinc-300">
+                </button>
+                <button 
+                  onClick={() => setFollowModal({ isOpen: true, tab: "following" })}
+                  className="text-zinc-300 hover:text-white transition"
+                >
                   <span className="text-white text-lg">{profileData.stats.followingCount}</span> Following
-                </span>
+                </button>
               </div>
             )}
           </div>
@@ -211,6 +219,12 @@ export default function ProfilePage() {
       </main>
 
       {isEditModalOpen && <EditProfileModal onClose={() => setIsEditModalOpen(false)} />}
+      <FollowListModal 
+        isOpen={followModal.isOpen} 
+        onClose={() => setFollowModal(prev => ({ ...prev, isOpen: false }))} 
+        userId={session.user.id} 
+        initialTab={followModal.tab} 
+      />
     </div>
   );
 }

@@ -18,8 +18,6 @@ export async function GET(req, { params }) {
         id: true,
         name: true,
         image: true,
-        currentLeague: true,
-        userScore: true,
         _count: {
           select: {
             followers: true,
@@ -50,8 +48,8 @@ export async function GET(req, { params }) {
       user,
       isFollowing,
       stats: {
-        totalPoints: user.userScore?.totalPoints || 0,
-        weeklyPoints: user.userScore?.weeklyPoints || 0,
+        totalPoints: 0,
+        weeklyPoints: 0,
         followersCount: user._count.followers,
         followingCount: user._count.following,
       }

@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
-import { LEAGUE_COLORS } from "@/lib/constants";
 
 export default function FriendsPage() {
   const { data: session, status } = useSession();
@@ -61,24 +60,16 @@ export default function FriendsPage() {
       </nav>
 
       <main className="max-w-3xl mx-auto px-6 py-12">
-        <div className="mb-10 flex items-center justify-between border-b border-zinc-800 pb-6">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-black mb-2">Friends</h1>
-            <p className="text-zinc-400">Follow other aspirants and stay motivated.</p>
-          </div>
-          <Link href="/leaderboard" className="px-5 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl font-bold hover:bg-zinc-800 transition">
-            Find Friends
-          </Link>
+        <div className="mb-10 border-b border-zinc-800 pb-6">
+          <h1 className="text-4xl md:text-5xl font-black mb-2">Friends</h1>
+          <p className="text-zinc-400">Follow other aspirants and stay motivated.</p>
         </div>
 
         {friends.length === 0 ? (
           <div className="text-center py-20 bg-zinc-900/50 border border-zinc-800/50 rounded-3xl">
             <div className="w-20 h-20 bg-zinc-800 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl">👋</div>
             <h3 className="text-2xl font-bold mb-2">It&apos;s quiet here</h3>
-            <p className="text-zinc-400 mb-8 max-w-sm mx-auto">Follow users from the leaderboard to track their daily progress and streaks.</p>
-            <Link href="/leaderboard" className="px-8 py-4 bg-cyan-600 text-white rounded-2xl font-bold text-lg hover:bg-cyan-500 transition">
-              Find people to follow
-            </Link>
+            <p className="text-zinc-400 max-w-sm mx-auto">Follow users to track their daily progress and streaks.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -97,7 +88,6 @@ export default function FriendsPage() {
                   </div>
                   <div>
                     <Link href={`/profile/${friend.id}`} className="font-bold text-xl text-white hover:text-cyan-400 transition">{friend.name}</Link>
-                    <div className="text-sm font-bold mt-1" style={{color: LEAGUE_COLORS[friend.league]}}>{friend.league} League</div>
                   </div>
                 </div>
 

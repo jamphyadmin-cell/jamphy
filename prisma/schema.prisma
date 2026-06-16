@@ -55,7 +55,6 @@ model User {
   vaultItems    Vault[]
   dailyGoals    DailyGoal[]
   attempts      Attempt[]
-  userScore     UserScore?
   followers     Follow[]  @relation("Followers")
   following     Follow[]  @relation("Following")
   comments      Comment[]
@@ -139,20 +138,6 @@ model Question {
   status         String   @default("PENDING") // PENDING, APPROVED, REJECTED
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-}
-
-model UserScore {
-  id                 String   @id @default(cuid())
-  userId             String   @unique
-  totalPoints        Int      @default(0)
-  weeklyPoints       Int      @default(0)
-  allTimePoints      Int      @default(0)
-  questionsAttempted Int      @default(0)
-  correctAnswers     Int      @default(0)
-  currentLeague      String   @default("Bronze")
-  updatedAt          DateTime @updatedAt
-
-  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Follow {

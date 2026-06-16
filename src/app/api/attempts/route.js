@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from '@/lib/prisma';
-import { updateUserScore } from '@/lib/score';
 
 export async function POST(req) {
   try {
@@ -38,7 +37,6 @@ export async function POST(req) {
       }
     });
 
-    await updateUserScore(userId, attempt);
     console.log("Successfully saved attempt to database for user:", userId, "Question ID:", questionId);
 
     return NextResponse.json({ success: true, attemptId: attempt.id });

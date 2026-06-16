@@ -219,7 +219,7 @@ export default function IITJamPrepPlatform() {
               <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
                 <div className="text-4xl mb-4">👥</div>
                 <p className="text-zinc-500 text-sm mb-4">No friends have practiced today yet, or you aren&apos;t following anyone.</p>
-                <Link href="/leaderboard" className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm font-bold hover:bg-zinc-800 transition">
+                <Link href="/friends" className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm font-bold hover:bg-zinc-800 transition">
                   Find Friends
                 </Link>
               </div>
