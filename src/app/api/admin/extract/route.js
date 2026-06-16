@@ -31,7 +31,7 @@ export async function POST(req) {
     const base64Clean = base64Data.replace(/^data:.*?;base64,/, "");
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-pro",
       generationConfig: {
         maxOutputTokens: 8192,
         responseMimeType: "application/json",
@@ -59,17 +59,17 @@ export async function POST(req) {
 
     const prompt = `
 You are an expert at extracting physics and math questions from exam papers.
-The attached image may be a screenshot or photo of an exam paper containing MULTIPLE questions. 
-Carefully scan the ENTIRE image from top to bottom and extract EVERY SINGLE QUESTION you see into the JSON array.
-Do NOT stop at the first question. If there are 10 questions on the page, extract all 10.
+The attached file is a MULTI-PAGE PDF containing MULTIPLE questions. 
+Carefully scan EVERY SINGLE PAGE from start to finish and extract EVERY SINGLE QUESTION you see into the JSON array.
+Do NOT stop at the first question. If there are 10 questions across the pages, extract all 10.
 
 CRITICAL INSTRUCTIONS:
-1. Extract ALL questions from this document. Return every single question you can find as an array of objects.
+1. Extract ALL questions from EVERY PAGE of this document. Return every single question you can find as an array of objects.
 2. For the "question" and "options" fields, preserve all LaTeX perfectly using \\( ... \\) for inline and \\[ ... \\] for block math.
 3. For the "solution" field, extract it from the document ONLY if it is already provided. Do NOT generate new solutions from scratch (leave as null).
 4. For "type", use "MCQ" for single choice, "MSQ" for multiple choice, and "NAT" for numerical answer type.
-5. Double check that you haven't missed any questions on the page before finishing.
-6. Extract the correct answer and put it in 'correctAnswer' (index 0-3), 'correctAnswers' (array of indices), or 'natAnswer' (string). If the answer is already marked in the image (e.g., ticked, circled, or written), use that. Otherwise, try to solve the question yourself and provide the correct answer. If you are completely unable to figure it out, leave it as null.
+5. Double check that you haven't missed any questions before finishing. You MUST output a large array of all questions found across all pages.
+6. Extract the correct answer and put it in 'correctAnswer' (index 0-3), 'correctAnswers' (array of indices), or 'natAnswer' (string). If the answer is already marked, use that. Otherwise, try to solve the question yourself and provide the correct answer. If you are completely unable to figure it out, leave it as null.
 `;
 
     const result = await model.generateContent([
