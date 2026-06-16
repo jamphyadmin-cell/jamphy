@@ -118,35 +118,86 @@ export default function AdminTabs({ reports, users }) {
     setIsExtracting(true);
     setMessage("");
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64Data = e.target.result;
-      
-      try {
-        const res = await fetch("/api/admin/extract", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            base64Data,
-            mimeType: file.type,
-            adminPassword: password
-          })
-        });
+    try {
+      let allExtracted = [];
 
-        const data = await res.json();
-        if (res.ok && data.questions && !data.error) {
-          setExtractedQuestions(data.questions.map(q => ({...q, status: 'PENDING'})));
-          setMessage(`Successfully extracted ${data.questions.length} questions.`);
-        } else {
-          setMessage(data.error || "Extraction failed");
+      if (file.type === "application/pdf") {
+        const arrayBuffer = await file.arrayBuffer();
+        const { PDFDocument } = await import('pdf-lib');
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
+        const pageCount = pdfDoc.getPageCount();
+        
+        const CHUNK_SIZE = 4; // 4 pages per chunk to avoid 4.5MB limit and 60s Vercel timeout
+        
+        for (let i = 0; i < pageCount; i += CHUNK_SIZE) {
+          const end = Math.min(i + CHUNK_SIZE, pageCount);
+          setMessage(`Extracting pages ${i + 1} to ${end} of ${pageCount}...`);
+          
+          const newPdf = await PDFDocument.create();
+          const pageIndices = Array.from({length: end - i}, (_, idx) => i + idx);
+          const pages = await newPdf.copyPages(pdfDoc, pageIndices);
+          pages.forEach(p => newPdf.addPage(p));
+          
+          // route.js expects base64Data
+          const base64Data = await newPdf.saveAsBase64({ dataUri: true });
+
+          const res = await fetch("/api/admin/extract", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              base64Data,
+              mimeType: "application/pdf",
+              adminPassword: password
+            })
+          });
+
+          if (!res.ok) {
+            console.error(`Chunk failed with status ${res.status}`);
+            continue;
+          }
+
+          const data = await res.json();
+          if (data.questions) {
+            allExtracted = [...allExtracted, ...data.questions.map(q => ({...q, status: 'PENDING'}))];
+            setExtractedQuestions(allExtracted);
+          }
+
+          if (end < pageCount) {
+            await new Promise(r => setTimeout(r, 2000));
+          }
         }
-      } catch (err) {
-        setMessage("Network error during extraction");
-      } finally {
-        setIsExtracting(false);
+        setMessage(`Successfully extracted ${allExtracted.length} questions.`);
+      } else {
+        // Image extraction
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const base64Data = e.target.result;
+          const res = await fetch("/api/admin/extract", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              base64Data,
+              mimeType: file.type,
+              adminPassword: password
+            })
+          });
+
+          const data = await res.json();
+          if (res.ok && data.questions && !data.error) {
+            setExtractedQuestions(data.questions.map(q => ({...q, status: 'PENDING'})));
+            setMessage(`Successfully extracted ${data.questions.length} questions.`);
+          } else {
+            setMessage(data.error || "Extraction failed");
+          }
+        };
+        reader.readAsDataURL(file);
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error(err);
+      setMessage("Network error during extraction");
+    } finally {
+      setIsExtracting(false);
+    }
   };
 
   const handleSubjectChange = (index, newSubject) => {
