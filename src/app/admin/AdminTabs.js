@@ -117,6 +117,8 @@ export default function AdminTabs({ reports, users }) {
     if (!file) return;
     setIsExtracting(true);
     setMessage("");
+    
+    const startTime = Date.now();
 
     try {
       let allExtracted = [];

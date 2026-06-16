@@ -8,7 +8,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import UserMenu from "../../components/UserMenu";
 import InvitesMenu from "../../components/InvitesMenu";
-import { questions } from "../../data/questions";
+import { questions as staticQuestions } from "../../data/questions";
 import { syllabus } from "../../data/syllabus";
 import TestManager from "../../components/test/TestManager";
 import TestModal from "../../components/test/TestModal";
@@ -41,6 +41,7 @@ export default function IITJamPhysicsHub() {
   const cursorRef = useRef(null);
   const [mounted, setMounted] = useState(false);
   const [goalData, setGoalData] = useState({ target: 20, completed: 0, percentage: 0 });
+  const [allQuestions, setAllQuestions] = useState(staticQuestions);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -72,6 +73,14 @@ export default function IITJamPhysicsHub() {
 
   useEffect(() => {
     setMounted(true);
+    fetch("/api/questions")
+      .then(res => res.json())
+      .then(data => {
+        if (data.questions && data.questions.length > 0) {
+          setAllQuestions([...staticQuestions, ...data.questions]);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -372,7 +381,7 @@ export default function IITJamPhysicsHub() {
 
   const filteredQuestions = useMemo(() => {
 
-    return questions.filter((q) => {
+    return allQuestions.filter((q) => {
 
       const subjectMatch = selectedSubject
         ? selectedSubject.subtopics.includes(q.subject)
@@ -945,7 +954,7 @@ export default function IITJamPhysicsHub() {
                   </option>
 
                   {[...new Set(
-                    questions.map((q) => q.year)
+                    allQuestions.map((q) => q.year)
                   )]
                     .sort((a, b) => b - a)
                     .map((year) => (
@@ -1575,7 +1584,7 @@ export default function IITJamPhysicsHub() {
 
           {testActive && (
             <TestManager
-              allQuestions={questions}
+              allQuestions={allQuestions}
               onClose={() => setTestActive(false)}
             />
           )}
