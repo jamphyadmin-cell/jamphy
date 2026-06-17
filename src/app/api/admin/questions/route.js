@@ -5,13 +5,15 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(req) {
   try {
-    const { questions, adminPassword } = await req.json();
+    const { questions } = await req.json();
+
+    const adminCookie = req.cookies.get("admin_session");
+    const isCookieAdmin = adminCookie && adminCookie.value === "authenticated";
 
     const session = await getServerSession(authOptions);
     const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
-    const isPasswordAdmin = adminPassword === process.env.ADMIN_PASSWORD;
 
-    if (!isGoogleAdmin && !isPasswordAdmin) {
+    if (!isGoogleAdmin && !isCookieAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -46,13 +48,14 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const adminPassword = searchParams.get('adminPassword');
+
+    const adminCookie = req.cookies.get("admin_session");
+    const isCookieAdmin = adminCookie && adminCookie.value === "authenticated";
 
     const session = await getServerSession(authOptions);
     const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
-    const isPasswordAdmin = adminPassword === process.env.ADMIN_PASSWORD;
 
-    if (!isGoogleAdmin && !isPasswordAdmin) {
+    if (!isGoogleAdmin && !isCookieAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
