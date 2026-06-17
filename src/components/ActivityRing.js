@@ -14,7 +14,8 @@ export default function ActivityRing({ percentage = 0, size = 120, strokeWidth =
   });
 
   useEffect(() => {
-    setIsClient(true);
+    const timer = setTimeout(() => setIsClient(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {

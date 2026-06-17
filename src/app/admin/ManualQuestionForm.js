@@ -118,6 +118,12 @@ export default function ManualQuestionForm({ adminPassword, onSuccess }) {
               <option value="2022">2022</option>
               <option value="2021">2021</option>
               <option value="2020">2020</option>
+              <option value="2019">2019</option>
+              <option value="2018">2018</option>
+              <option value="2017">2017</option>
+              <option value="2016">2016</option>
+              <option value="2015">2015</option>
+              <option value="2014">2014</option>
             </select>
           </div>
           <div>
@@ -179,6 +185,7 @@ export default function ManualQuestionForm({ adminPassword, onSuccess }) {
           <div className="bg-black border border-zinc-800 rounded-xl p-4 overflow-y-auto max-h-[250px]">
             <label className="block text-xs font-bold text-zinc-600 uppercase tracking-wider mb-2">Live Preview</label>
             <MathText className="text-white text-base">{questionText || "Preview will appear here..."}</MathText>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             {imageUrl && <img src={imageUrl} alt="Preview" className="mt-4 max-w-full rounded-xl border border-zinc-800" />}
           </div>
         </div>

@@ -1,16 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import Image from "next/image";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { adminLogout, updateReportStatus } from "./actions";
 import AdminTabs from "./AdminTabs";
+import AdminLogoLink from "@/components/AdminLogoLink";
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  // We already have middleware, but we can do an extra check here if we want
-
   // Fetch users
   const users = await prisma.user.findMany({
     orderBy: {
@@ -31,22 +27,19 @@ export default async function AdminDashboard() {
     }
   });
 
+  // Serialize data to prevent Server Component serialization errors with Date objects
+  const serializedUsers = JSON.parse(JSON.stringify(users));
+  const serializedReports = JSON.parse(JSON.stringify(reports));
+
   return (
     <div className="min-h-screen bg-black text-white">
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Image
-              src="/logo.png"
-              alt="Jamphy Admin Logo"
-              width={148}
-              height={40}
-              className="rounded-xl object-contain"
-              priority
-            />
-            <span className="font-bold text-xl tracking-tight text-zinc-500 hidden sm:block">Admin</span>
+            <AdminLogoLink />
+            <span className="font-bold text-lg sm:text-xl tracking-tight text-zinc-500 hidden sm:block">Admin</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/" className="px-4 py-2 text-sm rounded-xl border border-zinc-700 hover:bg-zinc-800 transition">
               Back to App
             </Link>
@@ -60,7 +53,7 @@ export default async function AdminDashboard() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 py-12">
-        <AdminTabs reports={reports} users={users} />
+        <AdminTabs reports={serializedReports} users={serializedUsers} />
       </main>
     </div>
   );

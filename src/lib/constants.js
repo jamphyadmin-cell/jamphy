@@ -1,7 +1,7 @@
 export const LEAGUE_COLORS = {
-  Bronze: "#CD7F32",
-  Silver: "#C0C0C0",
-  Gold: "#FFD700",
-  Platinum: "#E5E4E2",
-  Diamond: "#B9F2FF"
+  "Diamond": "#00f2fe",
+  "Platinum": "#e2e8f0",
+  "Gold": "#fbbf24",
+  "Silver": "#94a3b8",
+  "Bronze": "#b45309"
 };

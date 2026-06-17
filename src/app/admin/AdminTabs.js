@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import MathText from "@/components/MathText";
@@ -20,6 +20,17 @@ export default function AdminTabs({ reports, users }) {
   const [extractedQuestions, setExtractedQuestions] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [extractionElapsed, setExtractionElapsed] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (isExtracting) {
+      timer = setInterval(() => {
+        setExtractionElapsed(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isExtracting]);
 
   const [questionsList, setQuestionsList] = useState([]);
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
@@ -117,7 +128,7 @@ export default function AdminTabs({ reports, users }) {
     if (!file) return;
     setIsExtracting(true);
     setMessage("");
-    
+    setExtractionElapsed(0);
     const startTime = Date.now();
 
     try {
@@ -161,14 +172,15 @@ export default function AdminTabs({ reports, users }) {
           const data = await res.json();
           if (data.questions) {
             allExtracted = [...allExtracted, ...data.questions.map(q => ({...q, status: 'PENDING'}))];
-            setExtractedQuestions(allExtracted);
+            setExtractedQuestions(allExtracted); // Update UI progressively
           }
 
           if (end < pageCount) {
             await new Promise(r => setTimeout(r, 2000));
           }
         }
-        setMessage(`Successfully extracted ${allExtracted.length} questions.`);
+        const finalTime = Math.floor((Date.now() - startTime) / 1000);
+        setMessage(`Success! Extracted ${allExtracted.length} total questions in ${finalTime}s.`);
       } else {
         // Image extraction
         const reader = new FileReader();
@@ -185,9 +197,11 @@ export default function AdminTabs({ reports, users }) {
           });
 
           const data = await res.json();
+          const finalTime = Math.floor((Date.now() - startTime) / 1000);
+          
           if (res.ok && data.questions && !data.error) {
             setExtractedQuestions(data.questions.map(q => ({...q, status: 'PENDING'})));
-            setMessage(`Successfully extracted ${data.questions.length} questions.`);
+            setMessage(`Success! Extracted ${data.questions.length} questions in ${finalTime}s.`);
           } else {
             setMessage(data.error || "Extraction failed");
           }
@@ -405,7 +419,7 @@ export default function AdminTabs({ reports, users }) {
   return (
     <div className="space-y-8">
       {/* Tab Navigation */}
-      <div className="flex gap-4 border-b border-zinc-800">
+      <div className="flex gap-4 border-b border-zinc-800 overflow-x-auto whitespace-nowrap custom-scrollbar">
         {['Dashboard', 'Manage Questions', 'Add Questions', 'Image / PDF Extraction'].map(tab => (
           <button
             key={tab}
@@ -715,12 +729,18 @@ export default function AdminTabs({ reports, users }) {
               </div>
               <div>
                 <label className="block text-sm font-bold text-zinc-500 mb-2">Year</label>
-                <select value={year} onChange={e => setYear(e.target.value)} className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-zinc-500">
+                <select value={year} onChange={e => setYear(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-700">
                   <option value="2024">2024</option>
                   <option value="2023">2023</option>
                   <option value="2022">2022</option>
                   <option value="2021">2021</option>
                   <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
                 </select>
               </div>
             </div>
@@ -728,10 +748,32 @@ export default function AdminTabs({ reports, users }) {
             <button 
               onClick={handleExtract}
               disabled={!file || isExtracting}
-              className="w-full bg-cyan-600 text-white font-bold py-3 rounded-xl hover:bg-cyan-500 transition disabled:opacity-50"
+              className="w-full bg-cyan-600 text-white font-bold py-3 rounded-xl hover:bg-cyan-500 transition disabled:opacity-50 flex items-center justify-center gap-3"
             >
-              {isExtracting ? "Extracting..." : "Extract via Gemini"}
+              {isExtracting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  Extracting... {extractionElapsed}s
+                </>
+              ) : "Extract via Gemini"}
             </button>
+
+            {isExtracting && (
+              <div className="mt-4 p-4 rounded-xl bg-cyan-900/20 border border-cyan-800/50 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-top-2">
+                <p className="text-cyan-400 font-bold mb-1">
+                  {extractionElapsed < 5 && "Sending to Gemini..."}
+                  {extractionElapsed >= 5 && extractionElapsed < 15 && "Analysing questions..."}
+                  {extractionElapsed >= 15 && extractionElapsed <= 45 && "This is taking longer than usual, please wait..."}
+                  {extractionElapsed > 45 && "Still working — complex papers take up to 60 seconds"}
+                </p>
+                <div className="w-full bg-zinc-900 rounded-full h-1.5 mt-2 overflow-hidden">
+                  <div 
+                    className="bg-cyan-400 h-1.5 rounded-full transition-all duration-1000 ease-linear" 
+                    style={{ width: `${Math.min((extractionElapsed / 60) * 100, 95)}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Review Table */}
@@ -802,6 +844,7 @@ export default function AdminTabs({ reports, users }) {
                             {q.imageUrl && (
                               <div className="mt-3">
                                 <div className="text-xs text-emerald-400 font-bold mb-2">✓ Image attached</div>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={q.imageUrl} alt="Pasted preview" className="max-h-32 object-contain rounded border border-zinc-800" />
                               </div>
                             )}

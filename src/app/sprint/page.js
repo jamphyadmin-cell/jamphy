@@ -109,8 +109,8 @@ export default function SprintMode() {
   useEffect(() => {
     if (isLoading || isFinished) return;
     if (timeLeft <= 0) {
-      finishSprint();
-      return;
+      const finishTimer = setTimeout(() => finishSprint(), 0);
+      return () => clearTimeout(finishTimer);
     }
     const timer = setInterval(() => {
       setTimeLeft(prev => prev - 1);
@@ -122,6 +122,7 @@ export default function SprintMode() {
   const handleOptionClick = (optionIndex) => {
     if (showAnswer) return;
     
+    // eslint-disable-next-line react-hooks/purity
     const timeTaken = Math.floor((Date.now() - questionLoadTime.current) / 1000);
     const question = questions[currentIndex];
     
@@ -160,7 +161,7 @@ export default function SprintMode() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
+      <div className="min-h-[100dvh] bg-black flex flex-col items-center justify-center text-white p-6">
         <div className="w-12 h-12 border-4 border-zinc-800 border-t-cyan-400 rounded-full animate-spin mb-6"></div>
         <div className="font-bold text-2xl animate-pulse">Loading Sprint...</div>
       </div>
@@ -169,7 +170,7 @@ export default function SprintMode() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6 text-center">
+      <div className="min-h-[100dvh] bg-black flex flex-col items-center justify-center text-white p-6 text-center">
         <div className="text-red-500 mb-4">
           <svg className="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -193,7 +194,7 @@ export default function SprintMode() {
     const totalTime = times.reduce((a, b) => a + b, 0);
 
     return (
-      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
+      <div className="min-h-[100dvh] bg-black text-white flex flex-col items-center justify-center p-6">
         <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400 mb-8">Sprint Complete</h1>
         <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 w-full max-w-md space-y-6 shadow-2xl">
           <div className="flex justify-between items-center border-b border-zinc-800 pb-4">
@@ -218,7 +219,7 @@ export default function SprintMode() {
         
         <button 
           onClick={() => router.push("/")}
-          className="mt-8 bg-white text-black font-bold py-4 px-8 rounded-2xl hover:scale-105 transition-transform"
+          className="mt-8 w-full sm:w-auto bg-white text-black font-bold py-4 px-8 rounded-2xl hover:scale-105 transition-transform"
         >
           Return Home
         </button>
@@ -229,7 +230,7 @@ export default function SprintMode() {
   const question = questions[currentIndex];
   if (!question) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6 text-center">
+      <div className="min-h-[100dvh] bg-black flex flex-col items-center justify-center text-white p-6 text-center">
         <h2 className="text-2xl font-bold mb-2">No questions found</h2>
         <button onClick={() => router.push("/")} className="mt-4 bg-white text-black font-bold py-3 px-6 rounded-xl hover:bg-zinc-200">
           Go Back Home
@@ -239,7 +240,7 @@ export default function SprintMode() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col overflow-hidden fixed inset-0">
+    <div className="h-[100dvh] bg-black text-white flex flex-col overflow-hidden fixed inset-0">
       {/* Progress Bar */}
       <div className="h-2 bg-zinc-800 w-full shrink-0">
         <div 
@@ -259,11 +260,12 @@ export default function SprintMode() {
       </div>
 
       {/* Question Area (70% viewport height) */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-12 flex flex-col justify-center items-center">
-        <div className="w-full max-w-3xl text-xl md:text-3xl font-medium leading-relaxed">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-12 flex flex-col items-center">
+        <div className="w-full max-w-3xl text-lg md:text-3xl font-medium leading-relaxed break-words whitespace-pre-wrap">
           <MathText>{question.question}</MathText>
           {question.imageUrl && (
             <div className="flex justify-center mt-6">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={question.imageUrl}
                 alt="Question diagram"
@@ -273,10 +275,10 @@ export default function SprintMode() {
           )}
           {/* Action Buttons */}
         {showAnswer && (
-          <div className="flex justify-between items-center mt-8 gap-4 flex-wrap">
+          <div className="flex justify-between items-center mt-8 gap-4 flex-wrap w-full">
             <button
               onClick={toggleVault}
-              className={`flex items-center justify-center w-16 h-[60px] rounded-2xl border transition-all ${
+              className={`flex items-center justify-center w-16 h-[56px] rounded-2xl border transition-all ${
                 vaultItems.has(String(question.id))
                   ? "bg-amber-500/20 border-amber-500 text-amber-500 hover:bg-amber-500/30"
                   : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-white"
@@ -295,8 +297,17 @@ export default function SprintMode() {
             </button>
             
             <button
-              onClick={handleNextQuestion}
-              className="rounded-2xl bg-white px-8 py-4 text-xl font-bold text-black"
+              onClick={() => {
+                if (currentIndex < questions.length - 1) {
+                  setCurrentIndex(prev => prev + 1);
+                  setSelectedOption(null);
+                  setShowAnswer(false);
+                  questionLoadTime.current = Date.now();
+                } else {
+                  finishSprint();
+                }
+              }}
+              className="flex-1 md:flex-none rounded-2xl bg-white px-8 py-4 text-xl font-bold text-black min-h-[56px]"
             >
               Next Question →
             </button>
@@ -305,8 +316,8 @@ export default function SprintMode() {
         </div>
       </div>
 
-      {/* Answers Area (30% viewport height) */}
-      <div className="h-[30vh] shrink-0 p-4 grid grid-cols-1 md:grid-cols-2 gap-3 max-w-5xl mx-auto w-full">
+      {/* Answers Area */}
+      <div className="shrink-0 p-4 grid grid-cols-1 md:grid-cols-2 gap-3 max-w-5xl mx-auto w-full max-h-[45vh] overflow-y-auto">
         {question.options.map((opt, idx) => {
           
           let btnClass = "bg-zinc-900 border border-zinc-800 hover:border-zinc-600 text-left px-6 py-4 rounded-2xl transition-colors min-h-[60px] flex items-center";

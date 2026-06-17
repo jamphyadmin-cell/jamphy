@@ -7,14 +7,17 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import UserMenu from "@/components/UserMenu";
+import Navbar from "@/components/Navbar";
 import EditProfileModal from "@/components/EditProfileModal";
 import { useTransitionContext } from "@/components/TransitionProvider";
+import FollowListModal from "@/components/FollowListModal";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { navigateWithTransition } = useTransitionContext();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [followModal, setFollowModal] = useState({ isOpen: false, tab: "followers" });
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const { data: profileData, error, isLoading } = useSWR(
     status === "authenticated" ? "/api/profile/stats" : null,
@@ -41,25 +44,8 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-black text-white pb-24">
       {/* Navbar */}
-      <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link 
-              href="/"
-              onClick={(e) => {
-                e.preventDefault();
-                navigateWithTransition("/");
-              }}
-            >
-              <Image src="/logo.png" alt="Logo" width={148} height={40} className="rounded-xl object-contain" priority />
-            </Link>
-            <span className="font-bold text-xl tracking-tight text-zinc-500 hidden sm:block">
-              Profile
-            </span>
-          </div>
-          <UserMenu session={session} />
-        </div>
-      </nav>
+      {/* Navbar */}
+      <Navbar session={session} title="Profile" />
 
       <main className="max-w-5xl mx-auto px-6 py-12 space-y-8">
         
@@ -80,12 +66,18 @@ export default function ProfilePage() {
             <p className="text-zinc-400 truncate w-full max-w-full">{session.user.email}</p>
             {profileData?.stats && (
               <div className="flex items-center gap-4 text-sm font-bold mt-2">
-                <span className="text-zinc-300">
+                <button 
+                  onClick={() => setFollowModal({ isOpen: true, tab: "followers" })}
+                  className="text-zinc-300 hover:text-white transition"
+                >
                   <span className="text-white text-lg">{profileData.stats.followersCount}</span> Followers
-                </span>
-                <span className="text-zinc-300">
+                </button>
+                <button 
+                  onClick={() => setFollowModal({ isOpen: true, tab: "following" })}
+                  className="text-zinc-300 hover:text-white transition"
+                >
                   <span className="text-white text-lg">{profileData.stats.followingCount}</span> Following
-                </span>
+                </button>
               </div>
             )}
           </div>
@@ -132,28 +124,30 @@ export default function ProfilePage() {
                 {/* CALENDAR HEATMAP */}
                 <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
                   <h3 className="text-xl font-bold mb-6">Activity Calendar (Last 90 Days)</h3>
-                  <div className="grid grid-rows-7 grid-flow-col gap-1.5 w-fit">
-                    {/* Render a simple grid of squares for the last 91 days (13 weeks) */}
-                    {Array.from({ length: 91 }).map((_, i) => {
-                      const d = new Date();
-                      d.setDate(d.getDate() - (90 - i));
-                      const dStr = d.toISOString().split('T')[0];
-                      const entry = profileData.heatmap.find(h => h.date === dStr);
-                      const count = entry ? entry.count : 0;
-                      
-                      let bgClass = "bg-zinc-900 border border-zinc-800/50";
-                      if (count > 0 && count <= 5) bgClass = "bg-[#0e4429] border border-[#006d32]/50";
-                      else if (count > 5 && count <= 15) bgClass = "bg-[#006d32] border border-[#26a641]/50";
-                      else if (count > 15) bgClass = "bg-[#39d353] border border-[#39d353] shadow-[0_0_8px_rgba(57,211,83,0.3)]";
+                  <div className="overflow-x-auto w-full pb-4 custom-scrollbar">
+                    <div className="grid grid-rows-7 grid-flow-col gap-1.5 w-fit min-w-max">
+                      {/* Render a simple grid of squares for the last 91 days (13 weeks) */}
+                      {Array.from({ length: 91 }).map((_, i) => {
+                        const d = new Date();
+                        d.setDate(d.getDate() - (90 - i));
+                        const dStr = d.toISOString().split('T')[0];
+                        const entry = profileData.heatmap.find(h => h.date === dStr);
+                        const count = entry ? entry.count : 0;
+                        
+                        let bgClass = "bg-zinc-900 border border-zinc-800/50";
+                        if (count > 0 && count <= 5) bgClass = "bg-[#0e4429] border border-[#006d32]/50";
+                        else if (count > 5 && count <= 15) bgClass = "bg-[#006d32] border border-[#26a641]/50";
+                        else if (count > 15) bgClass = "bg-[#39d353] border border-[#39d353] shadow-[0_0_8px_rgba(57,211,83,0.3)]";
 
-                      return (
-                        <div 
-                          key={i} 
-                          title={`${dStr}: ${count} questions`}
-                          className={`w-[11px] h-[11px] rounded-[2px] ${bgClass}`}
-                        />
-                      );
-                    })}
+                        return (
+                          <div 
+                            key={i} 
+                            title={`${dStr}: ${count} questions`}
+                            className={`w-[11px] h-[11px] rounded-[2px] ${bgClass}`}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
                   <div className="flex items-center gap-1.5 mt-4 text-xs text-zinc-500 justify-end">
                     <span>Less</span>
@@ -225,6 +219,12 @@ export default function ProfilePage() {
       </main>
 
       {isEditModalOpen && <EditProfileModal onClose={() => setIsEditModalOpen(false)} />}
+      <FollowListModal 
+        isOpen={followModal.isOpen} 
+        onClose={() => setFollowModal(prev => ({ ...prev, isOpen: false }))} 
+        userId={session.user.id} 
+        initialTab={followModal.tab} 
+      />
     </div>
   );
 }

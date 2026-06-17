@@ -8,6 +8,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import UserMenu from "../../components/UserMenu";
 import InvitesMenu from "../../components/InvitesMenu";
+import Navbar from "../../components/Navbar";
 import { questions as staticQuestions } from "../../data/questions";
 import { syllabus } from "../../data/syllabus";
 import TestManager from "../../components/test/TestManager";
@@ -683,6 +684,7 @@ export default function IITJamPhysicsHub() {
         className="fixed top-0 left-0 w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference -translate-x-1/2 -translate-y-1/2"
       />
 
+
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -860,13 +862,12 @@ export default function IITJamPhysicsHub() {
               className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 hover:border-zinc-500 transition-all text-white font-bold text-lg group"
             >
               Sign in with
-              <Image
-                src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
-                alt="Google"
-                width={24}
-                height={24}
-                className="h-6 w-auto object-contain mt-0.5 group-hover:scale-105 transition-transform"
-              />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" className="mt-0.5 group-hover:scale-105 transition-transform">
+                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+              </svg>
             </button>
           </div>
         </div>
@@ -882,10 +883,10 @@ export default function IITJamPhysicsHub() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.22, ease: "easeInOut" }}
-              className="max-w-7xl mx-auto px-6 py-16"
+              className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16"
             >
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
                 {syllabus.map((subject) => (
 
@@ -925,28 +926,28 @@ export default function IITJamPhysicsHub() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.22, ease: "easeInOut" }}
-              className="max-w-7xl mx-auto px-6 py-16"
+              className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16"
             >
 
               <button
                 onClick={() => setSelectedSubject(null)}
-                className="text-zinc-500 hover:text-white mb-8"
+                className="text-zinc-500 hover:text-white mb-6 sm:mb-8 flex items-center gap-2"
               >
                 ← Back to Subjects
               </button>
 
-              <h2 className="text-6xl font-black tracking-tight mb-10">
+              <h2 className="text-4xl sm:text-6xl font-black tracking-tight mb-8 sm:mb-10 break-words">
                 {selectedSubject.name}
               </h2>
 
-              <div className="flex flex-wrap gap-4 mb-10">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8 sm:mb-10 w-full">
 
                 <select
                   value={selectedYear}
                   onChange={(e) =>
                     setSelectedYear(e.target.value)
                   }
-                  className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
+                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
                 >
 
                   <option value="All">
@@ -975,7 +976,7 @@ export default function IITJamPhysicsHub() {
                   onChange={(e) =>
                     setSelectedSubtopic(e.target.value)
                   }
-                  className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
+                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
                 >
 
                   <option value="All">
@@ -1002,7 +1003,7 @@ export default function IITJamPhysicsHub() {
                   onChange={(e) =>
                     setSelectedType(e.target.value)
                   }
-                  className="rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
+                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
                 >
                   <option value="All">All Types</option>
                   <option value="MCQ">MCQ</option>
@@ -1020,7 +1021,7 @@ export default function IITJamPhysicsHub() {
                     setSelectedType("All");
 
                   }}
-                  className="rounded-2xl border border-zinc-700 px-5 py-4 text-white hover:bg-zinc-900"
+                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 px-5 py-4 text-white hover:bg-zinc-900 transition"
                 >
                   Reset Filters
                 </button>
@@ -1119,14 +1120,17 @@ export default function IITJamPhysicsHub() {
 
                 </div>
 
-                <MathText className="question-copy text-[18px] md:text-[20px] leading-[1.8] text-zinc-100 font-normal overflow-x-auto">
-                  {activeQuestion.question}
-                </MathText>
+                <div className="overflow-hidden w-full">
+                  <MathText className="question-copy text-[16px] sm:text-[18px] md:text-[20px] leading-[1.8] text-zinc-100 font-normal break-words whitespace-pre-wrap">
+                    {activeQuestion.question}
+                  </MathText>
+                </div>
 
                 {(activeQuestion.imageUrl || activeQuestion.questionImage || activeQuestion.image) && (
 
                   <div className="flex justify-center mt-6">
 
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={activeQuestion.imageUrl || activeQuestion.questionImage || activeQuestion.image}
                       alt="Question diagram"
@@ -1160,7 +1164,7 @@ export default function IITJamPhysicsHub() {
                           isCorrect !== null ||
                           natAnswer.trim() === ""
                         }
-                        className="mt-5 rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40"
+                        className="mt-5 w-full sm:w-auto rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 min-h-[56px]"
                       >
                         Submit Answer
                       </button>
@@ -1301,7 +1305,7 @@ export default function IITJamPhysicsHub() {
                           isCorrect !== null ||
                           (isMSQ ? (!Array.isArray(selectedAnswer) || selectedAnswer.length === 0) : selectedAnswer === null)
                         }
-                        className="mt-6 rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40"
+                        className="mt-6 w-full sm:w-auto rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 min-h-[56px]"
                       >
                         Submit Answer
                       </button>
@@ -1351,7 +1355,7 @@ export default function IITJamPhysicsHub() {
                       goToQuestion(currentQuestionIndex + 1)
                     }
                     disabled={!hasNextQuestion}
-                    className="rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed text-center"
                   >
                     Next Question →
                   </button>

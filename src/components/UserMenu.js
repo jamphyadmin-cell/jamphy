@@ -119,13 +119,6 @@ export default function UserMenu() {
             >
               Analytics
             </Link>
-            <Link
-              href="/leaderboard"
-              onClick={() => setIsOpen(false)}
-              className="block px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
-            >
-              Leaderboard
-            </Link>
             <button
               onClick={() => {
                 setIsOpen(false);

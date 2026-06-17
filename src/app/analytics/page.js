@@ -10,6 +10,7 @@ import {
   BarChart, Bar, Cell
 } from 'recharts';
 import ActivityRing from "@/components/ActivityRing";
+import Navbar from "@/components/Navbar";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -41,8 +42,9 @@ export default function AnalyticsPage() {
 
   if (isLoading || status === "loading" || !data) {
     return (
-      <div className="min-h-screen bg-black text-white p-6 md:p-12">
-        <div className="max-w-7xl mx-auto space-y-8">
+      <div className="min-h-screen bg-black text-white flex flex-col pb-24">
+        <Navbar session={session} title="Analytics" />
+        <div className="flex-1 w-full max-w-7xl mx-auto px-6 py-12 space-y-8">
           <div className="h-12 w-64 bg-zinc-900 rounded-2xl animate-pulse"></div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -70,14 +72,9 @@ export default function AnalyticsPage() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-black text-white p-6 md:p-12">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight">Performance <span className="text-cyan-400">Analytics</span></h1>
-          <Link href="/" className="px-5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition font-medium">
-            Home
-          </Link>
-        </div>
+    <div className="min-h-screen bg-black text-white flex flex-col pb-24">
+      <Navbar session={session} title="Analytics" />
+      <div className="flex-1 w-full max-w-7xl mx-auto px-6 py-12 space-y-8">
 
         {/* Top Row: Overall Accuracy & Trend */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -90,7 +87,7 @@ export default function AnalyticsPage() {
 
           <div className="bg-zinc-950 border border-zinc-800 rounded-[32px] p-8 lg:col-span-2">
             <h2 className="text-zinc-400 font-medium mb-6">Accuracy Trend (Last 30 Days)</h2>
-            <div style={{width: '100%', height: 300}}>
+            <div className="w-full min-w-0 h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data.dailyAccuracy} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff1a" vertical={false} />
@@ -150,7 +147,7 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-zinc-950 border border-zinc-800 rounded-[32px] p-8">
             <h2 className="text-zinc-400 font-medium mb-6">Accuracy by Subject</h2>
-            <div style={{width: '100%', height: 300}}>
+            <div className="w-full min-w-0 h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data.subjectAccuracy} margin={{ top: 5, right: 0, bottom: 5, left: -20 }} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff1a" horizontal={false} />

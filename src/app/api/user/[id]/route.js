@@ -19,7 +19,6 @@ export async function GET(req, { params }) {
         id: true,
         name: true,
         image: true,
-        userScore: true,
         showStreakPublicly: true,
         showStatsPublicly: true,
         showHeatmapPublicly: true,
@@ -38,8 +37,6 @@ export async function GET(req, { params }) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    user.currentLeague = user.userScore?.currentLeague || "Bronze";
-
     let isFollowing = false;
     if (session?.user?.id) {
       const follow = await prisma.follow.findUnique({
@@ -55,15 +52,14 @@ export async function GET(req, { params }) {
 
     // Initialize return stats with default public counts
     const stats = {
-      totalPoints: user.userScore?.totalPoints || 0,
       followersCount: user._count.followers,
       followingCount: user._count.following,
     };
 
     // 1. Stats row (questions, correct, accuracy)
     if (user.showStatsPublicly) {
-      const totalQuestions = user.userScore?.questionsAttempted || 0;
-      const totalCorrect = user.userScore?.correctAnswers || 0;
+      const totalQuestions = await prisma.attempt.count({ where: { userId: targetUserId }});
+      const totalCorrect = await prisma.attempt.count({ where: { userId: targetUserId, isCorrect: true }});
       const accuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
       
       stats.totalQuestions = totalQuestions;

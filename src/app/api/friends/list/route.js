@@ -22,7 +22,6 @@ export async function GET(req) {
             id: true,
             name: true,
             image: true,
-            userScore: true,
             attempts: {
               where: {
                 createdAt: {
@@ -48,17 +47,14 @@ export async function GET(req) {
         id: u.id,
         name: u.name,
         image: u.image,
-        league: u.userScore?.currentLeague || "Bronze",
-        streak: u.userScore?.currentStreak || 0,
         todayTotal,
         accuracy
       };
     });
 
-    // Sort by most active today (todayTotal), then by streak
+    // Sort by most active today (todayTotal)
     friendsStats.sort((a, b) => {
-      if (b.todayTotal !== a.todayTotal) return b.todayTotal - a.todayTotal;
-      return b.streak - a.streak;
+      return b.todayTotal - a.todayTotal;
     });
 
     return NextResponse.json({ friends: friendsStats });
