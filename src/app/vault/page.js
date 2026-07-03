@@ -22,7 +22,6 @@ export default function VaultPage() {
       fetch("/api/vault")
         .then((res) => res.json())
         .then((data) => {
-          console.log("Raw Vault API Response:", data);
           if (data.vaultItems) {
             setVaultItems(data.vaultItems);
           }
@@ -36,7 +35,6 @@ export default function VaultPage() {
           setLoading(false);
         });
     } else if (status === "unauthenticated") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
     }
   }, [status]);
@@ -51,25 +49,17 @@ export default function VaultPage() {
   }, [vaultItems]);
 
   const handleStartReview = () => {
-    // We need to load the actual question data for due items
-    // Dynamic import to avoid loading massive data on initial render if not needed
     import("@/data/questions").then((module) => {
       const allQuestions = [...module.questions, ...dbQuestions];
-      console.log("Sample question id from data:", allQuestions[0]?.id);
       
       const loaded = dueItems.map(item => {
-        console.log("Checking vault item questionId:", item.questionId);
-        
-        // Match the string "year-id" format, e.g., "2024-1" or just "1"
         const found = allQuestions.find(q => {
           const qStrId = String(q.id);
           const qYearId = `${q.year}-${q.id}`;
           return String(item.questionId) === qStrId || String(item.questionId) === qYearId;
         });
-        
-        if (!found) console.warn("Question not found for vault item:", item.questionId);
         return found;
-      }).filter(Boolean); // remove undefined
+      }).filter(Boolean);
       
       setDueQuestions(loaded);
       setTestState("active");
@@ -83,7 +73,6 @@ export default function VaultPage() {
   
   const handleClose = () => {
     setTestState("overview");
-    // Reload vault items
     setLoading(true);
     fetch("/api/vault")
       .then((res) => res.json())
@@ -95,20 +84,20 @@ export default function VaultPage() {
 
   if (loading || status === "loading") {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-zinc-500 font-medium">Loading Vault...</div>
+      <div className="min-h-screen bg-obsidian-deep flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-white/10 border-t-electric-violet rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (status === "unauthenticated") {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center">
+      <div className="min-h-screen bg-obsidian-deep flex flex-col items-center justify-center p-6 text-center">
         <h1 className="text-3xl font-black text-white mb-4">Mistakes Vault</h1>
-        <p className="text-zinc-400 mb-8 max-w-md">
+        <p className="text-on-surface-variant mb-8 max-w-md">
           Log in to track your mistakes and review them using spaced repetition.
         </p>
-        <Link href="/" className="px-6 py-3 bg-white text-black font-bold rounded-xl hover:bg-zinc-200 transition">
+        <Link href="/" className="px-6 py-3 bg-electric-violet text-white font-bold rounded-xl hover:bg-inverse-primary transition-colors">
           Go Home
         </Link>
       </div>
@@ -117,7 +106,7 @@ export default function VaultPage() {
 
   if (testState === "active") {
     return (
-      <div className="bg-black min-h-screen">
+      <div className="bg-obsidian-deep min-h-screen">
         <TestInterface 
           questions={dueQuestions}
           durationMins={dueQuestions.length * 3} 
@@ -129,7 +118,7 @@ export default function VaultPage() {
   
   if (testState === "result") {
     return (
-      <div className="bg-black min-h-screen">
+      <div className="bg-obsidian-deep min-h-screen">
         <TestResult 
           questions={dueQuestions}
           answers={answers}
@@ -140,59 +129,59 @@ export default function VaultPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex flex-col pb-24">
+    <div className="min-h-screen bg-obsidian-deep flex flex-col pb-24">
       <Navbar session={session} title="Vault" />
-      <main className="flex-1 w-full max-w-4xl mx-auto px-6 py-12">
-        <div className="flex items-center justify-between mb-12">
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <h1 className="text-4xl font-black text-white mb-2">Mistakes Vault</h1>
-            <p className="text-zinc-400">Review your past mistakes and solidify your concepts.</p>
+            <h1 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-warning-amber to-electric-violet mb-3">Mistakes Vault</h1>
+            <p className="text-sm sm:text-base text-on-surface-variant font-medium">Review your past mistakes and solidify your concepts.</p>
           </div>
-          <Link href="/questions" className="text-sm font-bold text-zinc-500 hover:text-white transition">
+          <Link href="/questions" className="text-sm font-bold text-on-surface-variant hover:text-white transition-colors">
             &larr; Back to Questions
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-[32px]">
-            <div className="text-zinc-500 font-bold uppercase text-xs tracking-wider mb-2">Total Saved</div>
-            <div className="text-5xl font-black text-white">{totalItems}</div>
-            <p className="text-sm text-zinc-400 mt-4">Questions in your vault</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
+          <div className="bg-white/5 border border-white/10 p-6 sm:p-10 rounded-[2rem]">
+            <div className="text-electric-violet font-mono-label uppercase text-[10px] tracking-widest font-bold mb-3">Total Saved</div>
+            <div className="text-5xl sm:text-6xl font-black text-white font-mono">{totalItems}</div>
+            <p className="text-sm text-on-surface-variant mt-2 sm:mt-4 font-medium">Questions in your vault</p>
           </div>
           
-          <div className="bg-orange-500/10 border border-orange-500/30 p-8 rounded-[32px] relative overflow-hidden">
-            <div className="text-orange-500/70 font-bold uppercase text-xs tracking-wider mb-2">Due for Review</div>
-            <div className="text-5xl font-black text-orange-400">{dueItems.length}</div>
-            <p className="text-sm text-orange-500/70 mt-4">Ready to be practiced now</p>
+          <div className="bg-warning-amber/5 border border-warning-amber/20 p-6 sm:p-10 rounded-[2rem] relative overflow-hidden">
+            <div className="text-warning-amber font-mono-label uppercase text-[10px] tracking-widest font-bold mb-3">Due for Review</div>
+            <div className="text-5xl sm:text-6xl font-black text-warning-amber font-mono">{dueItems.length}</div>
+            <p className="text-sm text-warning-amber/70 mt-2 sm:mt-4 font-medium">Ready to be practiced now</p>
             
             {dueItems.length > 0 && (
-              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
+              <div className="absolute top-0 right-0 w-40 h-40 bg-warning-amber/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
             )}
           </div>
         </div>
 
         {dueItems.length > 0 ? (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-[32px] p-8 md:p-12 text-center">
-            <h2 className="text-2xl font-black text-white mb-4">Ready to Review?</h2>
-            <p className="text-zinc-400 mb-8 max-w-lg mx-auto">
-              You have {dueItems.length} questions due. We&apos;ll set up a quick practice session for you to review them.
+          <div className="bg-white/5 border border-white/10 rounded-[2rem] p-8 sm:p-12 md:p-16 text-center">
+            <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4">Ready to Review?</h2>
+            <p className="text-sm sm:text-base text-on-surface-variant mb-8 sm:mb-10 max-w-lg mx-auto leading-relaxed">
+              You have {dueItems.length} questions due. We'll set up a quick practice session for you to review them.
             </p>
             <button
               onClick={handleStartReview}
-              className="px-10 py-5 bg-white text-black font-black text-lg rounded-2xl hover:bg-zinc-200 transition transform hover:scale-105"
+              className="w-full sm:w-auto px-10 sm:px-12 py-5 sm:py-6 bg-warning-amber text-obsidian-deep font-black text-base sm:text-lg rounded-2xl hover:bg-yellow-400 transition transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(245,158,11,0.3)]"
             >
               Start Review Session
             </button>
           </div>
         ) : (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-[32px] p-12 text-center">
-            <div className="w-20 h-20 bg-green-500/10 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="bg-white/5 border border-white/10 rounded-[2rem] p-12 text-center">
+            <div className="w-24 h-24 bg-cyber-green/10 text-cyber-green rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-black text-white mb-4">All caught up!</h2>
-            <p className="text-zinc-400 max-w-md mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-black text-white mb-4">All caught up!</h2>
+            <p className="text-on-surface-variant max-w-md mx-auto leading-relaxed text-sm sm:text-base">
               You have no questions due for review right now. Check back later or keep practicing to add more.
             </p>
           </div>

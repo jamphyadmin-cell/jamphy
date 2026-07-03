@@ -159,9 +159,9 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
     <div className="fixed inset-0 z-[100] bg-black flex flex-col h-screen text-white overflow-hidden">
       
       {/* Top Bar */}
-      <div className="h-16 border-b border-zinc-800 bg-zinc-950 flex items-center justify-between px-6 shrink-0">
-        <div className="flex gap-6 items-center">
-          <div className="font-black text-xl tracking-wider">TEST MODE</div>
+      <div className="h-14 sm:h-16 border-b border-zinc-800 bg-zinc-950 flex items-center justify-between px-3 sm:px-6 shrink-0">
+        <div className="flex gap-2 sm:gap-6 items-center">
+          <div className="font-black text-base sm:text-xl tracking-wider">TEST MODE</div>
           
           {/* Legend Overview */}
           <div className="hidden md:flex gap-4 text-xs font-bold uppercase">
@@ -180,15 +180,15 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
-          <div className={`text-2xl font-black font-mono ${timeRemaining < 300 ? 'text-red-500 animate-pulse' : 'text-white'}`}>
+        <div className="flex items-center gap-2 sm:gap-6">
+          <div className={`text-xl sm:text-2xl font-black font-mono ${timeRemaining < 300 ? 'text-red-500 animate-pulse' : 'text-white'}`}>
             {formatTime(timeRemaining)}
           </div>
           <button 
             onClick={handleFinalSubmit}
-            className="px-6 py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-500 transition"
+            className="px-3 sm:px-6 py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-500 transition text-sm sm:text-base"
           >
-            Submit Test
+            Submit
           </button>
         </div>
       </div>
@@ -198,9 +198,9 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-y-auto border-r-0 md:border-r border-zinc-800 relative">
           
-          <div className="p-4 md:p-6 flex-1">
-            <div className="flex items-center gap-3 mb-6">
-            <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm font-bold text-zinc-300">
+          <div className="p-3 sm:p-4 md:p-6 flex-1">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
+            <span className="px-3 py-1 rounded-full bg-zinc-800 text-xs sm:text-sm font-bold text-zinc-300">
               Question {currentIndex + 1}
             </span>
             <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-400">
@@ -211,9 +211,11 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
             </span>
           </div>
 
-          <MathText className="text-[18px] md:text-[20px] leading-[1.8] text-zinc-100 font-normal mb-8">
-            {activeQuestion.question}
-          </MathText>
+          <div className="overflow-x-auto max-w-full">
+            <MathText className="text-base md:text-[18px] lg:text-[20px] leading-[1.8] text-zinc-100 font-normal mb-6 sm:mb-8">
+              {activeQuestion.question}
+            </MathText>
+          </div>
 
           {(activeQuestion.questionImage || activeQuestion.image) && (
             <div className="mb-8">
@@ -226,7 +228,7 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
           )}
 
           {/* Options / Input */}
-          <div className="mb-24">
+          <div className="mb-20 sm:mb-24">
             {isNAT ? (
               <div className="max-w-md">
                 <input
@@ -234,11 +236,11 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
                   value={currentValue || ""}
                   onChange={handleNATAnswer}
                   placeholder="Enter your answer"
-                  className="w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-6 py-4 text-xl text-white outline-none focus:border-blue-500 transition"
+                  className="w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-4 sm:px-6 py-4 text-xl text-white outline-none focus:border-blue-500 transition"
                 />
               </div>
             ) : (
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-3">
                 {activeQuestion.options.map((option, index) => {
                   const isSelected = isMSQ 
                     ? Array.isArray(currentValue) && currentValue.includes(index)
@@ -249,12 +251,12 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
                       key={index}
                       onClick={() => isMSQ ? handleMultipleAnswer(index) : handleSingleAnswer(index)}
                       className={`
-                        w-full rounded-3xl border p-4 md:p-6 text-left transition overflow-hidden min-h-[120px]
+                        w-full rounded-2xl border p-3 sm:p-4 text-left transition overflow-hidden min-h-[56px]
                         ${isSelected ? 'border-blue-500 bg-blue-500/10' : 'border-zinc-800 bg-zinc-900 hover:bg-zinc-800'}
                       `}
                     >
-                      <div className="flex gap-4 items-start w-full min-w-0 overflow-hidden">
-                        <div className={`w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-xl text-white ${isSelected ? "bg-blue-600" : "bg-zinc-700"}`}>
+                      <div className="flex gap-3 items-center w-full min-w-0 overflow-hidden">
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-full flex items-center justify-center text-lg sm:text-xl text-white ${isSelected ? "bg-blue-600" : "bg-zinc-700"}`}>
                           {String.fromCharCode(65 + index)}
                         </div>
                         <div className="flex-1 min-w-0 overflow-hidden">
@@ -262,11 +264,11 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
                             <img
                               src={activeQuestion.optionImages[index]}
                               alt={`Option ${index + 1}`}
-                              className="rounded-2xl border border-zinc-700 mb-4 h-auto w-full object-contain"
+                              className="rounded-2xl border border-zinc-700 mb-2 h-auto w-full object-contain"
                             />
                           )}
                           <div className="overflow-x-auto overflow-y-hidden max-w-full">
-                            <MathText className="text-[15px] md:text-[17px] leading-relaxed text-white break-words">
+                            <MathText className="text-sm sm:text-[15px] md:text-[17px] leading-relaxed text-white break-words">
                               {option}
                             </MathText>
                           </div>
@@ -280,26 +282,26 @@ export default function TestInterface({ questions, durationMins, onSubmit }) {
           </div>
 
           </div>
-          {/* Action Buttons Fixed at Bottom of Main Area */}
-          <div className="sticky bottom-0 left-0 right-0 p-4 md:p-6 bg-zinc-950/90 backdrop-blur border-t border-zinc-800 flex flex-wrap gap-4 items-center justify-between mt-auto z-10">
+          {/* Action Buttons - Fixed at bottom on mobile */}
+          <div className="fixed bottom-0 left-0 right-0 sm:sticky p-3 sm:p-4 md:p-6 bg-zinc-950/95 backdrop-blur border-t border-zinc-800 flex flex-wrap gap-2 sm:gap-4 items-center justify-between mt-auto z-10">
             <button 
               onClick={handleClearResponse}
-              className="px-6 py-3 rounded-2xl border border-zinc-700 text-zinc-300 font-bold hover:bg-zinc-900 transition"
+              className="px-3 sm:px-6 py-3 rounded-2xl border border-zinc-700 text-zinc-300 font-bold hover:bg-zinc-900 transition text-sm sm:text-base"
             >
-              Clear Response
+              Clear
             </button>
-            <div className="flex gap-4">
+            <div className="flex gap-2 sm:gap-4">
               <button 
                 onClick={handleMarkForReview}
-                className="px-6 py-3 rounded-2xl bg-zinc-800 text-white font-bold hover:bg-purple-900 hover:text-purple-100 border border-zinc-700 hover:border-purple-500 transition"
+                className="px-3 sm:px-6 py-3 rounded-2xl bg-zinc-800 text-white font-bold hover:bg-purple-900 hover:text-purple-100 border border-zinc-700 hover:border-purple-500 transition text-sm sm:text-base"
               >
-                Mark for Review & Next
+                Review &amp; Next
               </button>
               <button 
                 onClick={handleSaveAndNext}
-                className="px-8 py-3 rounded-2xl bg-white text-black font-black hover:bg-zinc-200 transition"
+                className="px-4 sm:px-8 py-3 rounded-2xl bg-white text-black font-black hover:bg-zinc-200 transition text-sm sm:text-base"
               >
-                Save & Next
+                Save &amp; Next
               </button>
             </div>
           </div>

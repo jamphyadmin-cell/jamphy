@@ -9,20 +9,19 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])
@@ -39,35 +38,37 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  username      String?   @unique
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  dob           String?
-  college       String?
-  year          String?
-  course        String?
-  accounts      Account[]
-  sessions      Session[]
-  reports             Report[]
-  hostedRooms         LiveRoom[]        @relation("RoomHost")
-  roomParticipations  RoomParticipant[]
-  sentInvites         RoomInvite[]      @relation("InviteSender")
-  receivedInvites     RoomInvite[]      @relation("InviteReceiver")
-  vaultItems          Vault[]
-  dailyGoals          DailyGoal[]
-  attempts            Attempt[]
-  followers           Follow[]          @relation("Followers")
-  following           Follow[]          @relation("Following")
-  comments            Comment[]
-  notifications       Notification[]
-  showStreakPublicly    Boolean   @default(true)
-  showStatsPublicly     Boolean   @default(true)
-  showHeatmapPublicly   Boolean   @default(true)
-  showActivityPublicly  Boolean   @default(true)
-  showSubjectsPublicly  Boolean   @default(true)
+  id                   String            @id @default(cuid())
+  name                 String?
+  email                String?           @unique
+  emailVerified        DateTime?
+  image                String?
+  college              String?
+  course               String?
+  dob                  String?
+  username             String?           @unique
+  year                 String?
+  showActivityPublicly Boolean           @default(true)
+  showHeatmapPublicly  Boolean           @default(true)
+  showStatsPublicly    Boolean           @default(true)
+  showStreakPublicly   Boolean           @default(true)
+  showSubjectsPublicly Boolean           @default(true)
+  accounts             Account[]
+  attempts             Attempt[]
+  comments             Comment[]
+  dailyGoals           DailyGoal[]
+  following            Follow[]          @relation("Following")
+  followers            Follow[]          @relation("Followers")
+  hostedRooms          LiveRoom[]        @relation("RoomHost")
+  notifications        Notification[]
+  reports              Report[]
+  receivedInvites      RoomInvite[]      @relation("InviteReceiver")
+  sentInvites          RoomInvite[]      @relation("InviteSender")
+  roomParticipations   RoomParticipant[]
+  sessions             Session[]
+  UserScore            UserScore?
+  vaultItems           Vault[]
+  studyPlan            StudyPlan?
 
   @@index([email])
 }
@@ -84,10 +85,10 @@ model Report {
   id          String   @id @default(cuid())
   questionId  String
   description String
-  status      String   @default("PENDING")
   createdAt   DateTime @default(now())
   userId      String?
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status      String   @default("PENDING")
+  user        User?    @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
@@ -101,9 +102,8 @@ model Vault {
   lastAttemptedAt DateTime @default(now())
   totalAttempts   Int      @default(0)
   correctStreak   Int      @default(0)
-  
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@unique([userId, questionId])
   @@index([userId, nextReviewDate])
 }
@@ -114,6 +114,7 @@ model DailyGoal {
   targetQuestions Int      @default(20)
   date            DateTime @db.Date
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, date])
   @@index([userId, date])
 }
@@ -125,9 +126,10 @@ model Attempt {
   subject        String   @default("")
   selectedAnswer String
   isCorrect      Boolean
-  timeTaken      Int      // seconds
+  timeTaken      Int
   createdAt      DateTime @default(now())
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, createdAt])
   @@index([userId, isCorrect])
 }
@@ -136,18 +138,19 @@ model Question {
   id             String   @id @default(cuid())
   year           String
   subject        String
-  type           String   // MCQ, MSQ, NAT
-  question       String   @db.Text
-  options        String[] // Array of strings, null/empty for NAT
-  correctAnswer  Int?     // For MCQ
-  correctAnswers Int[]    // For MSQ
-  natAnswer      String?  // For NAT
+  type           String
+  question       String
+  options        String[]
+  correctAnswer  Int?
+  correctAnswers Int[]
+  natAnswer      String?
   hasImage       Boolean  @default(false)
-  imageUrl       String?
-  solution       String?  @db.Text
-  status         String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  status         String   @default("PENDING")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  imageUrl       String?
+  solution       String?
+  optionImages   String[]
 }
 
 model Follow {
@@ -155,7 +158,6 @@ model Follow {
   followerId  String
   followingId String
   createdAt   DateTime @default(now())
-
   follower    User     @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
   following   User     @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
 
@@ -165,42 +167,40 @@ model Follow {
 }
 
 model Comment {
-  id          String   @id @default(cuid())
-  text        String   @db.Text
-  questionId  String
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  text       String
+  questionId String
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([questionId])
   @@index([userId])
 }
 
 model LiveRoom {
-  id          String   @id @default(cuid())
-  hostId      String
-  host        User     @relation("RoomHost", fields: [hostId], references: [id])
-  status      String   @default("LOBBY") // LOBBY, ACTIVE, FINISHED
-  config      Json
-  questions   Json
-  createdAt   DateTime @default(now())
-  
-  participants RoomParticipant[]
+  id           String            @id @default(cuid())
+  hostId       String
+  status       String            @default("LOBBY")
+  config       Json
+  questions    Json
+  createdAt    DateTime          @default(now())
+  host         User              @relation("RoomHost", fields: [hostId], references: [id])
   invites      RoomInvite[]
+  participants RoomParticipant[]
 }
 
 model RoomParticipant {
-  id          String   @id @default(cuid())
-  roomId      String
-  room        LiveRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  progress    Int      @default(0)
-  score       Int      @default(0)
-  isFinished  Boolean  @default(false)
-  joinedAt    DateTime @default(now())
+  id         String   @id @default(cuid())
+  roomId     String
+  userId     String
+  progress   Int      @default(0)
+  score      Int      @default(0)
+  isFinished Boolean  @default(false)
+  joinedAt   DateTime @default(now())
+  room       LiveRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([roomId, userId])
   @@index([roomId])
@@ -208,15 +208,15 @@ model RoomParticipant {
 }
 
 model RoomInvite {
-  id          String   @id @default(cuid())
-  roomId      String
-  room        LiveRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  senderId    String
-  sender      User     @relation("InviteSender", fields: [senderId], references: [id])
-  receiverId  String
-  receiver    User     @relation("InviteReceiver", fields: [receiverId], references: [id])
-  status      String   @default("PENDING") // PENDING, ACCEPTED, DECLINED
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  roomId     String
+  senderId   String
+  receiverId String
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+  receiver   User     @relation("InviteReceiver", fields: [receiverId], references: [id])
+  room       LiveRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender     User     @relation("InviteSender", fields: [senderId], references: [id])
 
   @@index([roomId])
   @@index([receiverId])
@@ -224,13 +224,57 @@ model RoomInvite {
 }
 
 model Notification {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type        String   // "WARNING" | "INFO"
-  message     String   @db.Text
-  isRead      Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model UserScore {
+  id                 String   @id
+  userId             String   @unique
+  totalPoints        Int      @default(0)
+  weeklyPoints       Int      @default(0)
+  allTimePoints      Int      @default(0)
+  questionsAttempted Int      @default(0)
+  correctAnswers     Int      @default(0)
+  currentLeague      String   @default("Bronze")
+  updatedAt          DateTime
+  User               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model StudyPlan {
+  id            String      @id @default(cuid())
+  userId        String      @unique
+  examDate      DateTime
+  hoursPerDay   Int
+  targetRank    String
+  preferences   String      @default("")
+  generatedPlan Json
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks         StudyTask[]
+}
+
+model StudyTask {
+  id             String    @id @default(cuid())
+  planId         String
+  weekNumber     Int
+  day            Int
+  topic          String
+  questionTarget Int
+  estimatedTime  Int       @default(0) // minutes
+  completed      Boolean   @default(false)
+  completedAt    DateTime?
+
+  plan           StudyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  
+  @@index([planId, weekNumber, day])
 }

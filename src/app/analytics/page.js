@@ -74,7 +74,7 @@ export default function AnalyticsPage() {
   return (
     <div className="min-h-screen bg-black text-white flex flex-col pb-24">
       <Navbar session={session} title="Analytics" />
-      <div className="flex-1 w-full max-w-7xl mx-auto px-6 py-12 space-y-8">
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6 sm:space-y-8">
 
         {/* Top Row: Overall Accuracy & Trend */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -85,10 +85,10 @@ export default function AnalyticsPage() {
             <p className="mt-6 text-zinc-500 text-sm">Based on {data.totalAttempts} total attempts</p>
           </div>
 
-          <div className="bg-zinc-950 border border-zinc-800 rounded-[32px] p-8 lg:col-span-2">
+          <div className="bg-zinc-950 border border-zinc-800 rounded-[32px] p-6 sm:p-8 lg:col-span-2">
             <h2 className="text-zinc-400 font-medium mb-6">Accuracy Trend (Last 30 Days)</h2>
-            <div className="w-full min-w-0 h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="w-full min-w-0 h-[250px] md:h-[300px]" style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data.dailyAccuracy} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff1a" vertical={false} />
                   <XAxis 
@@ -145,10 +145,10 @@ export default function AnalyticsPage() {
 
         {/* Bottom Row: Subject Accuracy & Weak Topics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-zinc-950 border border-zinc-800 rounded-[32px] p-8">
+          <div className="bg-zinc-950 border border-zinc-800 rounded-[32px] p-6 sm:p-8">
             <h2 className="text-zinc-400 font-medium mb-6">Accuracy by Subject</h2>
-            <div className="w-full min-w-0 h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="w-full min-w-0 h-[250px] md:h-[300px]" style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.subjectAccuracy} margin={{ top: 5, right: 0, bottom: 5, left: -20 }} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff1a" horizontal={false} />
                   <XAxis type="number" domain={[0, 100]} hide />

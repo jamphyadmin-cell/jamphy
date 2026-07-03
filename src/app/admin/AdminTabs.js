@@ -108,8 +108,8 @@ export default function AdminTabs({ reports, users }) {
 
   const filteredQuestions = questionsList.filter(q => {
     const matchesSubject = selectedSubjectFilter === "All" || q.subject === selectedSubjectFilter;
-    const matchesSearch = q.question.toLowerCase().includes(questionSearchQuery.toLowerCase()) || 
-                          (q.id && q.id.toLowerCase().includes(questionSearchQuery.toLowerCase()));
+    const matchesSearch = (q.question && q.question.toLowerCase().includes(questionSearchQuery.toLowerCase())) || 
+                          (q.id && q.id.toString().toLowerCase().includes(questionSearchQuery.toLowerCase()));
     return matchesSubject && matchesSearch;
   });
 

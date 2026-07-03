@@ -49,6 +49,10 @@ export default function IITJamPhysicsHub() {
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [myFollows, setMyFollows] = useState(new Set());
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
+  const [globalYearFilter, setGlobalYearFilter] = useState("All");
+  const [globalFormatFilter, setGlobalFormatFilter] = useState("All");
+  const [globalSubjectSearch, setGlobalSubjectSearch] = useState("");
+  const [attemptStats, setAttemptStats] = useState({ attemptedIds: [], todaySubjects: [] });
 
   const handleSaveGoal = (newTarget) => {
     setIsGoalModalOpen(false);
@@ -92,6 +96,15 @@ export default function IITJamPhysicsHub() {
         .then(data => {
           if (data.friends) {
             setMyFollows(new Set(data.friends.map(f => f.id)));
+          }
+        })
+        .catch(console.error);
+        
+      fetch("/api/attempts/stats")
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) {
+            setAttemptStats(data);
           }
         })
         .catch(console.error);
@@ -677,7 +690,7 @@ export default function IITJamPhysicsHub() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
+    <div className="min-h-screen bg-obsidian-deep text-white overflow-hidden">
 
       <div
         ref={cursorRef}
@@ -885,35 +898,159 @@ export default function IITJamPhysicsHub() {
               transition={{ duration: 0.22, ease: "easeInOut" }}
               className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16"
             >
+              <div className="mb-10">
+                <h1 className="text-5xl font-black tracking-tight mb-4 text-white uppercase font-display-lg">Explore</h1>
+                <p className="text-on-surface-variant font-body-md mb-8">Access the complete vault of IIT JAM Physics questions. Filter by topic, year, or format to target your mission parameters.</p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                {syllabus.map((subject) => (
-
-                  <button
-                    key={subject.id}
-                    onClick={() => {
-                      setSelectedSubject(subject);
-                      setSelectedYear("All");
-                      setSelectedSubtopic("All");
-                    }}
-                    className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 text-left hover:bg-zinc-900 transition h-full flex flex-col items-start"
-                  >
-
-                    <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center text-2xl mb-4">
-                      {icons[subject.id]}
+                {/* Compact Filter Bar */}
+                <div className="flex flex-wrap items-center gap-6 bg-white/5 border border-white/10 rounded-2xl px-6 py-4">
+                  {/* Temporal Filter */}
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-[10px] text-cyber-green font-mono-label tracking-widest uppercase font-bold whitespace-nowrap">Temporal Filter</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[...new Set(allQuestions.map((q) => q.year))]
+                        .sort((a, b) => b - a)
+                        .map((year) => (
+                          <button
+                            key={`global-year-${year}`}
+                            onClick={() => setGlobalYearFilter(globalYearFilter === year ? "All" : year)}
+                            className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${
+                              globalYearFilter === year
+                                ? "bg-electric-violet text-white"
+                                : "text-on-surface-variant hover:text-white hover:bg-white/10"
+                            }`}
+                          >
+                            {year}
+                          </button>
+                        ))}
                     </div>
+                  </div>
 
-                    <h3 className="text-2xl font-bold tracking-tight">
-                      {subject.name}
-                    </h3>
+                  {/* Divider */}
+                  <div className="hidden sm:block w-px h-8 bg-white/10 shrink-0" />
 
-                  </button>
+                  {/* Format Vector */}
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-[10px] text-warning-amber font-mono-label tracking-widest uppercase font-bold whitespace-nowrap">Format Vector</span>
+                    <div className="flex gap-1.5">
+                      {["MCQ", "MSQ", "NAT"].map((fmt) => (
+                        <button
+                          key={fmt}
+                          onClick={() => setGlobalFormatFilter(globalFormatFilter === fmt ? "All" : fmt)}
+                          className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${
+                            globalFormatFilter === fmt
+                              ? "bg-cyber-green text-obsidian-deep border-cyber-green"
+                              : "border-white/10 text-on-surface-variant hover:text-white hover:border-white/30"
+                          }`}
+                        >
+                          {fmt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-                ))}
+                  {/* Divider */}
+                  <div className="hidden sm:block w-px h-8 bg-white/10 shrink-0" />
 
+                  {/* Search */}
+                  <div className="flex items-center gap-2 flex-1 min-w-[160px]">
+                    <span className="material-symbols-outlined text-on-surface-variant text-base">search</span>
+                    <input
+                      type="text"
+                      placeholder="Search parameters..."
+                      value={globalSubjectSearch}
+                      onChange={(e) => setGlobalSubjectSearch(e.target.value)}
+                      className="flex-1 bg-transparent text-sm text-white placeholder-on-surface-variant outline-none"
+                    />
+                    {globalSubjectSearch && (
+                      <button onClick={() => setGlobalSubjectSearch("")} className="text-on-surface-variant hover:text-white transition-colors">
+                        <span className="material-symbols-outlined text-base">close</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
 
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-[10px] text-electric-violet font-mono-label tracking-widest uppercase font-bold">Sector Modules</div>
+                  <div className="text-[10px] text-on-surface-variant font-mono-label tracking-widest uppercase font-bold">
+                    Showing {syllabus.filter(subject => {
+                      if (globalSubjectSearch && !subject.name.toLowerCase().includes(globalSubjectSearch.toLowerCase())) return false;
+                      let qs = allQuestions.filter(q => subject.subtopics.includes(q.subject));
+                      if (globalYearFilter !== "All") qs = qs.filter(q => q.year === globalYearFilter);
+                      if (globalFormatFilter !== "All") qs = qs.filter(q => q.type === globalFormatFilter);
+                      return qs.length > 0;
+                    }).length} Modules
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {syllabus
+                    .filter(subject => {
+                      if (globalSubjectSearch && !subject.name.toLowerCase().includes(globalSubjectSearch.toLowerCase())) return false;
+                      let qs = allQuestions.filter(q => subject.subtopics.includes(q.subject));
+                      if (globalYearFilter !== "All") qs = qs.filter(q => q.year === globalYearFilter);
+                      if (globalFormatFilter !== "All") qs = qs.filter(q => q.type === globalFormatFilter);
+                      return qs.length > 0;
+                    })
+                    .map((subject, index) => {
+                    const borderColors = ['border-electric-violet', 'border-cyber-green', 'border-warning-amber'];
+                    const bgColors = ['bg-electric-violet', 'bg-cyber-green', 'bg-warning-amber'];
+                    const colorIndex = index % 3;
+                    const borderColor = borderColors[colorIndex];
+                    const bgColor = bgColors[colorIndex];
+                    
+                    // calculate total questions for this subject based on active filters
+                    let subjectQuestions = allQuestions.filter(q => subject.subtopics.includes(q.subject));
+                    if (globalYearFilter !== "All") subjectQuestions = subjectQuestions.filter(q => q.year === globalYearFilter);
+                    if (globalFormatFilter !== "All") subjectQuestions = subjectQuestions.filter(q => q.type === globalFormatFilter);
+                    
+                    // calculate attempted questions
+                    const attemptedQuestions = subjectQuestions.filter(q => attemptStats.attemptedIds.includes(`${q.year}-${q.id}`)).length;
+                    
+                    // check if practiced today
+                    const practicedToday = attemptStats.todaySubjects.some(sub => subject.subtopics.includes(sub));
+                    
+                    return (
+                      <button
+                        key={subject.id}
+                        onClick={() => {
+                          setSelectedSubject(subject);
+                          setSelectedYear(globalYearFilter);
+                          setSelectedSubtopic("All");
+                          setSelectedType(globalFormatFilter);
+                        }}
+                        className={`rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 text-left hover:bg-white/10 transition-transform duration-300 hover:-translate-y-1 flex flex-col items-start border-b-4 ${borderColor} relative group`}
+                      >
+                        {practicedToday && (
+                          <div className="absolute top-6 left-6 w-3 h-3 rounded-full bg-cyber-green shadow-[0_0_8px_#00ff00] animate-pulse"></div>
+                        )}
+                        <div className="absolute top-6 right-6 text-white/30 group-hover:text-white/60 transition-colors">
+                          <span className="material-symbols-outlined text-xl">arrow_forward</span>
+                        </div>
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${bgColor} flex items-center justify-center text-xl sm:text-2xl mb-4 text-obsidian-deep shadow-lg mt-1`}>
+                          {icons[subject.id]}
+                        </div>
+                        <h3 className="text-lg sm:text-xl font-bold tracking-tight mb-1 text-white">
+                          {subject.name}
+                        </h3>
+                        <div className="w-full mt-auto pt-4">
+                          <div className="flex justify-between items-end mb-2">
+                            <span className="text-xs font-bold text-on-surface-variant">{attemptedQuestions}/{subjectQuestions.length}</span>
+                            <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Attempted</span>
+                          </div>
+                          <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full ${bgColor} transition-all duration-500`} 
+                              style={{ width: `${subjectQuestions.length > 0 ? (attemptedQuestions / subjectQuestions.length) * 100 : 0}%` }}
+                            />
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </motion.section>
 
           )}
@@ -940,92 +1077,80 @@ export default function IITJamPhysicsHub() {
                 {selectedSubject.name}
               </h2>
 
-              <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8 sm:mb-10 w-full">
+              <div className="flex flex-col gap-8 mb-10 w-full bg-white/5 border border-white/10 rounded-[2rem] p-6 sm:p-8">
+                <div>
+                  <div className="text-[10px] text-cyber-green font-mono-label tracking-widest uppercase mb-4 font-bold">Temporal Filter</div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setSelectedYear("All")}
+                      className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${selectedYear === "All" ? "bg-cyber-green text-obsidian-deep" : "bg-white/5 text-on-surface-variant hover:bg-white/10 hover:text-white"}`}
+                    >
+                      All Years
+                    </button>
+                    {[...new Set(allQuestions.map((q) => q.year))]
+                      .sort((a, b) => b - a)
+                      .map((year) => (
+                        <button
+                          key={year}
+                          onClick={() => setSelectedYear(year)}
+                          className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${selectedYear === year ? "bg-cyber-green text-obsidian-deep" : "bg-white/5 text-on-surface-variant hover:bg-white/10 hover:text-white"}`}
+                        >
+                          {year}
+                        </button>
+                      ))}
+                  </div>
+                </div>
 
-                <select
-                  value={selectedYear}
-                  onChange={(e) =>
-                    setSelectedYear(e.target.value)
-                  }
-                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
-                >
-
-                  <option value="All">
-                    All Years
-                  </option>
-
-                  {[...new Set(
-                    allQuestions.map((q) => q.year)
-                  )]
-                    .sort((a, b) => b - a)
-                    .map((year) => (
-
-                      <option
-                        key={year}
-                        value={year}
+                <div>
+                  <div className="text-[10px] text-warning-amber font-mono-label tracking-widest uppercase mb-4 font-bold">Format Vector</div>
+                  <div className="flex flex-wrap gap-2">
+                    {["All", "MCQ", "MSQ", "NAT"].map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setSelectedType(type === "All" ? "All" : type)}
+                        className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${selectedType === type || (selectedType === "All" && type === "All") ? "bg-warning-amber text-obsidian-deep" : "bg-white/5 text-on-surface-variant hover:bg-white/10 hover:text-white"}`}
                       >
-                        {year}
-                      </option>
-
+                        {type === "All" ? "All Types" : type}
+                      </button>
                     ))}
+                  </div>
+                </div>
 
-                </select>
-
-                <select
-                  value={selectedSubtopic}
-                  onChange={(e) =>
-                    setSelectedSubtopic(e.target.value)
-                  }
-                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
-                >
-
-                  <option value="All">
-                    All Subtopics
-                  </option>
-
-                  {selectedSubject.subtopics.map(
-                    (topic) => (
-
-                      <option
-                        key={topic}
-                        value={topic}
+                {selectedSubject?.subtopics && (
+                  <div>
+                    <div className="text-[10px] text-electric-violet font-mono-label tracking-widest uppercase mb-4 font-bold">Subtopic Filter</div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => setSelectedSubtopic("All")}
+                        className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${selectedSubtopic === "All" ? "bg-electric-violet text-obsidian-deep" : "bg-white/5 text-on-surface-variant hover:bg-white/10 hover:text-white"}`}
                       >
-                        {topic}
-                      </option>
-
-                    )
-                  )}
-
-                </select>
-
-                <select
-                  value={selectedType}
-                  onChange={(e) =>
-                    setSelectedType(e.target.value)
-                  }
-                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 bg-zinc-950 px-5 py-4 text-white outline-none"
-                >
-                  <option value="All">All Types</option>
-                  <option value="MCQ">MCQ</option>
-                  <option value="MSQ">MSQ</option>
-                  <option value="NAT">NAT</option>
-                </select>
-
-                <button
-                  onClick={() => {
-
-                    setSelectedYear("All");
-
-                    setSelectedSubtopic("All");
-
-                    setSelectedType("All");
-
-                  }}
-                  className="w-full sm:w-auto rounded-2xl border border-zinc-700 px-5 py-4 text-white hover:bg-zinc-900 transition"
-                >
-                  Reset Filters
-                </button>
-
+                        All Subtopics
+                      </button>
+                      {selectedSubject.subtopics.map((topic) => (
+                        <button
+                          key={topic}
+                          onClick={() => setSelectedSubtopic(topic)}
+                          className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${selectedSubtopic === topic ? "bg-electric-violet text-obsidian-deep" : "bg-white/5 text-on-surface-variant hover:bg-white/10 hover:text-white"}`}
+                        >
+                          {topic}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="pt-4 border-t border-white/10">
+                  <button
+                    onClick={() => {
+                      setSelectedYear("All");
+                      setSelectedSubtopic("All");
+                      setSelectedType("All");
+                    }}
+                    className="text-sm font-bold text-on-surface-variant hover:text-white transition-colors"
+                  >
+                    Reset All Filters
+                  </button>
+                </div>
               </div>
 
               <div className="mb-8 text-zinc-400 text-lg">
@@ -1038,9 +1163,9 @@ export default function IITJamPhysicsHub() {
 
               </div>
 
-              <div className="grid gap-6">
+              <div className="grid gap-4">
 
-                {filteredQuestions.map((question) => (
+                {filteredQuestions.map((question, idx) => (
 
                   <button
                     key={`${question.year}-${question.id}`}
@@ -1048,26 +1173,26 @@ export default function IITJamPhysicsHub() {
                       setActiveQuestion(question);
                       resetQuestionState();
                     }}
-                    className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-left hover:bg-zinc-900 transition"
+                    className={`rounded-2xl border border-white/10 bg-white/5 p-6 md:p-8 text-left hover:bg-white/10 transition-colors border-l-4 ${['border-electric-violet', 'border-cyber-green', 'border-warning-amber'][idx % 3]}`}
                   >
 
-                    <div className="flex gap-3 mb-5 flex-wrap">
+                    <div className="flex gap-2 mb-4 flex-wrap">
 
-                      <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                      <span className="px-3 py-1 rounded-md bg-white/10 text-xs font-bold text-white tracking-wider">
                         {question.year}
                       </span>
 
-                      <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                      <span className="px-3 py-1 rounded-md bg-white/10 text-xs font-bold text-white tracking-wider">
                         {question.subject}
                       </span>
 
-                      <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                      <span className="px-3 py-1 rounded-md bg-white/10 text-xs font-bold text-white tracking-wider">
                         {question.type}
                       </span>
 
                     </div>
 
-                    <MathText className="question-preview text-lg leading-relaxed text-zinc-200 line-clamp-3 overflow-hidden">
+                    <MathText className="question-preview text-[16px] sm:text-[18px] leading-relaxed text-on-surface-variant line-clamp-3 overflow-hidden">
                       {question.question}
                     </MathText>
 
@@ -1098,30 +1223,30 @@ export default function IITJamPhysicsHub() {
                 ← Back to Questions
               </button>
 
-              <div className="rounded-[32px] border border-zinc-800 bg-zinc-950 p-5 md:p-7">
+              <div className="relative rounded-[2rem] border border-white/10 bg-white/5 p-6 md:p-10 shadow-2xl overflow-hidden">
+                <div className="absolute top-0 left-0 h-1 bg-electric-violet transition-all duration-300" style={{ width: `${((currentQuestionIndex + 1) / filteredQuestions.length) * 100}%` }}></div>
+                <div className="flex gap-2 flex-wrap mb-6 pt-2">
 
-                <div className="flex gap-2 flex-wrap mb-5">
-
-                  <span className="px-4 py-1 rounded-full bg-blue-600 text-sm font-bold">
-                    Question {currentQuestionIndex + 1} / {filteredQuestions.length}
+                  <span className="px-3 py-1 rounded-md bg-electric-violet text-xs font-bold text-obsidian-deep tracking-wider uppercase">
+                    Q {currentQuestionIndex + 1} / {filteredQuestions.length}
                   </span>
 
-                  <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                  <span className="px-3 py-1 rounded-md bg-white/10 text-xs font-bold text-white tracking-wider uppercase">
                     {activeQuestion.year}
                   </span>
 
-                  <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                  <span className="px-3 py-1 rounded-md bg-white/10 text-xs font-bold text-white tracking-wider uppercase">
                     {activeQuestion.subject}
                   </span>
 
-                  <span className="px-4 py-1 rounded-full bg-zinc-800 text-sm">
+                  <span className="px-3 py-1 rounded-md bg-white/10 text-xs font-bold text-white tracking-wider uppercase">
                     {activeQuestion.type}
                   </span>
 
                 </div>
 
-                <div className="overflow-hidden w-full">
-                  <MathText className="question-copy text-[16px] sm:text-[18px] md:text-[20px] leading-[1.8] text-zinc-100 font-normal break-words whitespace-pre-wrap">
+                <div className="overflow-hidden w-full mb-8">
+                  <MathText className="question-copy text-[18px] sm:text-[20px] md:text-[22px] leading-[1.8] text-white font-medium break-words whitespace-pre-wrap">
                     {activeQuestion.question}
                   </MathText>
                 </div>
@@ -1192,30 +1317,20 @@ export default function IITJamPhysicsHub() {
                               : selectedAnswer === index;
 
                           let style =
-                            "border-zinc-700 bg-zinc-900 hover:bg-zinc-800";
+                            "border-white/10 bg-white/5 hover:bg-white/10";
 
                           if (isCorrect !== null) {
-
                             if (correct) {
-
-                              style =
-                                "border-green-500 bg-green-500/20";
-
+                              style = "border-cyber-green bg-cyber-green/20 text-cyber-green";
                             }
-
-                            if (
-                              isSelected &&
-                              !correct
-                            ) {
-
-                              style =
-                                "border-red-500 bg-red-500/20";
-
+                            if (isSelected && !correct) {
+                              style = "border-red-500 bg-red-500/20 text-red-500";
                             }
+                          } else if (isSelected) {
+                             style = "border-electric-violet bg-electric-violet/20";
                           }
 
                           return (
-
                             <button
                               key={index}
                               disabled={
@@ -1223,42 +1338,40 @@ export default function IITJamPhysicsHub() {
                                 isCorrect !== null
                               }
                               onClick={() => {
-
                                 if (isMSQ) {
-
                                   handleMultipleAnswer(index);
-
                                 } else {
-
                                   handleSingleAnswer(index);
-
                                 }
-
                               }}
                               className={`
     w-full
-    rounded-3xl
-    border
-    p-4 md:p-6
+    rounded-2xl
+    border-2
+    p-5 md:p-6
     text-left
-    transition
+    transition-all
     overflow-hidden
-    min-h-[120px]
+    min-h-[100px]
     ${style}
   `}
                             >
 
-                              <div className="flex gap-4 items-start w-full min-w-0 overflow-hidden">
+                              <div className="flex gap-5 items-center w-full min-w-0 overflow-hidden">
 
                                 <div
                                   className={`
       w-12 h-12 shrink-0
-      rounded-full
+      rounded-xl
       flex items-center justify-center
-      text-xl text-white
-      ${isSelected
-                                      ? "bg-blue-600"
-                                      : "bg-zinc-700"
+      text-xl font-bold
+      ${isSelected && isCorrect === null
+                                      ? "bg-electric-violet text-obsidian-deep"
+                                      : isCorrect !== null && correct
+                                      ? "bg-cyber-green text-obsidian-deep"
+                                      : isCorrect !== null && isSelected && !correct
+                                      ? "bg-red-500 text-obsidian-deep"
+                                      : "bg-white/10 text-white"
                                     }
     `}
                                 >
