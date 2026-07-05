@@ -42,6 +42,57 @@ export default function IITJamPrepPlatform() {
 
   return (
     <div className="bg-obsidian-deep text-on-surface font-body-md antialiased overflow-x-hidden selection:bg-electric-violet/30 selection:text-white min-h-screen flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "jamphy",
+              "url": "https://jamphy.com",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://jamphy.com/questions?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "Is jamphy free?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, Jamphy is completely free for all students preparing for the IIT JAM Physics exam."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How are questions sourced?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "All our questions are meticulously sourced directly from the official IIT JAM Physics previous year papers (PYQs) from 2015 to 2026."
+                  }
+                }
+              ]
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Course",
+              "name": "IIT JAM Physics PYQ Practice",
+              "description": "Practice previous year questions for the IIT JAM Physics examination. Track progress, find weak topics, and simulate exam conditions.",
+              "provider": {
+                "@type": "Organization",
+                "name": "jamphy",
+                "sameAs": "https://jamphy.com"
+              }
+            }
+          ])
+        }}
+      />
       {/* NAVBAR */}
       <header className="bg-surface/80 backdrop-blur-md sticky top-0 w-full border-b border-obsidian-elevated shadow-[0_10px_30px_-10px_rgba(139,92,246,0.3)] z-50">
         <div className="flex items-center justify-between px-4 sm:px-gutter py-3 sm:py-4 max-w-container-max mx-auto">

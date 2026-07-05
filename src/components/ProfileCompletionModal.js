@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -9,6 +9,7 @@ export default function ProfileCompletionModal() {
   const { data: session, status, update } = useSession();
   const pathname = usePathname();
 
+  const [hasDismissed, setHasDismissed] = useState(true); // Default true to prevent hydration mismatch flashes
   const [profileFormData, setProfileFormData] = useState({
     username: "",
     dob: "",
@@ -19,15 +20,29 @@ export default function ProfileCompletionModal() {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileMessage, setProfileMessage] = useState({ type: "", text: "" });
 
+  useEffect(() => {
+    // Only run on client after mount
+    const dismissed = localStorage.getItem("jamphy_onboarding_dismissed");
+    if (!dismissed) {
+      setHasDismissed(false);
+    }
+  }, []);
+
   if (
     status === "loading" ||
     status === "unauthenticated" ||
     pathname === "/" ||
     pathname === "/profile" ||
-    (status === "authenticated" && session?.user?.username)
+    (status === "authenticated" && session?.user?.username) ||
+    hasDismissed
   ) {
-    return null; // Don't show if loading, not logged in, on landing page, on profile settings page, or already completed
+    return null; // Don't show if loading, not logged in, on landing page, on profile settings page, already completed, or dismissed
   }
+
+  const handleDismiss = () => {
+    localStorage.setItem("jamphy_onboarding_dismissed", "true");
+    setHasDismissed(true);
+  };
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
@@ -75,6 +90,7 @@ export default function ProfileCompletionModal() {
         await update({
           username: profileFormData.username,
         });
+        handleDismiss(); // Ensure it doesn't pop up again
       } else {
         setProfileMessage({ type: "error", text: data.error || "Failed to save profile." });
       }
@@ -171,13 +187,22 @@ export default function ProfileCompletionModal() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={isSavingProfile}
-            className="w-full mt-4 px-6 py-4 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 transition-colors disabled:opacity-50"
-          >
-            {isSavingProfile ? "Saving..." : "Start Practicing!"}
-          </button>
+          <div className="flex flex-col gap-2 mt-6">
+            <button
+              type="submit"
+              disabled={isSavingProfile}
+              className="w-full px-6 py-4 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 transition-colors disabled:opacity-50"
+            >
+              {isSavingProfile ? "Saving..." : "Start Practicing!"}
+            </button>
+            <button
+              type="button"
+              onClick={handleDismiss}
+              className="w-full px-6 py-3 rounded-xl bg-transparent border border-zinc-800 text-zinc-400 font-semibold hover:bg-zinc-900 hover:text-white transition-colors"
+            >
+              Skip for now
+            </button>
+          </div>
         </form>
       </div>
     </div>

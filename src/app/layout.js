@@ -4,8 +4,36 @@ import { TransitionProvider } from "../components/TransitionProvider";
 import AdminShortcut from "../components/AdminShortcut";
 
 export const metadata = {
-  title: "jamphy",
-  description: "Practice IIT JAM Physics questions with math-ready explanations.",
+  metadataBase: new URL("https://jamphy.com"),
+  title: {
+    default: "jamphy | IIT JAM Physics PYQs & Prep",
+    template: "%s | jamphy"
+  },
+  description: "Practice IIT JAM Physics previous year questions (PYQs) with math-ready explanations. Track weak topics and dominate your IIT JAM preparation.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "jamphy | IIT JAM Physics PYQs & Prep",
+    description: "Practice IIT JAM Physics previous year questions (PYQs) with math-ready explanations. Track weak topics and dominate your IIT JAM preparation.",
+    url: "https://jamphy.com",
+    siteName: "jamphy",
+    images: [
+      {
+        url: "/og-image.png", // Next.js will resolve this
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "jamphy | IIT JAM Physics PYQs & Prep",
+    description: "Practice IIT JAM Physics previous year questions (PYQs) with math-ready explanations.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }) {
