@@ -10,7 +10,6 @@ import UserMenu from "../../components/UserMenu";
 import InvitesMenu from "../../components/InvitesMenu";
 import Navbar from "../../components/Navbar";
 import { questions as staticQuestions } from "../../data/questions";
-import { syllabus } from "../../data/syllabus";
 import TestManager from "../../components/test/TestManager";
 import TestModal from "../../components/test/TestModal";
 import MathText from "../../components/MathText";
@@ -55,6 +54,7 @@ export default function IITJamPhysicsHub() {
   const [globalFormatFilter, setGlobalFormatFilter] = useState("All");
   const [globalSubjectSearch, setGlobalSubjectSearch] = useState("");
   const [attemptStats, setAttemptStats] = useState({ attemptedIds: [], todaySubjects: [] });
+  const [categories, setCategories] = useState([]);
 
   const handleSaveGoal = (newTarget) => {
     setIsGoalModalOpen(false);
@@ -80,12 +80,20 @@ export default function IITJamPhysicsHub() {
 
   useEffect(() => {
     setMounted(true);
+    // Fetch DB questions and merge with static
     fetch("/api/questions")
       .then(res => res.json())
       .then(data => {
         if (data.questions && data.questions.length > 0) {
           setAllQuestions([...staticQuestions, ...data.questions]);
         }
+      })
+      .catch(console.error);
+    // Fetch dynamic categories (includes count from DB + static, auto-creates new subjects)
+    fetch("/api/questions/categories")
+      .then(res => res.json())
+      .then(data => {
+        if (data.categories) setCategories(data.categories);
       })
       .catch(console.error);
   }, []);
@@ -977,81 +985,99 @@ export default function IITJamPhysicsHub() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-[10px] text-electric-violet font-mono-label tracking-widest uppercase font-bold">Sector Modules</div>
                   <div className="text-[10px] text-on-surface-variant font-mono-label tracking-widest uppercase font-bold">
-                    Showing {syllabus.filter(subject => {
-                      if (globalSubjectSearch && !subject.name.toLowerCase().includes(globalSubjectSearch.toLowerCase())) return false;
-                      let qs = allQuestions.filter(q => subject.subtopics.includes(q.subject));
-                      if (globalYearFilter !== "All") qs = qs.filter(q => q.year === globalYearFilter);
-                      if (globalFormatFilter !== "All") qs = qs.filter(q => q.type === globalFormatFilter);
-                      return qs.length > 0;
-                    }).length} Modules
+                    {(() => {
+                      const visible = categories.filter(cat => {
+                        if (globalSubjectSearch && !cat.name.toLowerCase().includes(globalSubjectSearch.toLowerCase())) return false;
+                        let qs = allQuestions.filter(q => cat.subtopics.includes(q.subject));
+                        if (globalYearFilter !== "All") qs = qs.filter(q => q.year === globalYearFilter);
+                        if (globalFormatFilter !== "All") qs = qs.filter(q => q.type === globalFormatFilter);
+                        return qs.length > 0;
+                      });
+                      return `Showing ${visible.length} Modules`;
+                    })()}
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {syllabus
-                    .filter(subject => {
-                      if (globalSubjectSearch && !subject.name.toLowerCase().includes(globalSubjectSearch.toLowerCase())) return false;
-                      let qs = allQuestions.filter(q => subject.subtopics.includes(q.subject));
-                      if (globalYearFilter !== "All") qs = qs.filter(q => q.year === globalYearFilter);
-                      if (globalFormatFilter !== "All") qs = qs.filter(q => q.type === globalFormatFilter);
-                      return qs.length > 0;
-                    })
-                    .map((subject, index) => {
-                    const borderColors = ['border-electric-violet', 'border-cyber-green', 'border-warning-amber'];
-                    const bgColors = ['bg-electric-violet', 'bg-cyber-green', 'bg-warning-amber'];
-                    const colorIndex = index % 3;
-                    const borderColor = borderColors[colorIndex];
-                    const bgColor = bgColors[colorIndex];
-                    
-                    // calculate total questions for this subject based on active filters
-                    let subjectQuestions = allQuestions.filter(q => subject.subtopics.includes(q.subject));
-                    if (globalYearFilter !== "All") subjectQuestions = subjectQuestions.filter(q => q.year === globalYearFilter);
-                    if (globalFormatFilter !== "All") subjectQuestions = subjectQuestions.filter(q => q.type === globalFormatFilter);
-                    
-                    // calculate attempted questions
-                    const attemptedQuestions = subjectQuestions.filter(q => attemptStats.attemptedIds.includes(`${q.year}-${q.id}`)).length;
-                    
-                    // check if practiced today
-                    const practicedToday = attemptStats.todaySubjects.some(sub => subject.subtopics.includes(sub));
-                    
-                    return (
-                      <button
-                        key={subject.id}
-                        onClick={() => {
-                          setSelectedSubject(subject);
-                          setSelectedYear(globalYearFilter);
-                          setSelectedSubtopic("All");
-                          setSelectedType(globalFormatFilter);
-                        }}
-                        className={`rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 text-left hover:bg-white/10 transition-transform duration-300 hover:-translate-y-1 flex flex-col items-start border-b-4 ${borderColor} relative group`}
-                      >
-                        {practicedToday && (
-                          <div className="absolute top-6 left-6 w-3 h-3 rounded-full bg-cyber-green shadow-[0_0_8px_#00ff00] animate-pulse"></div>
-                        )}
-                        <div className="absolute top-6 right-6 text-white/30 group-hover:text-white/60 transition-colors">
-                          <span className="material-symbols-outlined text-xl">arrow_forward</span>
-                        </div>
-                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${bgColor} flex items-center justify-center text-xl sm:text-2xl mb-4 text-obsidian-deep shadow-lg mt-1`}>
-                          {icons[subject.id]}
-                        </div>
-                        <h3 className="text-lg sm:text-xl font-bold tracking-tight mb-1 text-white">
-                          {subject.name}
-                        </h3>
-                        <div className="w-full mt-auto pt-4">
-                          <div className="flex justify-between items-end mb-2">
-                            <span className="text-xs font-bold text-on-surface-variant">{attemptedQuestions}/{subjectQuestions.length}</span>
-                            <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Attempted</span>
-                          </div>
-                          <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div 
-                              className={`h-full ${bgColor} transition-all duration-500`} 
-                              style={{ width: `${subjectQuestions.length > 0 ? (attemptedQuestions / subjectQuestions.length) * 100 : 0}%` }}
-                            />
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+
+                {categories.length === 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 h-40 animate-pulse" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {categories
+                      .filter(cat => {
+                        if (globalSubjectSearch && !cat.name.toLowerCase().includes(globalSubjectSearch.toLowerCase())) return false;
+                        let qs = allQuestions.filter(q => cat.subtopics.includes(q.subject));
+                        if (globalYearFilter !== "All") qs = qs.filter(q => q.year === globalYearFilter);
+                        if (globalFormatFilter !== "All") qs = qs.filter(q => q.type === globalFormatFilter);
+                        return qs.length > 0;
+                      })
+                      .map((cat, index) => {
+                        const borderColors = ['border-electric-violet', 'border-cyber-green', 'border-warning-amber'];
+                        const bgColors = ['bg-electric-violet', 'bg-cyber-green', 'bg-warning-amber'];
+                        const colorIndex = index % 3;
+                        const borderColor = borderColors[colorIndex];
+                        const bgColor = bgColors[colorIndex];
+
+                        // Compute live filtered counts from allQuestions for progress bar accuracy
+                        let subjectQuestions = allQuestions.filter(q => cat.subtopics.includes(q.subject));
+                        if (globalYearFilter !== "All") subjectQuestions = subjectQuestions.filter(q => q.year === globalYearFilter);
+                        if (globalFormatFilter !== "All") subjectQuestions = subjectQuestions.filter(q => q.type === globalFormatFilter);
+
+                        const attemptedQuestions = subjectQuestions.filter(q => attemptStats.attemptedIds.includes(`${q.year}-${q.id}`)).length;
+                        const practicedToday = attemptStats.todaySubjects.some(sub => cat.subtopics.includes(sub));
+
+                        // Use DB count for the total badge (more accurate, includes DB questions)
+                        const totalCount = cat.count > 0 ? cat.count : subjectQuestions.length;
+
+                        return (
+                          <button
+                            key={cat.id}
+                            onClick={() => {
+                              setSelectedSubject(cat);
+                              setSelectedYear(globalYearFilter);
+                              setSelectedSubtopic("All");
+                              setSelectedType(globalFormatFilter);
+                            }}
+                            className={`rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 text-left hover:bg-white/10 transition-transform duration-300 hover:-translate-y-1 flex flex-col items-start border-b-4 ${borderColor} relative group`}
+                          >
+                            {practicedToday && (
+                              <div className="absolute top-6 left-6 w-3 h-3 rounded-full bg-cyber-green shadow-[0_0_8px_#00ff00] animate-pulse"></div>
+                            )}
+                            <div className="absolute top-6 right-6 flex items-center gap-2">
+                              {cat.isCustom && (
+                                <span className="text-[9px] font-bold uppercase tracking-widest text-warning-amber/70 bg-warning-amber/10 px-2 py-0.5 rounded-full">New</span>
+                              )}
+                              <span className="material-symbols-outlined text-xl text-white/30 group-hover:text-white/60 transition-colors">arrow_forward</span>
+                            </div>
+                            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${bgColor} flex items-center justify-center text-xl sm:text-2xl mb-4 text-obsidian-deep shadow-lg mt-1`}>
+                              {icons[cat.id] || "📚"}
+                            </div>
+                            <h3 className="text-lg sm:text-xl font-bold tracking-tight mb-1 text-white pr-16">
+                              {cat.name}
+                            </h3>
+                            <p className="text-xs text-on-surface-variant mb-auto">
+                              {totalCount} question{totalCount !== 1 ? 's' : ''}
+                            </p>
+                            <div className="w-full mt-4 pt-4">
+                              <div className="flex justify-between items-end mb-2">
+                                <span className="text-xs font-bold text-on-surface-variant">{attemptedQuestions}/{subjectQuestions.length}</span>
+                                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Attempted</span>
+                              </div>
+                              <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full ${bgColor} transition-all duration-500`}
+                                  style={{ width: `${subjectQuestions.length > 0 ? (attemptedQuestions / subjectQuestions.length) * 100 : 0}%` }}
+                                />
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                  </div>
+                )}
               </div>
             </motion.section>
 
