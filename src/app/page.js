@@ -15,12 +15,16 @@ export default function IITJamPrepPlatform() {
   const [goalData, setGoalData] = useState({ target: 50, completed: 0, percentage: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Computed once on mount — no setState needed, avoids the empty-then-filled flash
+  // Computed deterministically to match on SSR and client without flash
   const streaks = useMemo(() =>
-    Array.from({ length: 365 }, () => {
-      const r = Math.random();
-      if (r > 0.7) return Math.random() > 0.5 ? 'bg-cyber-green' : 'bg-cyber-green/60';
-      return Math.random() > 0.5 ? 'bg-cyber-green/30' : 'bg-obsidian-elevated';
+    Array.from({ length: 365 }, (_, i) => {
+      const x = Math.sin(i * 9999) * 10000;
+      const r = x - Math.floor(x);
+      const y = Math.sin(i * 7777) * 10000;
+      const r2 = y - Math.floor(y);
+
+      if (r > 0.7) return r2 > 0.5 ? 'bg-cyber-green' : 'bg-cyber-green/60';
+      return r2 > 0.5 ? 'bg-cyber-green/30' : 'bg-obsidian-elevated';
     })
   , []);
 
