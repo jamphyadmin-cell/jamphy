@@ -1227,7 +1227,7 @@ export default function IITJamPhysicsHub() {
 
               <div className="relative rounded-[2rem] border border-white/10 bg-white/5 p-6 md:p-10 shadow-2xl overflow-hidden">
                 <div className="absolute top-0 left-0 h-1 bg-electric-violet transition-all duration-300" style={{ width: `${((currentQuestionIndex + 1) / filteredQuestions.length) * 100}%` }}></div>
-                <div className="flex gap-2 flex-wrap mb-6 pt-2">
+                <div className="flex gap-2 flex-wrap items-center mb-6 pt-2">
 
                   <span className="px-3 py-1 rounded-md bg-electric-violet text-xs font-bold text-obsidian-deep tracking-wider uppercase">
                     Q {currentQuestionIndex + 1} / {filteredQuestions.length}
@@ -1245,18 +1245,17 @@ export default function IITJamPhysicsHub() {
                     {activeQuestion.type}
                   </span>
 
+                  <button
+                    onClick={() => setIsShareModalOpen(true)}
+                    className="ml-auto p-2 rounded-xl bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors flex items-center justify-center group shrink-0"
+                    title="Share Question"
+                  >
+                    <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">ios_share</span>
+                  </button>
+
                 </div>
 
-                <button
-                  onClick={() => setIsShareModalOpen(true)}
-                  className="p-2 rounded-xl bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors ml-auto flex items-center justify-center group shrink-0"
-                  title="Share Question"
-                >
-                  <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">ios_share</span>
-                </button>
-              </div>
-
-              <div className="overflow-hidden w-full mb-8">
+                <div className="overflow-hidden w-full mb-8">
                   <MathText className="question-copy text-[18px] sm:text-[20px] md:text-[22px] leading-[1.8] text-white font-medium break-words whitespace-pre-wrap">
                     {activeQuestion.question}
                   </MathText>
