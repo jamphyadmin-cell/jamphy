@@ -16,6 +16,7 @@ import TestModal from "../../components/test/TestModal";
 import MathText from "../../components/MathText";
 import { useTransitionContext } from "../../components/TransitionProvider";
 import GoalSettingsModal from "../../components/GoalSettingsModal";
+import ShareModal from "../../components/ShareModal";
 import { motion, AnimatePresence } from "framer-motion";
 
 const LEAGUE_COLORS = {
@@ -47,6 +48,7 @@ export default function IITJamPhysicsHub() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [myFollows, setMyFollows] = useState(new Set());
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [globalYearFilter, setGlobalYearFilter] = useState("All");
@@ -1245,7 +1247,16 @@ export default function IITJamPhysicsHub() {
 
                 </div>
 
-                <div className="overflow-hidden w-full mb-8">
+                <button
+                  onClick={() => setIsShareModalOpen(true)}
+                  className="p-2 rounded-xl bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors ml-auto flex items-center justify-center group shrink-0"
+                  title="Share Question"
+                >
+                  <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">ios_share</span>
+                </button>
+              </div>
+
+              <div className="overflow-hidden w-full mb-8">
                   <MathText className="question-copy text-[18px] sm:text-[20px] md:text-[22px] leading-[1.8] text-white font-medium break-words whitespace-pre-wrap">
                     {activeQuestion.question}
                   </MathText>
@@ -1769,6 +1780,11 @@ export default function IITJamPhysicsHub() {
           onSave={handleSaveGoal}
         />
       )}
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)} 
+        question={activeQuestion} 
+      />
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-700 text-white px-6 py-3 rounded-full font-medium shadow-2xl z-[99999] animate-in fade-in slide-in-from-bottom-4">
