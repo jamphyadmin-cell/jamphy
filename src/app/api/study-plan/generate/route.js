@@ -39,58 +39,53 @@ export async function POST(req) {
       totalAttempts: subjectStats[subject].total
     }));
 
-    // Prepare Prompt for Gemini
-    const prompt = `
-      You are an expert IIT JAM Physics tutor. 
-      Generate a structured, week-by-week personalized study plan.
+    // Replace slow AI call with a fast deterministic algorithm
+    const today = new Date();
+    const targetDate = new Date(examDate);
+    let daysRemaining = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+    if (daysRemaining <= 0) daysRemaining = 30; // fallback
+    const weeksRemaining = Math.max(1, Math.ceil(daysRemaining / 7));
+
+    // Determine weak subjects based on confidence and accuracy
+    const allSubjects = Object.keys(subjectConfidence);
+    const subjectScores = allSubjects.map(sub => {
+      let score = parseInt(subjectConfidence[sub], 10) || 3;
+      const perf = actualPerformance.find(p => p.subject === sub);
+      if (perf && perf.accuracy < 60) score -= 1; 
+      return { name: sub, score };
+    });
+    // Sort ascending by score (lowest score = weakest = studied first)
+    subjectScores.sort((a, b) => a.score - b.score);
+
+    const generatedData = { weeks: [] };
+    const qPerHour = 10; // Assume 10 questions per hour
+
+    for (let w = 1; w <= weeksRemaining; w++) {
+      // Cycle through subjects based on the week, prioritizing weaker ones early
+      const focusSubject = subjectScores[(w - 1) % subjectScores.length].name;
       
-      User Profile:
-      - Exam Date: ${examDate}
-      - Daily Study Hours: ${hoursPerDay}
-      - Target: ${targetRank}
-      - Study Preference: ${preferences}
-      
-      Self-Rated Confidence (1-5, 5 is best): 
-      ${JSON.stringify(subjectConfidence)}
-      
-      Actual Performance from Attempt History:
-      ${JSON.stringify(actualPerformance)}
-      
-      Instructions:
-      1. Prioritize weak subjects. A subject is weak if self-rated confidence is low OR actual accuracy is low (under 60%).
-      2. Plan should cover the remaining weeks until the exam date. (Assume today is ${new Date().toISOString().split('T')[0]}).
-      3. Distribute tasks logically across 7 days per week.
-      4. Output MUST be valid JSON in the following format exactly, with no markdown formatting or extra text outside the JSON:
-      {
-        "weeks": [
-          {
-            "weekNumber": 1,
-            "focus": "Brief description of this week's goals",
-            "dailyTasks": [
-              {
-                "day": 1,
-                "topic": "Topic Name",
-                "questionTarget": 20,
-                "estimatedTime": 120
-              }
-            ]
-          }
-        ]
+      const dailyTasks = [];
+      for (let d = 1; d <= 7; d++) {
+        const estTime = hoursPerDay * 60; // minutes
+        // Mix in other subjects on weekends or specific days
+        const currentTopic = (d === 6 || d === 7) 
+          ? subjectScores[Math.floor(Math.random() * subjectScores.length)].name 
+          : focusSubject;
+
+        dailyTasks.push({
+          day: d,
+          topic: currentTopic,
+          questionTarget: hoursPerDay * qPerHour,
+          estimatedTime: estTime
+        });
       }
-    `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent(prompt);
-    let textResponse = result.response.text();
-    
-    // Clean up potential markdown formatting from Gemini response
-    if (textResponse.startsWith('\`\`\`json')) {
-      textResponse = textResponse.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
-    } else if (textResponse.startsWith('\`\`\`')) {
-      textResponse = textResponse.replace(/^\`\`\`/, '').replace(/\`\`\`$/, '').trim();
+      generatedData.weeks.push({
+        weekNumber: w,
+        focus: `Mastering ${focusSubject} concepts and problem solving`,
+        dailyTasks
+      });
     }
-
-    const generatedData = JSON.parse(textResponse);
 
     // Save to Database
     const newPlan = await prisma.studyPlan.create({
