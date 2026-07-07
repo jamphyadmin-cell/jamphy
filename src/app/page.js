@@ -138,17 +138,7 @@ export default function IITJamPrepPlatform() {
             The difference is whether you know where you&apos;re weak. jamphy shows you.
           </p>
 
-          {/* Live Counter (Strict Center Alignment) */}
-          <div className="glass-panel px-6 py-4 rounded-2xl mb-12 flex items-center justify-center gap-4 shadow-[0_0_30px_rgba(139,92,246,0.15)] border-electric-violet/30 w-full max-w-sm sm:w-auto mx-auto">
-            <div className="w-2.5 h-2.5 rounded-full bg-cyber-green dot-blink shadow-[0_0_10px_#10B981] shrink-0"></div>
-            <div className="flex flex-col items-start">
-              <span className="font-mono-label text-[11px] text-cyber-green uppercase tracking-widest block mb-1">Live Platform Activity</span>
-              <div className="flex items-center gap-2">
-                <span className="font-metric-xl text-3xl font-bold text-white leading-none">12,499</span>
-                <span className="font-body-sm text-sm text-on-surface-variant">questions practiced today</span>
-              </div>
-            </div>
-          </div>
+
 
           <div className="flex flex-col sm:flex-row gap-5 items-center w-full sm:w-auto max-w-sm sm:max-w-none">
             <button
