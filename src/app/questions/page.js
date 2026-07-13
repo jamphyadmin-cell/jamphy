@@ -918,9 +918,9 @@ export default function IITJamPhysicsHub() {
 
                 {/* Compact Filter Bar */}
                 <div className="flex flex-wrap items-center gap-6 bg-white/5 border border-white/10 rounded-2xl px-6 py-4">
-                  {/* Temporal Filter */}
+                  {/* Year Filter */}
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-[10px] text-cyber-green font-mono-label tracking-widest uppercase font-bold whitespace-nowrap">Temporal Filter</span>
+                    <span className="text-[10px] text-cyber-green font-mono-label tracking-widest uppercase font-bold whitespace-nowrap">Year Filter</span>
                     <div className="flex flex-wrap gap-1.5">
                       {/* 'All' Filter Pill */}
                       <button
@@ -931,7 +931,7 @@ export default function IITJamPhysicsHub() {
                             : "text-on-surface-variant hover:text-white hover:bg-white/10"
                         }`}
                       >
-                        All {yearCounts["All"] ? `(${yearCounts["All"]})` : ""}
+                        All
                       </button>
                       
                       {/* Dynamic Year Pills */}
@@ -947,7 +947,7 @@ export default function IITJamPhysicsHub() {
                                 : "text-on-surface-variant hover:text-white hover:bg-white/10"
                             }`}
                           >
-                            {year} {yearCounts[year] ? `(${yearCounts[year]})` : ""}
+                            {year}
                           </button>
                         ))}
                     </div>
@@ -1124,7 +1124,7 @@ export default function IITJamPhysicsHub() {
 
               <div className="flex flex-col gap-8 mb-10 w-full bg-white/5 border border-white/10 rounded-[2rem] p-6 sm:p-8">
                 <div>
-                  <div className="text-[10px] text-cyber-green font-mono-label tracking-widest uppercase mb-4 font-bold">Temporal Filter</div>
+                  <div className="text-[10px] text-cyber-green font-mono-label tracking-widest uppercase mb-4 font-bold">Year Filter</div>
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => setSelectedYear("All")}

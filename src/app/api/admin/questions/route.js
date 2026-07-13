@@ -7,13 +7,17 @@ export async function POST(req) {
   try {
     const { questions } = await req.json();
 
+    const apiKey = req.headers.get("x-api-key");
+    const validApiKey = process.env.JAMPHY_API_KEY;
+    const isApiKeyValid = apiKey && validApiKey && apiKey === validApiKey;
+
     const adminCookie = req.cookies.get("admin_session");
     const isCookieAdmin = adminCookie && adminCookie.value === "authenticated";
 
     const session = await getServerSession(authOptions);
     const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
 
-    if (!isGoogleAdmin && !isCookieAdmin) {
+    if (!isGoogleAdmin && !isCookieAdmin && !isApiKeyValid) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

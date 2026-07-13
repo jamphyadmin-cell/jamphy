@@ -175,10 +175,10 @@ export default function EditProfileModal({ onClose }) {
                         <button
                           key={num}
                           type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, image: `/avatars/avatar${num}.png` }))}
-                          className={`w-12 h-12 rounded-full overflow-hidden border-2 transition ${formData.image === `/avatars/avatar${num}.png` ? 'border-cyan-400 scale-110 shadow-[0_0_10px_rgba(34,211,238,0.5)]' : 'border-zinc-700 hover:border-zinc-500 hover:scale-105'}`}
+                          onClick={() => setFormData(prev => ({ ...prev, image: `/avatars/memoji${num}.png` }))}
+                          className={`w-12 h-12 rounded-full overflow-hidden border-2 transition ${formData.image === `/avatars/memoji${num}.png` ? 'border-cyan-400 scale-110 shadow-[0_0_10px_rgba(34,211,238,0.5)]' : 'border-zinc-700 hover:border-zinc-500 hover:scale-105'}`}
                         >
-                          <Image src={`/avatars/avatar${num}.png`} alt={`Preset ${num}`} width={48} height={48} className="object-cover" />
+                          <Image src={`/avatars/memoji${num}.png`} alt={`Preset ${num}`} width={48} height={48} className="object-cover" />
                         </button>
                       ))}
                       
