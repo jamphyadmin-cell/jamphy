@@ -365,7 +365,7 @@ export default function IITJamPrepPlatform() {
 
       {/* DASHBOARD WIDGETS (For Authenticated Users) */}
       {mounted && status === "authenticated" && (
-        <section className="py-24 px-4 sm:px-6 flex flex-col justify-center gap-6 sm:gap-8 max-w-6xl mx-auto w-full animate-on-scroll">
+        <section className="py-24 px-4 sm:px-6 flex flex-col justify-center gap-6 sm:gap-8 max-w-6xl mx-auto w-full">
           
           {/* Study Plan CTA Row */}
           <div className="bg-gradient-to-r from-obsidian-elevated to-electric-violet/10 border border-electric-violet/20 rounded-[2rem] p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between w-full shadow-[0_0_30px_rgba(139,92,246,0.1)] relative overflow-hidden group">

@@ -38,7 +38,6 @@ export default function ActivityRing({ percentage = 0, size = 120, strokeWidth =
       style={{
         width: size,
         height: size,
-        filter: `drop-shadow(0 0 8px ${color}66)`,
       }}
     >
       <svg width={size} height={size} className="transform -rotate-90">

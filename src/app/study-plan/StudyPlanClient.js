@@ -389,7 +389,6 @@ function PlanDisplay({ plan, openWeek, setOpenWeek, toggleTask }) {
                 <div className="flex items-center gap-6 flex-1">
                   <div className="shrink-0 flex items-center justify-center relative">
                     <ActivityRing percentage={percentage} size={60} strokeWidth={4} />
-                    <span className="absolute text-xs font-bold text-white">W{weekNum}</span>
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-bold text-white mb-1">Week {weekNum}</h3>

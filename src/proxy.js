@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export async function middleware(request) {
+export async function proxy(request) {
   const url = request.nextUrl.clone();
 
   if (url.pathname.startsWith("/admin") && url.pathname !== "/admin/login") {
