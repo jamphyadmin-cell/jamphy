@@ -48,48 +48,50 @@ export default function ProfilePage() {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6 sm:space-y-8">
         
         {/* HERO CARD */}
-        <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-10 relative overflow-hidden break-words">
-          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-electric-violet/20 to-cyber-green/20" />
-          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-electric-violet via-cyber-green to-warning-amber" />
-          
-          <div className="relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-obsidian-deep bg-white/10 flex items-center justify-center text-4xl font-bold shrink-0 shadow-[0_0_30px_rgba(124,58,237,0.3)]">
-            {session.user.image ? (
-              <Image src={session.user.image} alt={session.user.name} fill className="object-cover" sizes="128px" />
-            ) : (
-              <span className="bg-gradient-to-br from-electric-violet to-cyber-green bg-clip-text text-transparent">
-                {session.user.name ? session.user.name[0].toUpperCase() : "U"}
-              </span>
-            )}
+        <div className="bg-obsidian-surface border border-obsidian-elevated rounded-[2rem] overflow-hidden flex flex-col relative shadow-sm">
+          {/* Banner */}
+          <div className="w-full h-32 sm:h-40 bg-gradient-to-r from-zinc-800 to-zinc-900 relative">
+            <div className="absolute inset-0 bg-white/5 opacity-50 mix-blend-overlay"></div>
           </div>
           
-          <div className="relative z-10 flex-1 flex flex-col items-center md:items-start text-center md:text-left gap-3 w-full">
-            <h1 className="text-3xl sm:text-4xl font-black truncate w-full max-w-full text-white">{session.user.name}</h1>
-            <p className="text-on-surface-variant truncate w-full max-w-full text-sm">{session.user.email}</p>
-            {profileData?.stats && (
-              <div className="flex items-center gap-6 text-sm font-bold mt-2">
-                <button 
-                  onClick={() => setFollowModal({ isOpen: true, tab: "followers" })}
-                  className="text-on-surface-variant hover:text-white transition"
-                >
-                  <span className="text-white text-lg font-black">{profileData.stats.followersCount}</span> Followers
-                </button>
-                <button 
-                  onClick={() => setFollowModal({ isOpen: true, tab: "following" })}
-                  className="text-on-surface-variant hover:text-white transition"
-                >
-                  <span className="text-white text-lg font-black">{profileData.stats.followingCount}</span> Following
-                </button>
-              </div>
-            )}
-          </div>
-          
-          <div className="relative z-10 mt-4 md:mt-0 shrink-0">
-            <button 
-              onClick={() => setIsEditModalOpen(true)}
-              className="px-6 py-3 rounded-xl bg-electric-violet text-white font-bold hover:bg-inverse-primary transition-colors active:scale-95"
-            >
-              Edit Profile
-            </button>
+          <div className="px-6 sm:px-10 pb-8 flex flex-col sm:flex-row items-center sm:items-end gap-6 sm:gap-8 relative -mt-16 sm:-mt-20">
+            {/* Avatar */}
+            <div className="relative z-10 w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-obsidian-surface bg-obsidian-deep flex items-center justify-center shrink-0 shadow-xl">
+              {session.user.image ? (
+                <Image src={session.user.image} alt={session.user.name} fill className="object-cover" sizes="160px" />
+              ) : (
+                <span className="text-4xl font-bold text-white">
+                  {session.user.name ? session.user.name[0].toUpperCase() : "U"}
+                </span>
+              )}
+            </div>
+            
+            {/* Info */}
+            <div className="flex-1 text-center sm:text-left mb-2 sm:mb-4 w-full">
+              <h1 className="text-3xl sm:text-4xl font-black truncate w-full text-white">{session.user.name}</h1>
+              <p className="text-on-surface-variant text-sm sm:text-base mt-1 truncate w-full">{session.user.email}</p>
+              
+              {profileData?.stats && (
+                <div className="flex items-center justify-center sm:justify-start gap-6 text-sm font-medium mt-4">
+                  <button onClick={() => setFollowModal({ isOpen: true, tab: "followers" })} className="hover:text-white transition group flex gap-1.5 items-center">
+                    <span className="text-white font-bold">{profileData.stats.followersCount}</span> <span className="text-on-surface-variant group-hover:text-white transition-colors">Followers</span>
+                  </button>
+                  <button onClick={() => setFollowModal({ isOpen: true, tab: "following" })} className="hover:text-white transition group flex gap-1.5 items-center">
+                    <span className="text-white font-bold">{profileData.stats.followingCount}</span> <span className="text-on-surface-variant group-hover:text-white transition-colors">Following</span>
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            {/* Edit Button */}
+            <div className="mb-2 sm:mb-4 shrink-0">
+              <button 
+                onClick={() => setIsEditModalOpen(true)}
+                className="px-6 py-2.5 rounded-full bg-white/10 border border-white/20 text-white font-semibold hover:bg-white/20 transition-colors active:scale-95 text-sm"
+              >
+                Edit Profile
+              </button>
+            </div>
           </div>
         </div>
 
