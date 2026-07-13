@@ -55,6 +55,7 @@ export default function IITJamPhysicsHub() {
   const [globalSubjectSearch, setGlobalSubjectSearch] = useState("");
   const [attemptStats, setAttemptStats] = useState({ attemptedIds: [], todaySubjects: [] });
   const [categories, setCategories] = useState([]);
+  const [yearCounts, setYearCounts] = useState({});
 
   const handleSaveGoal = (newTarget) => {
     setIsGoalModalOpen(false);
@@ -86,6 +87,9 @@ export default function IITJamPhysicsHub() {
       .then(data => {
         if (data.questions && data.questions.length > 0) {
           setAllQuestions([...staticQuestions, ...data.questions]);
+        }
+        if (data.yearCounts) {
+          setYearCounts(data.yearCounts);
         }
       })
       .catch(console.error);
@@ -918,19 +922,32 @@ export default function IITJamPhysicsHub() {
                   <div className="flex items-center gap-3 shrink-0">
                     <span className="text-[10px] text-cyber-green font-mono-label tracking-widest uppercase font-bold whitespace-nowrap">Temporal Filter</span>
                     <div className="flex flex-wrap gap-1.5">
-                      {[...new Set(allQuestions.map((q) => q.year))]
-                        .sort((a, b) => b - a)
+                      {/* 'All' Filter Pill */}
+                      <button
+                        onClick={() => setGlobalYearFilter("All")}
+                        className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${
+                          globalYearFilter === "All"
+                            ? "bg-electric-violet text-white"
+                            : "text-on-surface-variant hover:text-white hover:bg-white/10"
+                        }`}
+                      >
+                        All {yearCounts["All"] ? `(${yearCounts["All"]})` : ""}
+                      </button>
+                      
+                      {/* Dynamic Year Pills */}
+                      {[...new Set(allQuestions.map((q) => String(q.year)))]
+                        .sort((a, b) => b.localeCompare(a))
                         .map((year) => (
                           <button
                             key={`global-year-${year}`}
                             onClick={() => setGlobalYearFilter(globalYearFilter === year ? "All" : year)}
                             className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${
-                              globalYearFilter === year
+                              String(globalYearFilter) === year
                                 ? "bg-electric-violet text-white"
                                 : "text-on-surface-variant hover:text-white hover:bg-white/10"
                             }`}
                           >
-                            {year}
+                            {year} {yearCounts[year] ? `(${yearCounts[year]})` : ""}
                           </button>
                         ))}
                     </div>
@@ -989,7 +1006,7 @@ export default function IITJamPhysicsHub() {
                       const visible = categories.filter(cat => {
                         if (globalSubjectSearch && !cat.name.toLowerCase().includes(globalSubjectSearch.toLowerCase())) return false;
                         let qs = allQuestions.filter(q => cat.subtopics.includes(q.subject));
-                        if (globalYearFilter !== "All") qs = qs.filter(q => q.year === globalYearFilter);
+                        if (globalYearFilter !== "All") qs = qs.filter(q => String(q.year) === String(globalYearFilter));
                         if (globalFormatFilter !== "All") qs = qs.filter(q => q.type === globalFormatFilter);
                         return qs.length > 0;
                       });
@@ -1010,7 +1027,7 @@ export default function IITJamPhysicsHub() {
                       .filter(cat => {
                         if (globalSubjectSearch && !cat.name.toLowerCase().includes(globalSubjectSearch.toLowerCase())) return false;
                         let qs = allQuestions.filter(q => cat.subtopics.includes(q.subject));
-                        if (globalYearFilter !== "All") qs = qs.filter(q => q.year === globalYearFilter);
+                        if (globalYearFilter !== "All") qs = qs.filter(q => String(q.year) === String(globalYearFilter));
                         if (globalFormatFilter !== "All") qs = qs.filter(q => q.type === globalFormatFilter);
                         return qs.length > 0;
                       })

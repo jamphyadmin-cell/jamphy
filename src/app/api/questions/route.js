@@ -25,7 +25,27 @@ export async function GET() {
       imageUrl: q.imageUrl || null,
     }));
 
-    return NextResponse.json({ questions: formattedQuestions });
+    // Fetch dynamic question counts per year
+    const rawYearCounts = await prisma.question.groupBy({
+      by: ['year'],
+      where: { status: "APPROVED" },
+      _count: { id: true }
+    });
+
+    // Normalize and aggregate counts by stringified year to handle DB inconsistencies
+    const yearCounts = {};
+    let totalQuestions = 0;
+    rawYearCounts.forEach(group => {
+      if (!group.year) return;
+      const normalizedYear = String(group.year);
+      yearCounts[normalizedYear] = (yearCounts[normalizedYear] || 0) + group._count.id;
+      totalQuestions += group._count.id;
+    });
+    
+    // Add 'All' count
+    yearCounts['All'] = totalQuestions;
+
+    return NextResponse.json({ questions: formattedQuestions, yearCounts });
   } catch (error) {
     console.error("Error fetching questions:", error);
     return NextResponse.json({ error: "Failed to fetch questions" }, { status: 500 });
