@@ -47,9 +47,13 @@ export async function POST(req) {
     const weeksRemaining = Math.max(1, Math.ceil(daysRemaining / 7));
 
     // Determine weak subjects based on confidence and accuracy
-    const allSubjects = Object.keys(subjectConfidence);
+    let allSubjects = subjectConfidence ? Object.keys(subjectConfidence) : [];
+    if (allSubjects.length === 0) {
+      allSubjects = ["General Physics", "Mechanics"]; // Fallback subjects
+    }
+    
     const subjectScores = allSubjects.map(sub => {
-      let score = parseInt(subjectConfidence[sub], 10) || 3;
+      let score = parseInt(subjectConfidence?.[sub] || 3, 10);
       const perf = actualPerformance.find(p => p.subject === sub);
       if (perf && perf.accuracy < 60) score -= 1; 
       return { name: sub, score };

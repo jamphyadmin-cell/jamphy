@@ -14,6 +14,11 @@ export default function IITJamPrepPlatform() {
   const { navigateWithTransition } = useTransitionContext();
   const [goalData, setGoalData] = useState({ target: 50, completed: 0, percentage: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Computed deterministically to match on SSR and client without flash
   const streaks = useMemo(() =>
@@ -111,14 +116,14 @@ export default function IITJamPrepPlatform() {
             <a className="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#why">Why Jamphy</a>
           </nav>
           <div className="flex items-center gap-3">
-            {status === "authenticated" ? (
+            {mounted ? (status === "authenticated" ? (
               <div className="flex items-center gap-3">
                 <InvitesMenu />
                 <UserMenu />
               </div>
             ) : (
               <button onClick={() => signIn()} className="text-electric-violet font-semibold hover:bg-obsidian-elevated/50 transition-all duration-300 active:scale-95 px-4 py-2 rounded-lg text-sm">Sign in</button>
-            )}
+            )) : <div className="h-8 w-16"></div>}
           </div>
         </div>
       </header>
@@ -359,7 +364,7 @@ export default function IITJamPrepPlatform() {
       </section>
 
       {/* DASHBOARD WIDGETS (For Authenticated Users) */}
-      {status === "authenticated" && (
+      {mounted && status === "authenticated" && (
         <section className="py-24 px-4 sm:px-6 flex flex-col justify-center gap-6 sm:gap-8 max-w-6xl mx-auto w-full animate-on-scroll">
           
           {/* Study Plan CTA Row */}
@@ -413,7 +418,7 @@ export default function IITJamPrepPlatform() {
           </div>
 
           {/* Google Sign-in button */}
-          {status === "authenticated" ? (
+          {mounted ? (status === "authenticated" ? (
             <button
               onClick={() => { window.location.href = "/questions"; }}
               className="group w-full sm:w-auto inline-flex items-center justify-center gap-4 bg-electric-violet hover:bg-[#7C3AED] text-white font-semibold px-8 py-4 rounded-2xl transition-all duration-200 active:scale-[0.98] shadow-[0_4px_24px_rgba(139,92,246,0.4)] text-base"
@@ -437,7 +442,7 @@ export default function IITJamPrepPlatform() {
               </svg>
               Continue with Google
             </button>
-          )}
+          )) : <div className="h-14"></div>}
 
           <p className="mt-5 text-xs text-on-surface-variant/60 leading-relaxed">
             By signing in, you agree to our{" "}
