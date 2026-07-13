@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -22,6 +22,9 @@ export default function StudyPlanClient({ initialPlan }) {
   // Wizard State
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [streamedText, setStreamedText] = useState("");
+  const [loadingMessage, setLoadingMessage] = useState("Analysing your weak topics...");
+  const planTypeRef = useRef('full');
   const [formData, setFormData] = useState({
     examDate: "",
     hoursPerDay: 4,
@@ -36,19 +39,64 @@ export default function StudyPlanClient({ initialPlan }) {
   const handleNext = () => setStep(s => Math.min(5, s + 1));
   const handlePrev = () => setStep(s => Math.max(1, s - 1));
 
-  const generatePlan = async () => {
+  const loadingMessages = [
+    'Analysing your weak topics...',
+    'Calculating your exam timeline...',
+    'Building your personalised plan...',
+    'Almost ready...'
+  ];
+
+  useEffect(() => {
+    let interval;
+    if (isGenerating && planTypeRef.current === 'full') {
+      let index = 0;
+      setLoadingMessage(loadingMessages[0]);
+      interval = setInterval(() => {
+        index = (index + 1) % loadingMessages.length;
+        setLoadingMessage(loadingMessages[index]);
+      }, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [isGenerating]);
+
+  const generatePlan = async (type = 'full') => {
+    planTypeRef.current = type;
     setIsGenerating(true);
+    setStreamedText("");
+    
     try {
       const res = await fetch('/api/study-plan/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ ...formData, planType: type })
       });
-      if (res.ok) {
+
+      if (!res.ok) throw new Error("Failed");
+
+      if (type === 'quick') {
         startTransition(() => {
           router.refresh();
         });
+        return;
       }
+
+      // Streaming response
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        textBuffer += chunk;
+        setStreamedText(textBuffer);
+      }
+      
+      startTransition(() => {
+        router.refresh();
+      });
+
     } catch (err) {
       console.error(err);
       setIsGenerating(false);
@@ -89,10 +137,16 @@ export default function StudyPlanClient({ initialPlan }) {
     return (
       <div className="bg-obsidian-deep min-h-screen text-on-surface flex flex-col items-center justify-center p-4">
         <div className="w-16 h-16 border-4 border-obsidian-elevated border-t-electric-violet rounded-full animate-spin mb-8"></div>
-        <h2 className="text-2xl font-bold text-white mb-2">Analyzing Your Profile</h2>
-        <p className="text-on-surface-variant text-center max-w-md animate-pulse">
-          We are evaluating your past attempts and generating a highly optimized study plan...
-        </p>
+        <h2 className="text-2xl font-bold text-white mb-2">{planTypeRef.current === 'quick' ? 'Generating Quick Plan' : loadingMessage}</h2>
+        {planTypeRef.current === 'full' && (
+          <div className="w-full max-w-2xl mt-8 bg-obsidian-surface p-6 rounded-2xl border border-obsidian-elevated text-left overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-electric-violet to-cyber-green animate-pulse"></div>
+            <pre className="font-mono text-sm text-on-surface-variant whitespace-pre-wrap break-words max-h-64 overflow-y-auto custom-scrollbar">
+              {streamedText || "Initializing AI engine..."}
+              <span className="animate-pulse inline-block w-2 h-4 bg-electric-violet ml-1 align-middle"></span>
+            </pre>
+          </div>
+        )}
       </div>
     );
   }
@@ -258,12 +312,20 @@ function Wizard({ step, formData, setFormData, handleNext, handlePrev, generateP
             Next Step
           </button>
         ) : (
-          <button 
-            onClick={generatePlan}
-            className="bg-cyber-green text-obsidian-deep font-bold px-8 py-3 rounded-lg transition-colors active:scale-95 flex items-center gap-2 hover:bg-[#0EA5E9]"
-          >
-            Generate Plan <span className="material-symbols-outlined text-sm">auto_awesome</span>
-          </button>
+          <div className="flex gap-4 flex-col sm:flex-row">
+            <button 
+              onClick={() => generatePlan('quick')}
+              className="bg-obsidian-surface border border-cyber-green/50 text-cyber-green hover:bg-cyber-green/10 font-bold px-6 py-3 rounded-lg transition-colors active:scale-95 flex items-center justify-center gap-2"
+            >
+              Quick Plan <span className="text-xs opacity-80">(Instant)</span>
+            </button>
+            <button 
+              onClick={() => generatePlan('full')}
+              className="bg-electric-violet hover:bg-[#7C3AED] text-white font-bold px-6 py-3 rounded-lg transition-colors active:scale-95 flex items-center justify-center gap-2"
+            >
+              Full AI Plan <span className="material-symbols-outlined text-sm">auto_awesome</span>
+            </button>
+          </div>
         )}
       </div>
     </div>
