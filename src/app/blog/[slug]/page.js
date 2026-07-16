@@ -15,8 +15,9 @@ function getReadTime(content) {
 }
 
 export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug: resolvedParams.slug },
     include: { author: true }
   });
 
@@ -39,8 +40,9 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function BlogPostPage({ params }) {
+  const resolvedParams = await params;
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug: resolvedParams.slug },
     include: {
       author: {
         select: { name: true, image: true, username: true }
