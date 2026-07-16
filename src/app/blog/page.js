@@ -20,7 +20,17 @@ export default async function BlogPage() {
   const posts = await prisma.post.findMany({
     where: { status: 'PUBLISHED' },
     orderBy: { publishedAt: 'desc' },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      coverImage: true,
+      tags: true,
+      content: true,
+      views: true,
+      publishedAt: true,
+      createdAt: true,
       author: {
         select: { name: true, image: true }
       }
