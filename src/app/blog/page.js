@@ -32,7 +32,7 @@ export default async function BlogPage() {
       <div className="max-w-7xl mx-auto mt-10">
         
         {/* Back to Home Button */}
-        <div className="mb-8">
+        <div className="mb-2 md:-mb-10 relative z-10">
           <Link href="/" className="inline-flex items-center gap-2 text-cyber-green hover:text-white transition-colors font-bold text-sm bg-cyber-green/10 px-4 py-2 rounded-full border border-cyber-green/20">
             <span className="material-symbols-outlined text-[16px]">arrow_back</span>
             Back to Home
@@ -40,7 +40,7 @@ export default async function BlogPage() {
         </div>
 
         {/* Header Section */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-16 relative">
           <h1 className="text-5xl font-black text-white font-display-lg uppercase tracking-tight mb-4">
             Jamphy Blog
           </h1>
