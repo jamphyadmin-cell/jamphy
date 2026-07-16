@@ -82,8 +82,6 @@ export default async function BlogPostPage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ViewCounter slug={post.slug} />
-      
       <div className="max-w-4xl mx-auto mt-10">
         
         {/* Back Button and Edit Button */}
@@ -134,7 +132,7 @@ export default async function BlogPostPage({ params }) {
                 <span>•</span>
                 <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">schedule</span>{getReadTime(post.content)} min read</span>
                 <span>•</span>
-                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">visibility</span>{post.views} views</span>
+                <ViewCounter slug={post.slug} initialViews={post.views} />
               </div>
             </div>
           </div>

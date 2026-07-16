@@ -2,6 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Blog | Jamphy',
   description: 'Read the latest strategies, study plans, and mathematical insights for IIT JAM Physics preparation.',

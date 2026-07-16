@@ -6,14 +6,15 @@ export async function POST(req, { params }) {
     const resolvedParams = await params;
     const slug = resolvedParams.slug;
 
-    await prisma.post.update({
+    const updated = await prisma.post.update({
       where: { slug },
       data: {
         views: { increment: 1 }
-      }
+      },
+      select: { views: true }
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, views: updated.views });
   } catch (error) {
     console.error("Error updating views:", error);
     // Even if it fails, we don't want to break the client, just return 200 or 500 quietly

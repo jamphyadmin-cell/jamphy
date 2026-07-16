@@ -1,21 +1,32 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export default function ViewCounter({ slug }) {
+export default function ViewCounter({ slug, initialViews }) {
+  const [views, setViews] = useState(initialViews);
+
   useEffect(() => {
-    // Only increment view if we haven't tracked it in this session to prevent spam
     const viewKey = `viewed_post_${slug}`;
     if (!sessionStorage.getItem(viewKey)) {
       fetch(`/api/blog/${slug}/view`, { method: "POST" })
-        .then(res => {
-          if (res.ok) {
-            sessionStorage.setItem(viewKey, "true");
+        .then(res => res.json())
+        .then(data => {
+          if (data.views !== undefined) {
+            setViews(data.views);
+          } else {
+            // fallback: just increment the displayed count locally
+            setViews(v => v + 1);
           }
+          sessionStorage.setItem(viewKey, "true");
         })
         .catch(console.error);
     }
   }, [slug]);
 
-  return null; // This component doesn't render anything
+  return (
+    <span className="flex items-center gap-1">
+      <span className="material-symbols-outlined text-[14px]">visibility</span>
+      {views} views
+    </span>
+  );
 }
