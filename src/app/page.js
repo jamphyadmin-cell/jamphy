@@ -114,6 +114,7 @@ export default function IITJamPrepPlatform() {
             <a className="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#how-it-works">How it works</a>
             <a className="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#features">Features</a>
             <a className="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#why">Why Jamphy</a>
+            <Link className="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="/blog">Blog</Link>
           </nav>
           <div className="flex items-center gap-3">
             {mounted ? (status === "authenticated" ? (
@@ -473,6 +474,7 @@ export default function IITJamPrepPlatform() {
                 <a href="#how-it-works" className="text-on-surface-variant hover:text-white transition-colors">How it Works</a>
                 <a href="#features" className="text-on-surface-variant hover:text-white transition-colors">Features</a>
                 <a href="#why" className="text-on-surface-variant hover:text-white transition-colors">Why Jamphy</a>
+                <Link href="/blog" className="text-on-surface-variant hover:text-white transition-colors">Blog</Link>
               </nav>
               <nav className="flex flex-wrap justify-center sm:justify-end gap-x-6 gap-y-2 text-sm">
                 <a href="/privacy" className="text-on-surface-variant hover:text-white transition-colors">Privacy Policy</a>
