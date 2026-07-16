@@ -40,6 +40,24 @@ export default function AdminTabs({ reports, users }) {
   const [questionSearchQuery, setQuestionSearchQuery] = useState("");
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState("All");
 
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [isLoadingBlog, setIsLoadingBlog] = useState(false);
+
+  const fetchBlogPosts = async () => {
+    setIsLoadingBlog(true);
+    try {
+      const res = await fetch('/api/admin/blog');
+      if (res.ok) {
+        const data = await res.json();
+        setBlogPosts(data.posts || []);
+      }
+    } catch (err) {
+      console.error("Error fetching blog posts:", err);
+    } finally {
+      setIsLoadingBlog(false);
+    }
+  };
+
   const fetchQuestions = async () => {
     setIsLoadingQuestions(true);
     try {
@@ -59,6 +77,9 @@ export default function AdminTabs({ reports, users }) {
     setActiveTab(tab);
     if (tab === 'Manage Questions') {
       fetchQuestions();
+    }
+    if (tab === 'Blog Management') {
+      fetchBlogPosts();
     }
   };
 
@@ -420,7 +441,7 @@ export default function AdminTabs({ reports, users }) {
     <div className="space-y-8">
       {/* Tab Navigation */}
       <div className="flex gap-4 border-b border-zinc-800 overflow-x-auto whitespace-nowrap custom-scrollbar">
-        {['Dashboard', 'Manage Questions', 'Add Questions', 'Image / PDF Extraction'].map(tab => (
+        {['Dashboard', 'Manage Questions', 'Add Questions', 'Image / PDF Extraction', 'Blog Management'].map(tab => (
           <button
             key={tab}
             onClick={() => handleTabChange(tab)}
@@ -930,6 +951,90 @@ export default function AdminTabs({ reports, users }) {
       {activeTab === 'Add Questions' && (
         <div className="space-y-8">
           <ManualQuestionForm adminPassword={password} onSuccess={() => window.scrollTo(0, 0)} />
+        </div>
+      )}
+
+      {activeTab === 'Blog Management' && (
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-3xl font-black">Blog Management</h2>
+            <button 
+              onClick={() => window.open('/blog/new', '_blank')}
+              className="bg-electric-violet hover:bg-[#8B5CF6]/90 text-white font-bold px-4 py-2 rounded-xl transition"
+            >
+              Write New Post
+            </button>
+          </div>
+          
+          {isLoadingBlog ? (
+            <div className="flex justify-center py-12">
+              <div className="w-8 h-8 border-4 border-zinc-800 border-t-white rounded-full animate-spin"></div>
+            </div>
+          ) : blogPosts.length === 0 ? (
+            <div className="text-zinc-500 bg-zinc-950 border border-zinc-800 rounded-3xl p-8 text-center">
+              No blog posts found.
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {blogPosts.map(post => (
+                <div key={post.id} className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 flex flex-col sm:flex-row justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        post.status === 'PUBLISHED' ? 'bg-emerald-500/20 text-emerald-400' :
+                        post.status === 'PENDING' ? 'bg-yellow-500/20 text-yellow-400' :
+                        'bg-zinc-800 text-zinc-400'
+                      }`}>
+                        {post.status}
+                      </span>
+                      <span className="text-sm text-zinc-400">{new Date(post.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">{post.title}</h3>
+                    <p className="text-sm text-zinc-400 mb-2 line-clamp-2">{post.excerpt}</p>
+                    <div className="text-xs text-zinc-500">By {post.author?.name || post.author?.email || 'Unknown'} • /{post.slug}</div>
+                  </div>
+                  <div className="flex flex-col gap-2 shrink-0">
+                    <button 
+                      onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
+                      className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl text-sm font-bold transition text-center"
+                    >
+                      Preview
+                    </button>
+                    {post.status !== 'PUBLISHED' && (
+                      <button 
+                        onClick={async () => {
+                          await fetch('/api/admin/blog', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: post.id, status: 'PUBLISHED' })
+                          });
+                          fetchBlogPosts();
+                        }}
+                        className="px-4 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 rounded-xl text-sm font-bold transition text-center"
+                      >
+                        Approve
+                      </button>
+                    )}
+                    {post.status !== 'REJECTED' && (
+                      <button 
+                        onClick={async () => {
+                          await fetch('/api/admin/blog', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: post.id, status: 'REJECTED' })
+                          });
+                          fetchBlogPosts();
+                        }}
+                        className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-xl text-sm font-bold transition text-center"
+                      >
+                        Reject
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

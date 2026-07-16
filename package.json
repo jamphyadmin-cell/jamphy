@@ -16,7 +16,7 @@
     "dotenv": "^17.4.2",
     "framer-motion": "^12.40.0",
     "html2canvas": "^1.4.1",
-    "katex": "^0.16.45",
+    "katex": "^0.16.47",
     "next": "16.2.6",
     "next-auth": "^4.24.14",
     "nodemailer": "^7.0.13",

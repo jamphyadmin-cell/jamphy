@@ -50,6 +50,10 @@ export default function Navbar({ session, actionButton, title }) {
                   Study Plan
                 </Link>
               )}
+              <Link href="/blog" className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors flex items-center gap-1">
+                <span className="material-symbols-outlined text-base leading-none">article</span>
+                Blog
+              </Link>
               {actionButton}
               <UserMenu session={session} />
             </div>
@@ -111,6 +115,14 @@ export default function Navbar({ session, actionButton, title }) {
               My Study Plan
             </Link>
           )}
+          <Link
+            href="/blog"
+            onClick={() => setIsDrawerOpen(false)}
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-zinc-300 hover:text-white hover:bg-zinc-900 font-semibold transition-colors"
+          >
+            <span className="material-symbols-outlined text-zinc-400">article</span>
+            Blog
+          </Link>
           {session && (
             <Link
               href="/analytics"
