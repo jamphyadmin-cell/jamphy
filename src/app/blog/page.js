@@ -98,9 +98,15 @@ export default async function BlogPage() {
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs font-medium text-cyber-green bg-cyber-green/10 px-2 py-1 rounded-md">
-                      <span className="material-symbols-outlined text-[14px]">schedule</span>
-                      {getReadTime(post.content)} min
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 text-xs font-medium text-electric-violet bg-electric-violet/10 px-2 py-1 rounded-md">
+                        <span className="material-symbols-outlined text-[14px]">visibility</span>
+                        {post.views}
+                      </div>
+                      <div className="flex items-center gap-1 text-xs font-medium text-cyber-green bg-cyber-green/10 px-2 py-1 rounded-md">
+                        <span className="material-symbols-outlined text-[14px]">schedule</span>
+                        {getReadTime(post.content)} min
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -2,10 +2,13 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
+import ViewCounter from '@/components/ViewCounter';
 
 // Calculate read time based on word count
 function getReadTime(content) {
@@ -54,6 +57,11 @@ export default async function BlogPostPage({ params }) {
     notFound();
   }
 
+  const session = await getServerSession(authOptions);
+  const isAdmin = session?.user?.email === "jamphy.admin@gmail.com";
+  const isAuthor = session?.user?.id === post.author.id;
+  const canEdit = isAdmin || isAuthor;
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -74,14 +82,24 @@ export default async function BlogPostPage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <ViewCounter slug={post.slug} />
       
       <div className="max-w-4xl mx-auto mt-10">
         
-        {/* Back Button */}
-        <Link href="/blog" className="inline-flex items-center gap-2 text-cyber-green hover:text-white transition-colors mb-8 font-bold text-sm bg-cyber-green/10 px-4 py-2 rounded-full border border-cyber-green/20">
-          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-          Back to Blog
-        </Link>
+        {/* Back Button and Edit Button */}
+        <div className="flex justify-between items-center mb-8">
+          <Link href="/blog" className="inline-flex items-center gap-2 text-cyber-green hover:text-white transition-colors font-bold text-sm bg-cyber-green/10 px-4 py-2 rounded-full border border-cyber-green/20">
+            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+            Back to Blog
+          </Link>
+
+          {canEdit && (
+            <Link href={`/blog/${post.slug}/edit`} className="inline-flex items-center gap-2 text-electric-violet hover:text-white transition-colors font-bold text-sm bg-electric-violet/10 px-4 py-2 rounded-full border border-electric-violet/20">
+              <span className="material-symbols-outlined text-[16px]">edit</span>
+              Edit Post
+            </Link>
+          )}
+        </div>
 
         {/* Header */}
         <header className="mb-12">
@@ -115,6 +133,8 @@ export default async function BlogPostPage({ params }) {
                 <span>{new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                 <span>•</span>
                 <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">schedule</span>{getReadTime(post.content)} min read</span>
+                <span>•</span>
+                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">visibility</span>{post.views} views</span>
               </div>
             </div>
           </div>
@@ -130,9 +150,9 @@ export default async function BlogPostPage({ params }) {
         {/* Content */}
         <div className="prose prose-invert prose-lg max-w-none 
           prose-headings:font-display-lg prose-headings:uppercase prose-headings:font-black prose-headings:tracking-tight
-          prose-h2:text-electric-violet prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
-          prose-h3:text-cyber-green prose-h3:text-2xl
-          prose-p:text-on-surface-variant prose-p:leading-relaxed prose-p:mb-6
+          prose-h2:text-electric-violet prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-8
+          prose-h3:text-cyber-green prose-h3:text-2xl prose-h3:mt-12 prose-h3:mb-6
+          prose-p:text-on-surface-variant prose-p:leading-loose prose-p:mb-10 prose-p:text-[1.125rem]
           prose-a:text-electric-violet prose-a:no-underline hover:prose-a:underline
           prose-strong:text-white prose-strong:font-bold
           prose-blockquote:border-l-4 prose-blockquote:border-electric-violet prose-blockquote:bg-white/5 prose-blockquote:p-4 prose-blockquote:rounded-r-xl prose-blockquote:not-italic prose-blockquote:text-white
