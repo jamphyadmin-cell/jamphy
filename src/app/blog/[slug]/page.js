@@ -148,16 +148,18 @@ export default async function BlogPostPage({ params }) {
         )}
 
         {/* Content */}
-        <div className="prose prose-invert prose-lg max-w-none 
+        <div className="prose prose-invert max-w-none 
           prose-headings:font-display-lg prose-headings:uppercase prose-headings:font-black prose-headings:tracking-tight
-          prose-h2:text-electric-violet prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-8
-          prose-h3:text-cyber-green prose-h3:text-2xl prose-h3:mt-12 prose-h3:mb-6
-          prose-p:text-on-surface-variant prose-p:leading-loose prose-p:mb-10 prose-p:text-[1.125rem]
+          prose-h2:text-electric-violet prose-h2:text-4xl prose-h2:mt-20 prose-h2:mb-10
+          prose-h3:text-cyber-green prose-h3:text-3xl prose-h3:mt-16 prose-h3:mb-8
+          prose-p:text-on-surface-variant prose-p:text-xl prose-p:leading-[2.2] prose-p:mb-12
           prose-a:text-electric-violet prose-a:no-underline hover:prose-a:underline
           prose-strong:text-white prose-strong:font-bold
-          prose-blockquote:border-l-4 prose-blockquote:border-electric-violet prose-blockquote:bg-white/5 prose-blockquote:p-4 prose-blockquote:rounded-r-xl prose-blockquote:not-italic prose-blockquote:text-white
-          prose-ul:list-disc prose-ul:pl-6 prose-ul:text-on-surface-variant prose-li:mb-2
-          prose-ol:list-decimal prose-ol:pl-6 prose-ol:text-on-surface-variant
+          prose-blockquote:border-l-4 prose-blockquote:border-electric-violet prose-blockquote:bg-white/5 prose-blockquote:p-6 prose-blockquote:rounded-r-xl prose-blockquote:not-italic prose-blockquote:text-white prose-blockquote:text-xl
+          prose-ul:my-10 prose-ul:text-xl prose-ul:leading-[2.2] prose-ul:list-disc
+          prose-ol:my-10 prose-ol:text-xl prose-ol:leading-[2.2] prose-ol:list-decimal
+          prose-li:text-on-surface-variant prose-li:mb-4
+          marker:text-electric-violet
           prose-code:text-cyber-green prose-code:bg-black/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
           prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl">
           <ReactMarkdown
