@@ -3,11 +3,19 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from '@/lib/prisma';
 import { validateString, collectErrors, LIMITS } from '@/lib/validation';
+import { cookies } from 'next/headers';
 
-export async function GET(req) {
+async function isAdmin() {
+  const session = await getServerSession(authOptions);
+  if (session?.user?.role === 'ADMIN') return true;
+  const cookieStore = await cookies();
+  const adminCookie = cookieStore.get("admin_session");
+  return adminCookie?.value === "authenticated";
+}
+
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== 'ADMIN') {
+    if (!(await isAdmin())) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -15,7 +23,7 @@ export async function GET(req) {
       orderBy: { createdAt: 'desc' },
       include: {
         author: {
-          select: { name: true, email: true }
+          select: { name: true, email: true, username: true, image: true }
         }
       }
     });
@@ -29,8 +37,7 @@ export async function GET(req) {
 
 export async function PUT(req) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== 'ADMIN') {
+    if (!(await isAdmin())) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -54,5 +61,24 @@ export async function PUT(req) {
   } catch (error) {
     console.error("Error updating blog post status:", error);
     return NextResponse.json({ error: "Failed to update status" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req) {
+  try {
+    if (!(await isAdmin())) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    if (!id) return NextResponse.json({ error: "id is required" }, { status: 400 });
+
+    await prisma.post.delete({ where: { id } });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting blog post:", error);
+    return NextResponse.json({ error: "Failed to delete post" }, { status: 500 });
   }
 }

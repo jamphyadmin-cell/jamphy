@@ -957,7 +957,10 @@ export default function AdminTabs({ reports, users }) {
       {activeTab === 'Blog Management' && (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-3xl font-black">Blog Management</h2>
+            <div>
+              <h2 className="text-3xl font-black">Blog Management</h2>
+              <p className="text-sm text-zinc-500 mt-1">Review and approve user-submitted articles.</p>
+            </div>
             <button 
               onClick={() => window.open('/blog/new', '_blank')}
               className="bg-electric-violet hover:bg-[#8B5CF6]/90 text-white font-bold px-4 py-2 rounded-xl transition"
@@ -978,12 +981,12 @@ export default function AdminTabs({ reports, users }) {
             <div className="grid gap-4">
               {blogPosts.map(post => (
                 <div key={post.id} className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 flex flex-col sm:flex-row justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                         post.status === 'PUBLISHED' ? 'bg-emerald-500/20 text-emerald-400' :
                         post.status === 'PENDING' ? 'bg-yellow-500/20 text-yellow-400' :
-                        'bg-zinc-800 text-zinc-400'
+                        'bg-red-500/20 text-red-400'
                       }`}>
                         {post.status}
                       </span>
@@ -991,7 +994,7 @@ export default function AdminTabs({ reports, users }) {
                     </div>
                     <h3 className="text-xl font-bold text-white mb-2">{post.title}</h3>
                     <p className="text-sm text-zinc-400 mb-2 line-clamp-2">{post.excerpt}</p>
-                    <div className="text-xs text-zinc-500">By {post.author?.name || post.author?.email || 'Unknown'} • /{post.slug}</div>
+                    <div className="text-xs text-zinc-500">By {post.author?.name || post.author?.email || 'Unknown'}{post.author?.username ? ` (@${post.author.username})` : ''} • /{post.slug}</div>
                   </div>
                   <div className="flex flex-col gap-2 shrink-0">
                     <button 
@@ -1015,6 +1018,21 @@ export default function AdminTabs({ reports, users }) {
                         Approve
                       </button>
                     )}
+                    {post.status === 'PUBLISHED' && (
+                      <button 
+                        onClick={async () => {
+                          await fetch('/api/admin/blog', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: post.id, status: 'PENDING' })
+                          });
+                          fetchBlogPosts();
+                        }}
+                        className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-sm font-bold transition text-center"
+                      >
+                        Unpublish
+                      </button>
+                    )}
                     {post.status !== 'REJECTED' && (
                       <button 
                         onClick={async () => {
@@ -1030,6 +1048,16 @@ export default function AdminTabs({ reports, users }) {
                         Reject
                       </button>
                     )}
+                    <button 
+                      onClick={async () => {
+                        if (!window.confirm('Permanently delete this post? This cannot be undone.')) return;
+                        await fetch(`/api/admin/blog?id=${post.id}`, { method: 'DELETE' });
+                        fetchBlogPosts();
+                      }}
+                      className="px-4 py-2 bg-zinc-900 hover:bg-red-900/40 text-zinc-500 hover:text-red-400 rounded-xl text-sm font-bold transition text-center border border-zinc-800"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               ))}

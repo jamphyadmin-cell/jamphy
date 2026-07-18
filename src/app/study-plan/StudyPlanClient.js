@@ -14,6 +14,13 @@ const SUBJECTS = [
   "Semiconductors", "Solid State Physics"
 ];
 
+const loadingMessages = [
+  'Analysing your weak topics...',
+  'Calculating your exam timeline...',
+  'Building your personalised plan...',
+  'Almost ready...'
+];
+
 export default function StudyPlanClient({ initialPlan }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -24,7 +31,7 @@ export default function StudyPlanClient({ initialPlan }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [streamedText, setStreamedText] = useState("");
   const [loadingMessage, setLoadingMessage] = useState("Analysing your weak topics...");
-  const planTypeRef = useRef('full');
+  const [planType, setPlanType] = useState('full');
   const [formData, setFormData] = useState({
     examDate: "",
     hoursPerDay: 4,
@@ -39,16 +46,9 @@ export default function StudyPlanClient({ initialPlan }) {
   const handleNext = () => setStep(s => Math.min(5, s + 1));
   const handlePrev = () => setStep(s => Math.max(1, s - 1));
 
-  const loadingMessages = [
-    'Analysing your weak topics...',
-    'Calculating your exam timeline...',
-    'Building your personalised plan...',
-    'Almost ready...'
-  ];
-
   useEffect(() => {
     let interval;
-    if (isGenerating && planTypeRef.current === 'full') {
+    if (isGenerating && planType === 'full') {
       let index = 0;
       setLoadingMessage(loadingMessages[0]);
       interval = setInterval(() => {
@@ -57,10 +57,10 @@ export default function StudyPlanClient({ initialPlan }) {
       }, 3000);
     }
     return () => clearInterval(interval);
-  }, [isGenerating]);
+  }, [isGenerating, planType]);
 
   const generatePlan = async (type = 'full') => {
-    planTypeRef.current = type;
+    setPlanType(type);
     setIsGenerating(true);
     setStreamedText("");
     

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +19,7 @@ function getReadTime(content) {
 }
 
 export default async function BlogPage() {
+  const session = await getServerSession(authOptions);
   const posts = await prisma.post.findMany({
     where: { status: 'PUBLISHED' },
     orderBy: { publishedAt: 'desc' },
@@ -44,12 +47,44 @@ export default async function BlogPage() {
           <h1 className="text-5xl font-black text-white font-display-lg uppercase tracking-tight mb-4">
             Jamphy Blog
           </h1>
-          <p className="text-lg text-on-surface-variant font-body-md">
+          <p className="text-lg text-on-surface-variant font-body-md mb-8">
             Insights, strategies, and deep dives into IIT JAM Physics preparation.
           </p>
+          {session?.user ? (
+            <Link
+              href="/blog/new"
+              className="inline-flex items-center gap-2 bg-electric-violet text-white font-bold px-6 py-3 rounded-xl hover:bg-[#8B5CF6]/90 transition-all active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[18px]">edit</span>
+              Write for Jamphy
+            </Link>
+          ) : (
+            <Link
+              href="/blog/new"
+              className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-white font-bold px-6 py-3 rounded-xl hover:bg-white/10 transition-all"
+            >
+              <span className="material-symbols-outlined text-[18px]">edit</span>
+              Write for Jamphy
+            </Link>
+          )}
         </div>
 
         {/* Blog Grid */}
+        {/* Write for Jamphy CTA Banner */}
+        <div className="mb-12 bg-gradient-to-r from-electric-violet/10 to-cyber-green/10 border border-white/10 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold text-white mb-1">Share your knowledge</h3>
+            <p className="text-sm text-on-surface-variant">Write an article on strategy, theory, or problem-solving for IIT JAM Physics. All submissions are reviewed by moderators.</p>
+          </div>
+          <Link
+            href="/blog/new"
+            className="shrink-0 inline-flex items-center gap-2 bg-electric-violet text-white font-bold px-5 py-2.5 rounded-xl hover:bg-[#8B5CF6]/90 transition-all whitespace-nowrap"
+          >
+            <span className="material-symbols-outlined text-[16px]">edit</span>
+            Submit Article
+          </Link>
+        </div>
+
         {posts.length === 0 ? (
           <div className="text-center p-12 bg-obsidian-surface border border-obsidian-elevated rounded-3xl">
             <span className="material-symbols-outlined text-6xl text-electric-violet mb-4">article</span>

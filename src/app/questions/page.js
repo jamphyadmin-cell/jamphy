@@ -1325,29 +1325,16 @@ export default function IITJamPhysicsHub() {
 
                     <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
-                      <input
-                        type="number"
-                        value={natAnswer}
-                        onChange={(e) =>
-                          setNatAnswer(e.target.value)
-                        }
-                        disabled={isCorrect !== null}
-                        placeholder="Enter answer"
-                        className="w-full rounded-2xl border border-zinc-700 bg-black px-5 py-4 text-xl text-white outline-none"
-                      />
+                    <input
+                      type="number"
+                      value={natAnswer}
+                      onChange={(e) => setNatAnswer(e.target.value)}
+                      disabled={isCorrect !== null}
+                      placeholder="Enter answer"
+                      className="w-full rounded-2xl border border-zinc-700 bg-black px-5 py-4 text-xl text-white outline-none"
+                    />
 
-                      <button
-                        onClick={submitNATAnswer}
-                        disabled={
-                          isCorrect !== null ||
-                          natAnswer.trim() === ""
-                        }
-                        className="mt-5 w-full sm:w-auto rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 min-h-[56px]"
-                      >
-                        Submit Answer
-                      </button>
-
-                    </div>
+                  </div>
 
                   </div>
 
@@ -1463,41 +1450,24 @@ export default function IITJamPhysicsHub() {
 
                     </div>
 
-                    {(isMSQ || activeQuestion?.type === "MCQ") && (
-
-                      <button
-                        onClick={activeQuestion?.type === "MCQ" ? submitSingleAnswer : submitMultipleAnswer}
-                        disabled={
-                          isCorrect !== null ||
-                          (isMSQ ? (!Array.isArray(selectedAnswer) || selectedAnswer.length === 0) : selectedAnswer === null)
-                        }
-                        className="mt-6 w-full sm:w-auto rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 min-h-[56px]"
-                      >
-                        Submit Answer
-                      </button>
-
-                    )}
-
                   </>
 
                 )}
 
-                <div className="mt-8 flex items-center justify-between gap-4 flex-wrap">
+                <div className="mt-8 flex items-center justify-between gap-3 flex-wrap">
 
-                  <div className="flex gap-4">
+                  <div className="flex gap-3">
                     <button
-                      onClick={() =>
-                        goToQuestion(currentQuestionIndex - 1)
-                      }
+                      onClick={() => goToQuestion(currentQuestionIndex - 1)}
                       disabled={!hasPreviousQuestion}
-                      className="rounded-2xl border border-zinc-700 px-6 py-4 text-lg font-bold text-white hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="rounded-2xl border border-zinc-700 px-5 py-4 text-base font-bold text-white hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       ← Previous Question
                     </button>
 
                     <button
                       onClick={toggleVault}
-                      className={`flex items-center justify-center w-16 h-[60px] rounded-2xl border transition-all ${
+                      className={`flex items-center justify-center w-14 h-[60px] rounded-2xl border transition-all ${
                         vaultItems.has(String(activeQuestion.id))
                           ? "bg-amber-500/20 border-amber-500 text-amber-500 hover:bg-amber-500/30"
                           : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-white"
@@ -1516,15 +1486,33 @@ export default function IITJamPhysicsHub() {
                     </button>
                   </div>
 
-                  <button
-                    onClick={() =>
-                      goToQuestion(currentQuestionIndex + 1)
-                    }
-                    disabled={!hasNextQuestion}
-                    className="w-full sm:w-auto rounded-2xl bg-white px-6 py-4 text-lg font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed text-center"
-                  >
-                    Next Question →
-                  </button>
+                  <div className="flex gap-3 ml-auto">
+                    {isNAT && isCorrect === null && (
+                      <button
+                        onClick={submitNATAnswer}
+                        disabled={isCorrect !== null || natAnswer.trim() === ""}
+                        className="rounded-2xl bg-white px-5 py-4 text-base font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed min-h-[60px]"
+                      >
+                        Submit Answer
+                      </button>
+                    )}
+                    {(isMSQ || activeQuestion?.type === "MCQ") && isCorrect === null && (
+                      <button
+                        onClick={activeQuestion?.type === "MCQ" ? submitSingleAnswer : submitMultipleAnswer}
+                        disabled={isMSQ ? (!Array.isArray(selectedAnswer) || selectedAnswer.length === 0) : selectedAnswer === null}
+                        className="rounded-2xl bg-white px-5 py-4 text-base font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed min-h-[60px]"
+                      >
+                        Submit Answer
+                      </button>
+                    )}
+                    <button
+                      onClick={() => goToQuestion(currentQuestionIndex + 1)}
+                      disabled={!hasNextQuestion}
+                      className="rounded-2xl bg-white px-5 py-4 text-base font-bold text-black disabled:opacity-40 disabled:cursor-not-allowed min-h-[60px]"
+                    >
+                      Next Question →
+                    </button>
+                  </div>
 
                 </div>
 
