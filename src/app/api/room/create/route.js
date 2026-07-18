@@ -3,6 +3,7 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
 import { questions } from "@/data/questions";
 import { syllabus } from "@/data/syllabus";
+import { validateString, validateNumber, collectErrors } from "@/lib/validation";
 
 export async function POST(req) {
   try {
@@ -12,6 +13,29 @@ export async function POST(req) {
     }
 
     const config = await req.json();
+
+    if (!config || typeof config !== "object") {
+      return Response.json({ error: "Invalid configuration" }, { status: 400 });
+    }
+
+    const error = collectErrors(
+      validateString(config.yearMode, 'yearMode'),
+      validateString(config.syllabusMode, 'syllabusMode'),
+      validateNumber(config.numQuestions, 'numQuestions', { min: 1, max: 100 })
+    );
+    if (error) return Response.json({ error }, { status: 400 });
+
+    if (!Array.isArray(config.types)) {
+      return Response.json({ error: "types must be an array" }, { status: 400 });
+    }
+
+    if (config.yearMode === "Custom") {
+      const customYearError = collectErrors(
+        validateNumber(config.customYearStart, 'customYearStart', { min: 1900 }),
+        validateNumber(config.customYearEnd, 'customYearEnd', { min: 1900 })
+      );
+      if (customYearError) return Response.json({ error: customYearError }, { status: 400 });
+    }
 
     let allowedSubtopicsSet = null;
     if (config.syllabusMode === "specific") {

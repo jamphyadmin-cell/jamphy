@@ -1,9 +1,14 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { questions as staticQuestions } from '../../../../data/questions';
 
 export async function GET(req) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const dbQuestions = await prisma.question.findMany({
       where: { status: 'APPROVED', type: 'MCQ' }
     });

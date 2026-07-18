@@ -2,16 +2,12 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from '@/lib/prisma';
+import { validateString, collectErrors, LIMITS } from '@/lib/validation';
 
 export async function GET(req) {
   try {
-    const adminCookie = req.cookies.get("admin_session");
-    const isCookieAdmin = adminCookie && adminCookie.value === "authenticated";
-
     const session = await getServerSession(authOptions);
-    const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
-
-    if (!isGoogleAdmin && !isCookieAdmin) {
+    if (!session || session.user?.role !== 'ADMIN') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -33,21 +29,18 @@ export async function GET(req) {
 
 export async function PUT(req) {
   try {
-    const adminCookie = req.cookies.get("admin_session");
-    const isCookieAdmin = adminCookie && adminCookie.value === "authenticated";
-
     const session = await getServerSession(authOptions);
-    const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
-
-    if (!isGoogleAdmin && !isCookieAdmin) {
+    if (!session || session.user?.role !== 'ADMIN') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id, status } = await req.json();
 
-    if (!id || !status) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const error = collectErrors(
+      validateString(id, 'id'),
+      validateString(status, 'status', { maxLength: LIMITS.SHORT })
+    );
+    if (error) return NextResponse.json({ error }, { status: 400 });
 
     const post = await prisma.post.update({
       where: { id },

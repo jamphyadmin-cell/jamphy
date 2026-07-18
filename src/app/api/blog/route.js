@@ -2,9 +2,13 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from '@/lib/prisma';
+import { sanitizeString, validateString, collectErrors, LIMITS } from '@/lib/validation';
 
 export async function GET(req) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const posts = await prisma.post.findMany({
       where: { status: "PUBLISHED" },
       orderBy: { publishedAt: 'desc' },
@@ -32,26 +36,42 @@ export async function POST(req) {
     const body = await req.json();
     const { title, slug, content, excerpt, tags, coverImage } = body;
 
-    if (!title || !slug || !content || !excerpt) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    // Validate required fields
+    const error = collectErrors(
+      validateString(title, 'title', { maxLength: LIMITS.TITLE }),
+      validateString(slug, 'slug', { maxLength: LIMITS.SHORT }),
+      validateString(content, 'content', { maxLength: LIMITS.CONTENT }),
+      validateString(excerpt, 'excerpt', { maxLength: LIMITS.EXCERPT })
+    );
+    if (error) return NextResponse.json({ error }, { status: 400 });
+
+    if (tags !== undefined && !Array.isArray(tags)) {
+      return NextResponse.json({ error: 'tags must be an array' }, { status: 400 });
     }
 
+    // Sanitise user-submitted text
+    const cleanTitle   = sanitizeString(title, LIMITS.TITLE);
+    const cleanContent = sanitizeString(content, LIMITS.CONTENT);
+    const cleanExcerpt = sanitizeString(excerpt, LIMITS.EXCERPT);
+    const cleanSlug    = sanitizeString(slug, LIMITS.SHORT).toLowerCase().replace(/[^a-z0-9-]/g, '');
+    const cleanTags    = Array.isArray(tags) ? tags.map(t => sanitizeString(String(t), LIMITS.SHORT)).filter(Boolean) : [];
+
     // Check if slug is unique
-    const existing = await prisma.post.findUnique({ where: { slug } });
+    const existing = await prisma.post.findUnique({ where: { slug: cleanSlug } });
     if (existing) {
       return NextResponse.json({ error: "Slug already exists" }, { status: 409 });
     }
 
     const post = await prisma.post.create({
       data: {
-        title,
-        slug,
-        content,
-        excerpt,
-        tags: tags || [],
+        title:    cleanTitle,
+        slug:     cleanSlug,
+        content:  cleanContent,
+        excerpt:  cleanExcerpt,
+        tags:     cleanTags,
         coverImage,
         authorId: session.user.id,
-        status: "PENDING"
+        status:   "PENDING"
       }
     });
 

@@ -1,14 +1,28 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 import nodemailer from "nodemailer";
 import { NextResponse } from "next/server";
+import { sanitizeString, validateString, collectErrors, LIMITS } from "@/lib/validation";
 
 export async function POST(req) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const body = await req.json();
     const { name, email, subject, message } = body;
 
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const error = collectErrors(
+      validateString(name, 'name', { maxLength: LIMITS.NAME }),
+      validateString(email, 'email', { maxLength: LIMITS.NAME }),
+      validateString(message, 'message', { maxLength: LIMITS.MESSAGE }),
+      validateString(subject, 'subject', { required: false, maxLength: LIMITS.NAME })
+    );
+    if (error) return NextResponse.json({ error }, { status: 400 });
+
+    const cleanName    = sanitizeString(name, LIMITS.NAME);
+    const cleanSubject = subject ? sanitizeString(subject, LIMITS.NAME) : 'General Inquiry';
+    const cleanMessage = sanitizeString(message, LIMITS.MESSAGE);
 
     const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
 
@@ -24,11 +38,11 @@ export async function POST(req) {
       });
 
       await transporter.sendMail({
-        from: `"${name}" <${SMTP_USER}>`,
+        from: `"${cleanName}" <${SMTP_USER}>`,
         replyTo: email,
         to: "jamphy.admin@gmail.com",
-        subject: `[Jamphy Contact] ${subject || 'General Inquiry'} - ${name}`,
-        text: `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`,
+        subject: `[Jamphy Contact] ${cleanSubject} - ${cleanName}`,
+        text: `Name: ${cleanName}\nEmail: ${email}\nSubject: ${cleanSubject}\n\nMessage:\n${cleanMessage}`,
       });
     } else {
       console.log("No SMTP credentials found. Logging contact form submission:");

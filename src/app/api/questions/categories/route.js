@@ -1,3 +1,5 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { questions as staticQuestions } from '@/data/questions';
@@ -7,6 +9,9 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     // 1. Aggregate DB questions: get distinct subjects with counts
     const dbAggregates = await prisma.question.groupBy({
       by: ['subject'],

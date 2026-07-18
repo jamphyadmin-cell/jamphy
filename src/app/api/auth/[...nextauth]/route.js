@@ -28,6 +28,7 @@ export const authOptions = {
       if (account && user) {
         token.id = user.id;
         token.username = user.username;
+        token.role = user.role;
         token.access_token = account.access_token;
         token.expires_at = account.expires_at;
         token.refresh_token = account.refresh_token;
@@ -45,14 +46,15 @@ export const authOptions = {
       // Return previous token if the access token has not expired yet
       if (token.expires_at && Date.now() < token.expires_at * 1000) {
         const userId = token.id || token.sub;
-        if (userId && !token.username) {
+        if (userId && (!token.username || !token.role)) {
           try {
             const dbUser = await prisma.user.findUnique({
               where: { id: userId },
-              select: { username: true },
+              select: { username: true, role: true },
             });
-            if (dbUser?.username) {
-              token.username = dbUser.username;
+            if (dbUser) {
+              if (dbUser.username) token.username = dbUser.username;
+              if (dbUser.role) token.role = dbUser.role;
             }
           } catch (err) {
             console.error("Database fallback session check failed:", err);
@@ -91,14 +93,15 @@ export const authOptions = {
       }
 
       const userId = token.id || token.sub;
-      if (userId && !token.username) {
+      if (userId && (!token.username || !token.role)) {
         try {
           const dbUser = await prisma.user.findUnique({
             where: { id: userId },
-            select: { username: true },
+            select: { username: true, role: true },
           });
-          if (dbUser?.username) {
-            token.username = dbUser.username;
+          if (dbUser) {
+            if (dbUser.username) token.username = dbUser.username;
+            if (dbUser.role) token.role = dbUser.role;
           }
         } catch (err) {
           console.error("Database fallback session check failed:", err);
@@ -114,18 +117,20 @@ export const authOptions = {
         session.user.name = token.name;
         session.user.image = token.picture;
         session.user.username = token.username;
+        session.user.role = token.role;
 
         // Fetch latest user data from database so session is always up-to-date
         try {
           const dbUser = await prisma.user.findUnique({
             where: { id: session.user.id },
-            select: { name: true, image: true, username: true }
+            select: { name: true, image: true, username: true, role: true }
           });
           
           if (dbUser) {
             session.user.name = dbUser.name;
             session.user.image = dbUser.image;
             session.user.username = dbUser.username;
+            session.user.role = dbUser.role;
           }
         } catch (error) {
           console.error("Error fetching latest user session info:", error);

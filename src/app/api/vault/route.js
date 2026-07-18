@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
+import { validateString, validateBoolean, collectErrors } from "@/lib/validation";
 
 export const dynamic = 'force-dynamic';
 
@@ -40,8 +41,12 @@ export async function POST(req) {
 
     const { questionId, isCorrect } = await req.json();
 
-    if (!questionId || typeof isCorrect !== 'boolean') {
-      return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+    const error = collectErrors(
+      validateString(questionId, 'questionId'),
+      validateBoolean(isCorrect, 'isCorrect')
+    );
+    if (error) {
+      return NextResponse.json({ error }, { status: 400 });
     }
 
     const userId = session.user.id;

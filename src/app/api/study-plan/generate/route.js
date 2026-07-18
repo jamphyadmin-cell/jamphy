@@ -3,6 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { sanitizeString, validateString, validateNumber, LIMITS } from "@/lib/validation";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -17,6 +18,29 @@ export async function POST(req) {
 
     const body = await req.json();
     const { examDate, hoursPerDay, targetRank, preferences, subjectConfidence, planType } = body;
+
+    // Validate required fields
+    if (!examDate || typeof examDate !== 'string') {
+      return NextResponse.json({ error: 'examDate is required and must be a string' }, { status: 400 });
+    }
+    const hoursErr = validateNumber(hoursPerDay, 'hoursPerDay', { min: 1, max: 16 });
+    if (hoursErr) return NextResponse.json({ error: hoursErr }, { status: 400 });
+
+    if (targetRank !== undefined) {
+      const rankErr = validateString(targetRank, 'targetRank', { required: false, maxLength: LIMITS.SHORT });
+      if (rankErr) return NextResponse.json({ error: rankErr }, { status: 400 });
+    }
+    if (preferences !== undefined) {
+      const prefsErr = validateString(preferences, 'preferences', { required: false, maxLength: LIMITS.EXCERPT });
+      if (prefsErr) return NextResponse.json({ error: prefsErr }, { status: 400 });
+    }
+    if (subjectConfidence !== undefined && (typeof subjectConfidence !== 'object' || Array.isArray(subjectConfidence))) {
+      return NextResponse.json({ error: 'subjectConfidence must be an object' }, { status: 400 });
+    }
+
+    // Sanitise free-text fields
+    const cleanTargetRank  = targetRank  ? sanitizeString(targetRank,  LIMITS.SHORT)   : '';
+    const cleanPreferences = preferences ? sanitizeString(preferences, LIMITS.EXCERPT) : '';
 
     // Fetch user's actual attempts to ground the AI's understanding
     const attempts = await prisma.attempt.findMany({
@@ -92,8 +116,8 @@ export async function POST(req) {
           userId: session.user.id,
           examDate: new Date(examDate),
           hoursPerDay: parseInt(hoursPerDay, 10),
-          targetRank,
-          preferences,
+          targetRank: cleanTargetRank,
+          preferences: cleanPreferences,
           generatedPlan: generatedData
         }
       });

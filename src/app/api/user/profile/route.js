@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
+import { sanitizeString, validateString, LIMITS } from "@/lib/validation";
 
 export async function GET(req) {
   try {
@@ -54,7 +55,21 @@ export async function PUT(req) {
       showStreakPublicly, showStatsPublicly, showHeatmapPublicly, showActivityPublicly, showSubjectsPublicly
     } = data;
 
-    const cleanUsername = username ? username.trim().toLowerCase().replace(/[^a-z0-9_.]/g, '') : undefined;
+    // Validate string fields
+    const nameErr    = name    ? validateString(name,    'name',    { maxLength: LIMITS.NAME })   : null;
+    const collegeErr = college ? validateString(college, 'college', { maxLength: LIMITS.NAME })   : null;
+    const yearErr    = year    ? validateString(year,    'year',    { maxLength: LIMITS.SHORT })   : null;
+    const courseErr  = course  ? validateString(course,  'course',  { maxLength: LIMITS.NAME })   : null;
+    const firstErr   = nameErr || collegeErr || yearErr || courseErr;
+    if (firstErr) return NextResponse.json({ error: firstErr }, { status: 400 });
+
+    // Sanitise text fields
+    const cleanName    = name    ? sanitizeString(name,    LIMITS.NAME)  : undefined;
+    const cleanCollege = college ? sanitizeString(college, LIMITS.NAME)  : undefined;
+    const cleanYear    = year    ? sanitizeString(year,    LIMITS.SHORT) : undefined;
+    const cleanCourse  = course  ? sanitizeString(course,  LIMITS.NAME)  : undefined;
+
+    const cleanUsername = username ? username.trim().toLowerCase().replace(/[^a-z0-9_.]/g, '').slice(0, LIMITS.SHORT) : undefined;
 
     // Check if username is taken by another user
     if (cleanUsername) {
@@ -72,13 +87,13 @@ export async function PUT(req) {
     const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
       data: {
-        name,
-        username: cleanUsername,
+        name:                cleanName,
+        username:            cleanUsername,
         image,
         dob,
-        college,
-        year,
-        course,
+        college:             cleanCollege,
+        year:                cleanYear,
+        course:              cleanCourse,
         showStreakPublicly,
         showStatsPublicly,
         showHeatmapPublicly,

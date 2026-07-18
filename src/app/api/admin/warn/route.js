@@ -2,23 +2,26 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
+import { sanitizeString, validateString, collectErrors, LIMITS } from "@/lib/validation";
 
 export async function POST(req) {
   try {
-    const adminCookie = req.cookies.get("admin_session");
-    const isCookieAdmin = adminCookie && adminCookie.value === "authenticated";
-
     const session = await getServerSession(authOptions);
-    const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
-
-    if (!isCookieAdmin && !isGoogleAdmin) {
+    if (!session || session.user?.role !== 'ADMIN') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { userId, message } = await req.json();
 
-    if (!userId || !message || message.trim() === "") {
-      return NextResponse.json({ error: "Missing userId or warning message" }, { status: 400 });
+    const error = collectErrors(
+      validateString(userId, 'userId'),
+      validateString(message, 'message', { maxLength: LIMITS.COMMENT })
+    );
+    if (error) return NextResponse.json({ error }, { status: 400 });
+
+    const cleanMessage = sanitizeString(message, LIMITS.COMMENT);
+    if (!cleanMessage) {
+      return NextResponse.json({ error: "Warning message cannot be empty" }, { status: 400 });
     }
 
     // Create a warning notification for the target user
@@ -26,7 +29,7 @@ export async function POST(req) {
       data: {
         userId,
         type: "WARNING",
-        message: message.trim()
+        message: cleanMessage
       }
     });
 

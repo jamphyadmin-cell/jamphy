@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { validateString, collectErrors } from "@/lib/validation";
+import { rateLimit } from "@/lib/rate-limit";
 
 // Initialize Gemini
 const apiKey = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
@@ -11,19 +13,35 @@ export async function POST(req) {
   try {
     const { base64Data, mimeType } = await req.json();
 
-    const adminCookie = req.cookies.get("admin_session");
-    const isCookieAdmin = adminCookie && adminCookie.value === "authenticated";
+    const error = collectErrors(
+      validateString(base64Data, 'base64Data'),
+      validateString(mimeType, 'mimeType')
+    );
+    if (error) return NextResponse.json({ error }, { status: 400 });
+
+    // Validate size (10MB limit = ~13.7M base64 chars)
+    if (base64Data.length > 15000000) {
+      return NextResponse.json({ error: "File exceeds 10MB limit" }, { status: 400 });
+    }
 
     const session = await getServerSession(authOptions);
-    const isGoogleAdmin = session?.user?.email === "jamphy.admin@gmail.com";
-
-    if (!isGoogleAdmin && !isCookieAdmin) {
+    if (!session || session.user?.role !== 'ADMIN') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!base64Data || !mimeType) {
-      return NextResponse.json({ error: "Missing file data" }, { status: 400 });
+    const rateLimitKey = `extract_${session.user.id}`;
+    const { allowed, retryAfter } = rateLimit(rateLimitKey, 5, 60000);
+    if (!allowed) {
+      return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again later." }), {
+        status: 429,
+        headers: {
+          'Retry-After': String(retryAfter),
+          'Content-Type': 'application/json'
+        }
+      });
     }
+
+
 
     if (!apiKey || apiKey === "your_gemini_api_key_here") {
       return NextResponse.json({ error: "Gemini API key is missing or invalid in the .env file. Please add a valid GEMINI_API_KEY." }, { status: 500 });

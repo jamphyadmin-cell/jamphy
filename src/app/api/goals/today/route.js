@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from '@/lib/prisma';
+import { validateNumber } from '@/lib/validation';
 
 export async function GET(req) {
   try {
@@ -71,8 +72,9 @@ export async function PUT(req) {
     }
 
     const { targetQuestions } = await req.json();
-    if (typeof targetQuestions !== 'number' || targetQuestions < 1) {
-      return NextResponse.json({ error: "Invalid target" }, { status: 400 });
+    const error = validateNumber(targetQuestions, 'targetQuestions', { min: 1 });
+    if (error) {
+      return NextResponse.json({ error }, { status: 400 });
     }
 
     const userId = session.user.id;
