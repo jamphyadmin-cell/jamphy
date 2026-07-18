@@ -3,10 +3,25 @@ import Link from "next/link";
 import { adminLogout, updateReportStatus } from "./actions";
 import AdminTabs from "./AdminTabs";
 import AdminLogoLink from "@/components/AdminLogoLink";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
+  const cookieStore = await cookies();
+  const adminCookie = cookieStore.get("admin_session");
+  const isCookieAdmin = adminCookie && adminCookie.value === "authenticated";
+
+  const session = await getServerSession(authOptions);
+  const isGoogleAdmin = session?.user?.role === 'ADMIN';
+
+  if (!isCookieAdmin && !isGoogleAdmin) {
+    redirect("/admin/login");
+  }
+
   // Fetch users
   const users = await prisma.user.findMany({
     orderBy: {
