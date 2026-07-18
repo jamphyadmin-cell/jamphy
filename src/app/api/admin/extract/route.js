@@ -150,7 +150,7 @@ CRITICAL INSTRUCTIONS:
       return NextResponse.json({ 
         questions: [], 
         partial: true, 
-        error: "0 questions extracted. Gemini response: " + text.substring(0, 200) 
+        error: "Failed to extract questions from the uploaded file. Please try a different file or format." 
       }, { status: 200 }); // Status 200 so frontend can read data.error
     }
 
@@ -163,6 +163,6 @@ CRITICAL INSTRUCTIONS:
     console.error("  GEMINI_API_KEY defined:", !!process.env.GEMINI_API_KEY);
     console.error("  VITE_GEMINI_API_KEY defined:", !!process.env.VITE_GEMINI_API_KEY);
     
-    return NextResponse.json({ error: "Failed to extract questions: " + error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
